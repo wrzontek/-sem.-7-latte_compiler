@@ -76,6 +76,10 @@ public:
 
     void visitAss(Ass *p);
 
+    void visitArrAss(ArrAss *p);
+
+    void visitArrElemAss(ArrElemAss *p);
+
     void visitIncr(Incr *p);
 
     void visitDecr(Decr *p);
@@ -90,23 +94,40 @@ public:
 
     void visitWhile(While *p);
 
+    void visitForEach(ForEach *p);
+
     void visitSExp(SExp *p);
 
     void visitItem(Item *p); /* abstract class */
     void visitNoInit(NoInit *p);
 
-    void visitInit(Init *p);
+    void visitExprInit(ExprInit *p);
+
+    void visitArrInit(ArrInit *p);
 
     void visitListItem(ListItem *p);
 
     void iterListItem(ListItem::const_iterator i, ListItem::const_iterator j);
 
+    void visitArrType(ArrType *p); /* abstract class */
+    void visitIntArrType(IntArrType *p);
+
+    void visitStrArrType(StrArrType *p);
+
+    void visitBoolArrType(BoolArrType *p);
+
     void visitType(Type *p); /* abstract class */
     void visitInt(Int *p);
 
+    void visitIntArr(IntArr *p);
+
     void visitStr(Str *p);
 
+    void visitStrArr(StrArr *p);
+
     void visitBool(Bool *p);
+
+    void visitBoolArr(BoolArr *p);
 
     void visitVoid(Void *p);
 
@@ -118,6 +139,10 @@ public:
 
     void visitExpr(Expr *p); /* abstract class */
     void visitEVar(EVar *p);
+
+    void visitEArrVar(EArrVar *p);
+
+    void visitEArrLen(EArrLen *p);
 
     void visitELitInt(ELitInt *p);
 
@@ -279,6 +304,10 @@ public:
 
     void visitAss(Ass *p);
 
+    void visitArrAss(ArrAss *p);
+
+    void visitArrElemAss(ArrElemAss *p);
+
     void visitIncr(Incr *p);
 
     void visitDecr(Decr *p);
@@ -293,23 +322,40 @@ public:
 
     void visitWhile(While *p);
 
+    void visitForEach(ForEach *p);
+
     void visitSExp(SExp *p);
 
     void visitItem(Item *p); /* abstract class */
     void visitNoInit(NoInit *p);
 
-    void visitInit(Init *p);
+    void visitExprInit(ExprInit *p);
+
+    void visitArrInit(ArrInit *p);
 
     void visitListItem(ListItem *p);
 
     void iterListItem(ListItem::const_iterator i, ListItem::const_iterator j);
 
+    void visitArrType(ArrType *p); /* abstract class */
+    void visitIntArrType(IntArrType *p);
+
+    void visitStrArrType(StrArrType *p);
+
+    void visitBoolArrType(BoolArrType *p);
+
     void visitType(Type *p); /* abstract class */
     void visitInt(Int *p);
 
+    void visitIntArr(IntArr *p);
+
     void visitStr(Str *p);
 
+    void visitStrArr(StrArr *p);
+
     void visitBool(Bool *p);
+
+    void visitBoolArr(BoolArr *p);
 
     void visitVoid(Void *p);
 
@@ -321,6 +367,10 @@ public:
 
     void visitExpr(Expr *p); /* abstract class */
     void visitEVar(EVar *p);
+
+    void visitEArrVar(EArrVar *p);
+
+    void visitEArrLen(EArrLen *p);
 
     void visitELitInt(ELitInt *p);
 

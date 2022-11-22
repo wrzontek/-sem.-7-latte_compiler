@@ -15,6 +15,7 @@ void Skeleton::visitArg(Arg *t) {} //abstract class
 void Skeleton::visitBlock(Block *t) {} //abstract class
 void Skeleton::visitStmt(Stmt *t) {} //abstract class
 void Skeleton::visitItem(Item *t) {} //abstract class
+void Skeleton::visitArrType(ArrType *t) {} //abstract class
 void Skeleton::visitType(Type *t) {} //abstract class
 void Skeleton::visitExpr(Expr *t) {} //abstract class
 void Skeleton::visitAddOp(AddOp *t) {} //abstract class
@@ -82,6 +83,24 @@ void Skeleton::visitAss(Ass *ass) {
 
 }
 
+void Skeleton::visitArrAss(ArrAss *arr_ass) {
+    /* Code For ArrAss Goes Here */
+
+    visitIdent(arr_ass->ident_);
+    if (arr_ass->arrtype_) arr_ass->arrtype_->accept(this);
+    if (arr_ass->expr_) arr_ass->expr_->accept(this);
+
+}
+
+void Skeleton::visitArrElemAss(ArrElemAss *arr_elem_ass) {
+    /* Code For ArrElemAss Goes Here */
+
+    visitIdent(arr_elem_ass->ident_);
+    if (arr_elem_ass->expr_1) arr_elem_ass->expr_1->accept(this);
+    if (arr_elem_ass->expr_2) arr_elem_ass->expr_2->accept(this);
+
+}
+
 void Skeleton::visitIncr(Incr *incr) {
     /* Code For Incr Goes Here */
 
@@ -134,6 +153,16 @@ void Skeleton::visitWhile(While *while_) {
 
 }
 
+void Skeleton::visitForEach(ForEach *for_each) {
+    /* Code For ForEach Goes Here */
+
+    if (for_each->type_) for_each->type_->accept(this);
+    visitIdent(for_each->ident_1);
+    visitIdent(for_each->ident_2);
+    if (for_each->stmt_) for_each->stmt_->accept(this);
+
+}
+
 void Skeleton::visitSExp(SExp *s_exp) {
     /* Code For SExp Goes Here */
 
@@ -148,16 +177,49 @@ void Skeleton::visitNoInit(NoInit *no_init) {
 
 }
 
-void Skeleton::visitInit(Init *init) {
-    /* Code For Init Goes Here */
+void Skeleton::visitExprInit(ExprInit *expr_init) {
+    /* Code For ExprInit Goes Here */
 
-    visitIdent(init->ident_);
-    if (init->expr_) init->expr_->accept(this);
+    visitIdent(expr_init->ident_);
+    if (expr_init->expr_) expr_init->expr_->accept(this);
+
+}
+
+void Skeleton::visitArrInit(ArrInit *arr_init) {
+    /* Code For ArrInit Goes Here */
+
+    visitIdent(arr_init->ident_);
+    if (arr_init->arrtype_) arr_init->arrtype_->accept(this);
+    if (arr_init->expr_) arr_init->expr_->accept(this);
+
+}
+
+void Skeleton::visitIntArrType(IntArrType *int_arr_type) {
+    /* Code For IntArrType Goes Here */
+
+
+}
+
+void Skeleton::visitStrArrType(StrArrType *str_arr_type) {
+    /* Code For StrArrType Goes Here */
+
+
+}
+
+void Skeleton::visitBoolArrType(BoolArrType *bool_arr_type) {
+    /* Code For BoolArrType Goes Here */
+
 
 }
 
 void Skeleton::visitInt(Int *int_) {
     /* Code For Int Goes Here */
+
+
+}
+
+void Skeleton::visitIntArr(IntArr *int_arr) {
+    /* Code For IntArr Goes Here */
 
 
 }
@@ -168,8 +230,20 @@ void Skeleton::visitStr(Str *str) {
 
 }
 
+void Skeleton::visitStrArr(StrArr *str_arr) {
+    /* Code For StrArr Goes Here */
+
+
+}
+
 void Skeleton::visitBool(Bool *bool_) {
     /* Code For Bool Goes Here */
+
+
+}
+
+void Skeleton::visitBoolArr(BoolArr *bool_arr) {
+    /* Code For BoolArr Goes Here */
 
 
 }
@@ -192,6 +266,21 @@ void Skeleton::visitEVar(EVar *e_var) {
     /* Code For EVar Goes Here */
 
     visitIdent(e_var->ident_);
+
+}
+
+void Skeleton::visitEArrVar(EArrVar *e_arr_var) {
+    /* Code For EArrVar Goes Here */
+
+    visitIdent(e_arr_var->ident_);
+    if (e_arr_var->expr_) e_arr_var->expr_->accept(this);
+
+}
+
+void Skeleton::visitEArrLen(EArrLen *e_arr_len) {
+    /* Code For EArrLen Goes Here */
+
+    visitIdent(e_arr_len->ident_);
 
 }
 

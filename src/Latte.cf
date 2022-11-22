@@ -26,11 +26,17 @@ Decl.      Stmt ::= Type [Item] ";" ;
 
 NoInit.    Item ::= Ident ; 
 
-Init.      Item ::= Ident "=" Expr ;
+ExprInit.  Item ::= Ident "=" Expr ;
+
+ArrInit.   Item ::= Ident "=" "new" ArrType "[" Expr "]" ;
 
 separator nonempty Item "," ;
 
 Ass.       Stmt ::= Ident "=" Expr  ";" ;
+
+ArrAss.    Stmt ::= Ident "=" "new" ArrType "[" Expr "]" ";" ;
+
+ArrElemAss. Stmt ::= Ident "[" Expr "]" "=" Expr ";" ;
 
 Incr.      Stmt ::= Ident "++"  ";" ;
 
@@ -46,15 +52,31 @@ CondElse.  Stmt ::= "if" "(" Expr ")" Stmt "else" Stmt  ;
 
 While.     Stmt ::= "while" "(" Expr ")" Stmt ;
 
+ForEach.   Stmt ::= "for" "(" Type Ident ":" Ident ")" Stmt ;
+
 SExp.      Stmt ::= Expr  ";" ;
+
+-- ArrTypes ------------------------------------------------
+
+IntArrType.  ArrType ::= "int" ;
+
+StrArrType.  ArrType ::= "string" ;
+
+BoolArrType. ArrType ::= "boolean" ;
 
 -- Types ---------------------------------------------------
 
 Int.       Type ::= "int" ;
 
+IntArr.    Type ::= "int" "[]" ;
+
 Str.       Type ::= "string" ;
 
+StrArr.    Type ::= "string" "[]" ;
+
 Bool.      Type ::= "boolean" ;
+
+BoolArr.   Type ::= "boolean" "[]" ;
 
 Void.      Type ::= "void" ;
 
@@ -65,6 +87,10 @@ separator  Type "," ;
 -- Expressions ---------------------------------------------
 
 EVar.      Expr6 ::= Ident ;
+
+EArrVar.   Expr6 ::= Ident "[" Expr "]" ;
+
+EArrLen.   Expr6 ::= Ident "." "length" ;
 
 ELitInt.   Expr6 ::= Integer ;
 

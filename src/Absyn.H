@@ -31,6 +31,8 @@ class Stmt;
 
 class Item;
 
+class ArrType;
+
 class Type;
 
 class Expr;
@@ -57,9 +59,15 @@ class Decl;
 
 class NoInit;
 
-class Init;
+class ExprInit;
+
+class ArrInit;
 
 class Ass;
+
+class ArrAss;
+
+class ArrElemAss;
 
 class Incr;
 
@@ -75,19 +83,37 @@ class CondElse;
 
 class While;
 
+class ForEach;
+
 class SExp;
+
+class IntArrType;
+
+class StrArrType;
+
+class BoolArrType;
 
 class Int;
 
+class IntArr;
+
 class Str;
 
+class StrArr;
+
 class Bool;
+
+class BoolArr;
 
 class Void;
 
 class Fun;
 
 class EVar;
+
+class EArrVar;
+
+class EArrLen;
 
 class ELitInt;
 
@@ -165,6 +191,8 @@ public:
 
     virtual void visitItem(Item *p) = 0;
 
+    virtual void visitArrType(ArrType *p) = 0;
+
     virtual void visitType(Type *p) = 0;
 
     virtual void visitExpr(Expr *p) = 0;
@@ -191,9 +219,15 @@ public:
 
     virtual void visitNoInit(NoInit *p) = 0;
 
-    virtual void visitInit(Init *p) = 0;
+    virtual void visitExprInit(ExprInit *p) = 0;
+
+    virtual void visitArrInit(ArrInit *p) = 0;
 
     virtual void visitAss(Ass *p) = 0;
+
+    virtual void visitArrAss(ArrAss *p) = 0;
+
+    virtual void visitArrElemAss(ArrElemAss *p) = 0;
 
     virtual void visitIncr(Incr *p) = 0;
 
@@ -209,19 +243,37 @@ public:
 
     virtual void visitWhile(While *p) = 0;
 
+    virtual void visitForEach(ForEach *p) = 0;
+
     virtual void visitSExp(SExp *p) = 0;
+
+    virtual void visitIntArrType(IntArrType *p) = 0;
+
+    virtual void visitStrArrType(StrArrType *p) = 0;
+
+    virtual void visitBoolArrType(BoolArrType *p) = 0;
 
     virtual void visitInt(Int *p) = 0;
 
+    virtual void visitIntArr(IntArr *p) = 0;
+
     virtual void visitStr(Str *p) = 0;
 
+    virtual void visitStrArr(StrArr *p) = 0;
+
     virtual void visitBool(Bool *p) = 0;
+
+    virtual void visitBoolArr(BoolArr *p) = 0;
 
     virtual void visitVoid(Void *p) = 0;
 
     virtual void visitFun(Fun *p) = 0;
 
     virtual void visitEVar(EVar *p) = 0;
+
+    virtual void visitEArrVar(EArrVar *p) = 0;
+
+    virtual void visitEArrLen(EArrLen *p) = 0;
 
     virtual void visitELitInt(ELitInt *p) = 0;
 
@@ -348,6 +400,14 @@ public:
 class Item : public Visitable {
 public:
     virtual Item *clone() const = 0;
+
+    int line_number;
+    int char_number;
+};
+
+class ArrType : public Visitable {
+public:
+    virtual ArrType *clone() const = 0;
 
     int line_number;
     int char_number;
@@ -551,6 +611,48 @@ public:
     void swap(Ass &);
 };
 
+class ArrAss : public Stmt {
+public:
+    Ident ident_;
+    ArrType *arrtype_;
+    Expr *expr_;
+
+    ArrAss(const ArrAss &);
+
+    ArrAss &operator=(const ArrAss &);
+
+    ArrAss(Ident p1, ArrType *p2, Expr *p3);
+
+    ~ArrAss();
+
+    virtual void accept(Visitor *v);
+
+    virtual ArrAss *clone() const;
+
+    void swap(ArrAss &);
+};
+
+class ArrElemAss : public Stmt {
+public:
+    Ident ident_;
+    Expr *expr_1;
+    Expr *expr_2;
+
+    ArrElemAss(const ArrElemAss &);
+
+    ArrElemAss &operator=(const ArrElemAss &);
+
+    ArrElemAss(Ident p1, Expr *p2, Expr *p3);
+
+    ~ArrElemAss();
+
+    virtual void accept(Visitor *v);
+
+    virtual ArrElemAss *clone() const;
+
+    void swap(ArrElemAss &);
+};
+
 class Incr : public Stmt {
 public:
     Ident ident_;
@@ -687,6 +789,28 @@ public:
     void swap(While &);
 };
 
+class ForEach : public Stmt {
+public:
+    Type *type_;
+    Ident ident_1;
+    Ident ident_2;
+    Stmt *stmt_;
+
+    ForEach(const ForEach &);
+
+    ForEach &operator=(const ForEach &);
+
+    ForEach(Type *p1, Ident p2, Ident p3, Stmt *p4);
+
+    ~ForEach();
+
+    virtual void accept(Visitor *v);
+
+    virtual ForEach *clone() const;
+
+    void swap(ForEach &);
+};
+
 class SExp : public Stmt {
 public:
     Expr *expr_;
@@ -725,24 +849,99 @@ public:
     void swap(NoInit &);
 };
 
-class Init : public Item {
+class ExprInit : public Item {
 public:
     Ident ident_;
     Expr *expr_;
 
-    Init(const Init &);
+    ExprInit(const ExprInit &);
 
-    Init &operator=(const Init &);
+    ExprInit &operator=(const ExprInit &);
 
-    Init(Ident p1, Expr *p2);
+    ExprInit(Ident p1, Expr *p2);
 
-    ~Init();
+    ~ExprInit();
 
     virtual void accept(Visitor *v);
 
-    virtual Init *clone() const;
+    virtual ExprInit *clone() const;
 
-    void swap(Init &);
+    void swap(ExprInit &);
+};
+
+class ArrInit : public Item {
+public:
+    Ident ident_;
+    ArrType *arrtype_;
+    Expr *expr_;
+
+    ArrInit(const ArrInit &);
+
+    ArrInit &operator=(const ArrInit &);
+
+    ArrInit(Ident p1, ArrType *p2, Expr *p3);
+
+    ~ArrInit();
+
+    virtual void accept(Visitor *v);
+
+    virtual ArrInit *clone() const;
+
+    void swap(ArrInit &);
+};
+
+class IntArrType : public ArrType {
+public:
+
+    IntArrType(const IntArrType &);
+
+    IntArrType &operator=(const IntArrType &);
+
+    IntArrType();
+
+    ~IntArrType();
+
+    virtual void accept(Visitor *v);
+
+    virtual IntArrType *clone() const;
+
+    void swap(IntArrType &);
+};
+
+class StrArrType : public ArrType {
+public:
+
+    StrArrType(const StrArrType &);
+
+    StrArrType &operator=(const StrArrType &);
+
+    StrArrType();
+
+    ~StrArrType();
+
+    virtual void accept(Visitor *v);
+
+    virtual StrArrType *clone() const;
+
+    void swap(StrArrType &);
+};
+
+class BoolArrType : public ArrType {
+public:
+
+    BoolArrType(const BoolArrType &);
+
+    BoolArrType &operator=(const BoolArrType &);
+
+    BoolArrType();
+
+    ~BoolArrType();
+
+    virtual void accept(Visitor *v);
+
+    virtual BoolArrType *clone() const;
+
+    void swap(BoolArrType &);
 };
 
 class Int : public Type {
@@ -763,6 +962,24 @@ public:
     void swap(Int &);
 };
 
+class IntArr : public Type {
+public:
+
+    IntArr(const IntArr &);
+
+    IntArr &operator=(const IntArr &);
+
+    IntArr();
+
+    ~IntArr();
+
+    virtual void accept(Visitor *v);
+
+    virtual IntArr *clone() const;
+
+    void swap(IntArr &);
+};
+
 class Str : public Type {
 public:
 
@@ -781,6 +998,24 @@ public:
     void swap(Str &);
 };
 
+class StrArr : public Type {
+public:
+
+    StrArr(const StrArr &);
+
+    StrArr &operator=(const StrArr &);
+
+    StrArr();
+
+    ~StrArr();
+
+    virtual void accept(Visitor *v);
+
+    virtual StrArr *clone() const;
+
+    void swap(StrArr &);
+};
+
 class Bool : public Type {
 public:
 
@@ -797,6 +1032,24 @@ public:
     virtual Bool *clone() const;
 
     void swap(Bool &);
+};
+
+class BoolArr : public Type {
+public:
+
+    BoolArr(const BoolArr &);
+
+    BoolArr &operator=(const BoolArr &);
+
+    BoolArr();
+
+    ~BoolArr();
+
+    virtual void accept(Visitor *v);
+
+    virtual BoolArr *clone() const;
+
+    void swap(BoolArr &);
 };
 
 class Void : public Type {
@@ -854,6 +1107,45 @@ public:
     virtual EVar *clone() const;
 
     void swap(EVar &);
+};
+
+class EArrVar : public Expr {
+public:
+    Ident ident_;
+    Expr *expr_;
+
+    EArrVar(const EArrVar &);
+
+    EArrVar &operator=(const EArrVar &);
+
+    EArrVar(Ident p1, Expr *p2);
+
+    ~EArrVar();
+
+    virtual void accept(Visitor *v);
+
+    virtual EArrVar *clone() const;
+
+    void swap(EArrVar &);
+};
+
+class EArrLen : public Expr {
+public:
+    Ident ident_;
+
+    EArrLen(const EArrLen &);
+
+    EArrLen &operator=(const EArrLen &);
+
+    EArrLen(Ident p1);
+
+    ~EArrLen();
+
+    virtual void accept(Visitor *v);
+
+    virtual EArrLen *clone() const;
+
+    void swap(EArrLen &);
 };
 
 class ELitInt : public Expr {

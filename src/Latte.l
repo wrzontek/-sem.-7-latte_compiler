@@ -75,8 +75,13 @@ IDENT [a-zA-Z0-9'_]
 <INITIAL>"}"      	 return _RBRACE;
 <INITIAL>";"      	 return _SEMI;
 <INITIAL>"="      	 return _EQ;
+<INITIAL>"["      	 return _LBRACK;
+<INITIAL>"]"      	 return _RBRACK;
 <INITIAL>"++"      	 return _DPLUS;
 <INITIAL>"--"      	 return _DMINUS;
+<INITIAL>":"      	 return _COLON;
+<INITIAL>"[]"      	 return _EMPTYBRACK;
+<INITIAL>"."      	 return _DOT;
 <INITIAL>"-"      	 return _MINUS;
 <INITIAL>"!"      	 return _BANG;
 <INITIAL>"&&"      	 return _DAMP;
@@ -94,8 +99,11 @@ IDENT [a-zA-Z0-9'_]
 <INITIAL>"boolean"      	 return _KW_boolean;
 <INITIAL>"else"      	 return _KW_else;
 <INITIAL>"false"      	 return _KW_false;
+<INITIAL>"for"      	 return _KW_for;
 <INITIAL>"if"      	 return _KW_if;
 <INITIAL>"int"      	 return _KW_int;
+<INITIAL>"length"      	 return _KW_length;
+<INITIAL>"new"      	 return _KW_new;
 <INITIAL>"return"      	 return _KW_return;
 <INITIAL>"string"      	 return _KW_string;
 <INITIAL>"true"      	 return _KW_true;

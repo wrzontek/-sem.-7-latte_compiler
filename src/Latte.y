@@ -62,6 +62,7 @@ extern yyscan_t latte__initialize_lexer(FILE * inp);
   Stmt* stmt_;
   Item* item_;
   ListItem* listitem_;
+  ArrType* arrtype_;
   Type* type_;
   ListType* listtype_;
   Expr* expr_;
@@ -96,7 +97,9 @@ extern int yylex(YYSTYPE *lvalp, YYLTYPE *llocp, yyscan_t scanner);
 %token          _COMMA       /* , */
 %token          _MINUS       /* - */
 %token          _DMINUS      /* -- */
+%token          _DOT         /* . */
 %token          _SLASH       /* / */
+%token          _COLON       /* : */
 %token          _SEMI        /* ; */
 %token          _LT          /* < */
 %token          _LDARROW     /* <= */
@@ -104,11 +107,17 @@ extern int yylex(YYSTYPE *lvalp, YYLTYPE *llocp, yyscan_t scanner);
 %token          _DEQ         /* == */
 %token          _GT          /* > */
 %token          _GTEQ        /* >= */
+%token          _LBRACK      /* [ */
+%token          _EMPTYBRACK  /* [] */
+%token          _RBRACK      /* ] */
 %token          _KW_boolean  /* boolean */
 %token          _KW_else     /* else */
 %token          _KW_false    /* false */
+%token          _KW_for      /* for */
 %token          _KW_if       /* if */
 %token          _KW_int      /* int */
+%token          _KW_length   /* length */
+%token          _KW_new      /* new */
 %token          _KW_return   /* return */
 %token          _KW_string   /* string */
 %token          _KW_true     /* true */
@@ -131,6 +140,7 @@ extern int yylex(YYSTYPE *lvalp, YYLTYPE *llocp, yyscan_t scanner);
 %type <stmt_> Stmt
 %type <item_> Item
 %type <listitem_> ListItem
+%type <arrtype_> ArrType
 %type <type_> Type
 %type <listtype_> ListType
 %type <expr_> Expr6
@@ -171,6 +181,8 @@ Stmt : _SEMI { $$ = new Empty(); $$->line_number = @$.first_line; $$->char_numbe
   | Block { $$ = new BStmt($1); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | Type ListItem _SEMI { std::reverse($2->begin(),$2->end()) ;$$ = new Decl($1, $2); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _IDENT_ _EQ Expr _SEMI { $$ = new Ass($1, $3); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
+  | _IDENT_ _EQ _KW_new ArrType _LBRACK Expr _RBRACK _SEMI { $$ = new ArrAss($1, $4, $6); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
+  | _IDENT_ _LBRACK Expr _RBRACK _EQ Expr _SEMI { $$ = new ArrElemAss($1, $3, $6); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _IDENT_ _DPLUS _SEMI { $$ = new Incr($1); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _IDENT_ _DMINUS _SEMI { $$ = new Decr($1); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _KW_return Expr _SEMI { $$ = new Ret($2); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
@@ -178,17 +190,26 @@ Stmt : _SEMI { $$ = new Empty(); $$->line_number = @$.first_line; $$->char_numbe
   | _KW_if _LPAREN Expr _RPAREN Stmt { $$ = new Cond($3, $5); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _KW_if _LPAREN Expr _RPAREN Stmt _KW_else Stmt { $$ = new CondElse($3, $5, $7); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _KW_while _LPAREN Expr _RPAREN Stmt { $$ = new While($3, $5); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
+  | _KW_for _LPAREN Type _IDENT_ _COLON _IDENT_ _RPAREN Stmt { $$ = new ForEach($3, $4, $6, $8); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | Expr _SEMI { $$ = new SExp($1); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
 ;
 Item : _IDENT_ { $$ = new NoInit($1); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
-  | _IDENT_ _EQ Expr { $$ = new Init($1, $3); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
+  | _IDENT_ _EQ Expr { $$ = new ExprInit($1, $3); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
+  | _IDENT_ _EQ _KW_new ArrType _LBRACK Expr _RBRACK { $$ = new ArrInit($1, $4, $6); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
 ;
 ListItem : Item { $$ = new ListItem(); $$->push_back($1); }
   | Item _COMMA ListItem { $3->push_back($1); $$ = $3; }
 ;
+ArrType : _KW_int { $$ = new IntArrType(); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
+  | _KW_string { $$ = new StrArrType(); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
+  | _KW_boolean { $$ = new BoolArrType(); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
+;
 Type : _KW_int { $$ = new Int(); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
+  | _KW_int _EMPTYBRACK { $$ = new IntArr(); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _KW_string { $$ = new Str(); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
+  | _KW_string _EMPTYBRACK { $$ = new StrArr(); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _KW_boolean { $$ = new Bool(); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
+  | _KW_boolean _EMPTYBRACK { $$ = new BoolArr(); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _KW_void { $$ = new Void(); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
 ;
 ListType : /* empty */ { $$ = new ListType(); }
@@ -196,6 +217,8 @@ ListType : /* empty */ { $$ = new ListType(); }
   | Type _COMMA ListType { $3->push_back($1); $$ = $3; }
 ;
 Expr6 : _IDENT_ { $$ = new EVar($1); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
+  | _IDENT_ _LBRACK Expr _RBRACK { $$ = new EArrVar($1, $3); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
+  | _IDENT_ _DOT _KW_length { $$ = new EArrLen($1); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _INTEGER_ { $$ = new ELitInt($1); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _KW_true { $$ = new ELitTrue(); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _KW_false { $$ = new ELitFalse(); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }

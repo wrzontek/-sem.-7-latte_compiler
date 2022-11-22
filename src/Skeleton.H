@@ -21,6 +21,8 @@ public:
 
     void visitItem(Item *p);
 
+    void visitArrType(ArrType *p);
+
     void visitType(Type *p);
 
     void visitExpr(Expr *p);
@@ -47,9 +49,15 @@ public:
 
     void visitNoInit(NoInit *p);
 
-    void visitInit(Init *p);
+    void visitExprInit(ExprInit *p);
+
+    void visitArrInit(ArrInit *p);
 
     void visitAss(Ass *p);
+
+    void visitArrAss(ArrAss *p);
+
+    void visitArrElemAss(ArrElemAss *p);
 
     void visitIncr(Incr *p);
 
@@ -65,19 +73,37 @@ public:
 
     void visitWhile(While *p);
 
+    void visitForEach(ForEach *p);
+
     void visitSExp(SExp *p);
+
+    void visitIntArrType(IntArrType *p);
+
+    void visitStrArrType(StrArrType *p);
+
+    void visitBoolArrType(BoolArrType *p);
 
     void visitInt(Int *p);
 
+    void visitIntArr(IntArr *p);
+
     void visitStr(Str *p);
 
+    void visitStrArr(StrArr *p);
+
     void visitBool(Bool *p);
+
+    void visitBoolArr(BoolArr *p);
 
     void visitVoid(Void *p);
 
     void visitFun(Fun *p);
 
     void visitEVar(EVar *p);
+
+    void visitEArrVar(EArrVar *p);
+
+    void visitEArrLen(EArrLen *p);
 
     void visitELitInt(ELitInt *p);
 
