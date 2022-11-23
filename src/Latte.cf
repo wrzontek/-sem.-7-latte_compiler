@@ -6,11 +6,23 @@ Prog.   Program ::= [TopDef] ;
 
 FnDef.	   TopDef ::= Type Ident "(" [Arg] ")" Block ;
 
+ClassDef.  TopDef ::= "class" Ident "{" [ClassMember] "}" ;
+
+ClassExtendDef.  TopDef ::= "class" Ident "extends" Ident "{" [ClassMember] "}" ;
+
+separator ClassMember "" ;
+
 separator nonempty TopDef "" ;
 
 Ar. 	   Arg ::= Type Ident;
 
 separator  Arg "," ;
+
+-- class members ------------------------------------------
+
+AttrMember.    ClassMember ::= Type [Item] ";" ;
+
+MethodMember.  ClassMember ::= Type Ident "(" [Arg] ")" Block ;
 
 -- statements ----------------------------------------------
 
@@ -24,23 +36,17 @@ BStmt.     Stmt ::= Block ;
 
 Decl.      Stmt ::= Type [Item] ";" ;
 
-NoInit.    Item ::= Ident ; 
+NoInit.    Item ::= Ident ;
 
-ExprInit.  Item ::= Ident "=" Expr ;
-
-ArrInit.   Item ::= Ident "=" "new" ArrType "[" Expr "]" ;
+Init.      Item ::= Ident "=" Expr ;
 
 separator nonempty Item "," ;
 
-Ass.       Stmt ::= Ident "=" Expr  ";" ;
+Ass.       Stmt ::= Expr "=" Expr  ";" ;
 
-ArrAss.    Stmt ::= Ident "=" "new" ArrType "[" Expr "]" ";" ;
+Incr.      Stmt ::= Expr "++"  ";" ;
 
-ArrElemAss. Stmt ::= Ident "[" Expr "]" "=" Expr ";" ;
-
-Incr.      Stmt ::= Ident "++"  ";" ;
-
-Decr.      Stmt ::= Ident "--"  ";" ;
+Decr.      Stmt ::= Expr "--"  ";" ;
 
 Ret.       Stmt ::= "return" Expr ";" ;
 
@@ -56,49 +62,71 @@ ForEach.   Stmt ::= "for" "(" Type Ident ":" Ident ")" Stmt ;
 
 SExp.      Stmt ::= Expr  ";" ;
 
+-- Values (lvalues) ---------------------------
+
+Variable.      Value ::= Ident ; -- basic/array/object/attribute
+
+ArrElement.    Value ::= Ident [ DimDef ] ;
+
+FunctionVal.   Value ::= Ident "(" [Expr] ")" ;
+
+ArrFunctionVal. Value ::= Ident "(" [Expr] ")" [ DimDef ] ;
+
 -- ArrTypes ------------------------------------------------
 
-IntArrType.  ArrType ::= "int" ;
+IntArrType.   ArrType ::= "int" ;
 
-StrArrType.  ArrType ::= "string" ;
+StrArrType.   ArrType ::= "string" ;
 
-BoolArrType. ArrType ::= "boolean" ;
+BoolArrType.  ArrType ::= "boolean" ;
+
+ClassArrType. ArrType ::= Ident ;
 
 -- Types ---------------------------------------------------
 
 Int.       Type ::= "int" ;
 
-IntArr.    Type ::= "int" "[]" ;
-
 Str.       Type ::= "string" ;
-
-StrArr.    Type ::= "string" "[]" ;
 
 Bool.      Type ::= "boolean" ;
 
-BoolArr.   Type ::= "boolean" "[]" ;
-
 Void.      Type ::= "void" ;
+
+Arr.       Type ::= ArrType [ ArrDimType ] ;
+
+Class.     Type ::= Ident ;
+
+DimType.   ArrDimType ::= "[]" ;
+
+separator nonempty ArrDimType "" ;
 
 internal   Fun. Type ::= Type "(" [Type] ")" ;
 
 separator  Type "," ;
 
+------------------------------
+
+ArrDimDef.  DimDef ::= "[" Expr "]" ;
+
+separator nonempty DimDef "" ;
+
 -- Expressions ---------------------------------------------
 
-EVar.      Expr6 ::= Ident ;
+EComplex.        Expr6 ::= [ Value ] ;
 
-EArrVar.   Expr6 ::= Ident "[" Expr "]" ;
+ENullCast. Expr6 ::= "(" Ident ")" "null" ; --TODO to pewnie nie działa, Iwanicki coś gadał (o konflikcie?)
 
-EArrLen.   Expr6 ::= Ident "." "length" ;
+separator nonempty Value "." ;
+
+ENewArray. Expr6 ::= "new" ArrType [ DimDef ] ;
+
+ENewObject. Expr6 ::= "new" Ident;
 
 ELitInt.   Expr6 ::= Integer ;
 
 ELitTrue.  Expr6 ::= "true" ;
 
 ELitFalse. Expr6 ::= "false" ;
-
-EApp.      Expr6 ::= Ident "(" [Expr] ")" ;
 
 EString.   Expr6 ::= String ;
 
@@ -151,4 +179,3 @@ comment    "#" ;
 comment    "//" ;
 
 comment    "/*" "*/" ;
-

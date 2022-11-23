@@ -76,24 +76,26 @@ extern int latte_debug;
     _EMPTYBRACK = 282,
     _RBRACK = 283,
     _KW_boolean = 284,
-    _KW_else = 285,
-    _KW_false = 286,
-    _KW_for = 287,
-    _KW_if = 288,
-    _KW_int = 289,
-    _KW_length = 290,
-    _KW_new = 291,
-    _KW_return = 292,
-    _KW_string = 293,
-    _KW_true = 294,
-    _KW_void = 295,
-    _KW_while = 296,
-    _LBRACE = 297,
-    _DBAR = 298,
-    _RBRACE = 299,
-    _STRING_ = 300,
-    _INTEGER_ = 301,
-    _IDENT_ = 302
+    _KW_class = 285,
+    _KW_else = 286,
+    _KW_extends = 287,
+    _KW_false = 288,
+    _KW_for = 289,
+    _KW_if = 290,
+    _KW_int = 291,
+    _KW_new = 292,
+    _KW_null = 293,
+    _KW_return = 294,
+    _KW_string = 295,
+    _KW_true = 296,
+    _KW_void = 297,
+    _KW_while = 298,
+    _LBRACE = 299,
+    _DBAR = 300,
+    _RBRACE = 301,
+    _STRING_ = 302,
+    _INTEGER_ = 303,
+    _IDENT_ = 304
   };
 #endif
 
@@ -109,24 +111,32 @@ union YYSTYPE
   char*  _string;
   Program* program_;
   TopDef* topdef_;
+  ListClassMember* listclassmember_;
   ListTopDef* listtopdef_;
   Arg* arg_;
   ListArg* listarg_;
+  ClassMember* classmember_;
   Block* block_;
   ListStmt* liststmt_;
   Stmt* stmt_;
   Item* item_;
   ListItem* listitem_;
+  Value* value_;
   ArrType* arrtype_;
   Type* type_;
+  ArrDimType* arrdimtype_;
+  ListArrDimType* listarrdimtype_;
   ListType* listtype_;
+  DimDef* dimdef_;
+  ListDimDef* listdimdef_;
   Expr* expr_;
+  ListValue* listvalue_;
   ListExpr* listexpr_;
   AddOp* addop_;
   MulOp* mulop_;
   RelOp* relop_;
 
-#line 130 "Bison.H"
+#line 140 "Bison.H"
 
 };
 typedef union YYSTYPE YYSTYPE;

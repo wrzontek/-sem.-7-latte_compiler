@@ -1,0 +1,20 @@
+int main() {
+
+  int[] a = new int[10][10];
+  int i=0;
+  int j=0;
+  while (i < a.length) {
+      while (j < a[i].length) {
+          a[i][j] = i + j;
+          j++;
+      }
+      i++;
+  }
+
+  for (int x : a) 
+     printInt(x);
+
+  int x = 45;
+  printInt(x);
+  return 0;
+}
