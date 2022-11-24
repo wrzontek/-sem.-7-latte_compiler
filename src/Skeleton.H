@@ -17,7 +17,8 @@ public:
   void visitBlock(Block *p);
   void visitStmt(Stmt *p);
   void visitItem(Item *p);
-  void visitValue(Value *p);
+  void visitComplexStart(ComplexStart *p);
+  void visitComplexPart(ComplexPart *p);
   void visitArrType(ArrType *p);
   void visitType(Type *p);
   void visitArrDimType(ArrDimType *p);
@@ -49,10 +50,15 @@ public:
   void visitWhile(While *p);
   void visitForEach(ForEach *p);
   void visitSExp(SExp *p);
+  void visitCMember(CMember *p);
+  void visitCArray(CArray *p);
+  void visitCMethod(CMethod *p);
+  void visitNewArray(NewArray *p);
+  void visitNewObject(NewObject *p);
   void visitVariable(Variable *p);
   void visitArrElement(ArrElement *p);
-  void visitFunctionVal(FunctionVal *p);
-  void visitArrFunctionVal(ArrFunctionVal *p);
+  void visitMethod(Method *p);
+  void visitMemberAccess(MemberAccess *p);
   void visitIntArrType(IntArrType *p);
   void visitStrArrType(StrArrType *p);
   void visitBoolArrType(BoolArrType *p);
@@ -66,10 +72,9 @@ public:
   void visitDimType(DimType *p);
   void visitFun(Fun *p);
   void visitArrDimDef(ArrDimDef *p);
+  void visitEVar(EVar *p);
   void visitEComplex(EComplex *p);
   void visitENullCast(ENullCast *p);
-  void visitENewArray(ENewArray *p);
-  void visitENewObject(ENewObject *p);
   void visitELitInt(ELitInt *p);
   void visitELitTrue(ELitTrue *p);
   void visitELitFalse(ELitFalse *p);
@@ -100,7 +105,7 @@ public:
   void visitListArrDimType(ListArrDimType *p);
   void visitListType(ListType *p);
   void visitListDimDef(ListDimDef *p);
-  void visitListValue(ListValue *p);
+  void visitListComplexPart(ListComplexPart *p);
   void visitListExpr(ListExpr *p);
 
   void visitInteger(Integer x);

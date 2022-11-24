@@ -17,7 +17,8 @@ void Skeleton::visitClassMember(ClassMember *t) {} //abstract class
 void Skeleton::visitBlock(Block *t) {} //abstract class
 void Skeleton::visitStmt(Stmt *t) {} //abstract class
 void Skeleton::visitItem(Item *t) {} //abstract class
-void Skeleton::visitValue(Value *t) {} //abstract class
+void Skeleton::visitComplexStart(ComplexStart *t) {} //abstract class
+void Skeleton::visitComplexPart(ComplexPart *t) {} //abstract class
 void Skeleton::visitArrType(ArrType *t) {} //abstract class
 void Skeleton::visitType(Type *t) {} //abstract class
 void Skeleton::visitArrDimType(ArrDimType *t) {} //abstract class
@@ -230,6 +231,50 @@ void Skeleton::visitInit(Init *init)
 
 }
 
+void Skeleton::visitCMember(CMember *c_member)
+{
+  /* Code For CMember Goes Here */
+
+  visitIdent(c_member->ident_1);
+  visitIdent(c_member->ident_2);
+
+}
+
+void Skeleton::visitCArray(CArray *c_array)
+{
+  /* Code For CArray Goes Here */
+
+  visitIdent(c_array->ident_);
+  if (c_array->listdimdef_) c_array->listdimdef_->accept(this);
+
+}
+
+void Skeleton::visitCMethod(CMethod *c_method)
+{
+  /* Code For CMethod Goes Here */
+
+  visitIdent(c_method->ident_);
+  if (c_method->listexpr_) c_method->listexpr_->accept(this);
+
+}
+
+void Skeleton::visitNewArray(NewArray *new_array)
+{
+  /* Code For NewArray Goes Here */
+
+  if (new_array->arrtype_) new_array->arrtype_->accept(this);
+  if (new_array->listdimdef_) new_array->listdimdef_->accept(this);
+
+}
+
+void Skeleton::visitNewObject(NewObject *new_object)
+{
+  /* Code For NewObject Goes Here */
+
+  visitIdent(new_object->ident_);
+
+}
+
 void Skeleton::visitVariable(Variable *variable)
 {
   /* Code For Variable Goes Here */
@@ -242,27 +287,22 @@ void Skeleton::visitArrElement(ArrElement *arr_element)
 {
   /* Code For ArrElement Goes Here */
 
-  visitIdent(arr_element->ident_);
   if (arr_element->listdimdef_) arr_element->listdimdef_->accept(this);
 
 }
 
-void Skeleton::visitFunctionVal(FunctionVal *function_val)
+void Skeleton::visitMethod(Method *method)
 {
-  /* Code For FunctionVal Goes Here */
+  /* Code For Method Goes Here */
 
-  visitIdent(function_val->ident_);
-  if (function_val->listexpr_) function_val->listexpr_->accept(this);
+  if (method->listexpr_) method->listexpr_->accept(this);
 
 }
 
-void Skeleton::visitArrFunctionVal(ArrFunctionVal *arr_function_val)
+void Skeleton::visitMemberAccess(MemberAccess *member_access)
 {
-  /* Code For ArrFunctionVal Goes Here */
+  /* Code For MemberAccess Goes Here */
 
-  visitIdent(arr_function_val->ident_);
-  if (arr_function_val->listexpr_) arr_function_val->listexpr_->accept(this);
-  if (arr_function_val->listdimdef_) arr_function_val->listdimdef_->accept(this);
 
 }
 
@@ -364,11 +404,20 @@ void Skeleton::visitArrDimDef(ArrDimDef *arr_dim_def)
 
 }
 
+void Skeleton::visitEVar(EVar *e_var)
+{
+  /* Code For EVar Goes Here */
+
+  visitIdent(e_var->ident_);
+
+}
+
 void Skeleton::visitEComplex(EComplex *e_complex)
 {
   /* Code For EComplex Goes Here */
 
-  if (e_complex->listvalue_) e_complex->listvalue_->accept(this);
+  if (e_complex->complexstart_) e_complex->complexstart_->accept(this);
+  if (e_complex->listcomplexpart_) e_complex->listcomplexpart_->accept(this);
 
 }
 
@@ -377,23 +426,6 @@ void Skeleton::visitENullCast(ENullCast *e_null_cast)
   /* Code For ENullCast Goes Here */
 
   visitIdent(e_null_cast->ident_);
-
-}
-
-void Skeleton::visitENewArray(ENewArray *e_new_array)
-{
-  /* Code For ENewArray Goes Here */
-
-  if (e_new_array->arrtype_) e_new_array->arrtype_->accept(this);
-  if (e_new_array->listdimdef_) e_new_array->listdimdef_->accept(this);
-
-}
-
-void Skeleton::visitENewObject(ENewObject *e_new_object)
-{
-  /* Code For ENewObject Goes Here */
-
-  visitIdent(e_new_object->ident_);
 
 }
 
@@ -633,9 +665,9 @@ void Skeleton::visitListDimDef(ListDimDef *list_dim_def)
   }
 }
 
-void Skeleton::visitListValue(ListValue *list_value)
+void Skeleton::visitListComplexPart(ListComplexPart *list_complex_part)
 {
-  for (ListValue::iterator i = list_value->begin() ; i != list_value->end() ; ++i)
+  for (ListComplexPart::iterator i = list_complex_part->begin() ; i != list_complex_part->end() ; ++i)
   {
     (*i)->accept(this);
   }

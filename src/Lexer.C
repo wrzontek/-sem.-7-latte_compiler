@@ -586,13 +586,13 @@ static const flex_int16_t yy_accept[139] =
     {   0,
         0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
         0,    0,    0,    0,   66,   64,   63,   63,   16,   50,
-       44,   22,   64,    1,    2,   20,   19,    5,   15,   14,
-       21,   61,   10,    6,   23,    7,   25,   62,   12,   13,
+       44,   22,   64,    1,    2,   20,   19,    5,   15,   11,
+       21,   61,   10,    6,   23,    7,   25,   62,   13,   14,
        62,   62,   62,   62,   62,   62,   62,   62,   62,   62,
        62,    3,   64,    4,   65,   53,   52,   51,   60,   58,
        59,   54,   55,   56,   57,   48,   49,   48,   28,   44,
        17,    8,    9,   46,   45,   61,   24,   27,   26,   62,
-       11,   62,   62,   62,   62,   62,   62,   35,   62,   62,
+       12,   62,   62,   62,   62,   62,   62,   35,   62,   62,
        62,   62,   62,   62,   62,   62,   18,   47,   45,   62,
 
        62,   62,   62,   62,   34,   36,   37,   62,   62,   62,
@@ -1198,22 +1198,22 @@ return _COLON;
 case 11:
 YY_RULE_SETUP
 #line 81 "Latte.l"
-return _EMPTYBRACK;
+return _DOT;
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
 #line 82 "Latte.l"
-return _LBRACK;
+return _EMPTYBRACK;
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
 #line 83 "Latte.l"
-return _RBRACK;
+return _LBRACK;
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
 #line 84 "Latte.l"
-return _DOT;
+return _RBRACK;
 	YY_BREAK
 case 15:
 YY_RULE_SETUP

@@ -74,11 +74,17 @@ class PrintAbsyn : public Visitor
   void visitInit(Init *p);
   void visitListItem(ListItem *p);
   void iterListItem(ListItem::const_iterator i, ListItem::const_iterator j);
-  void visitValue(Value *p); /* abstract class */
+  void visitComplexStart(ComplexStart *p); /* abstract class */
+  void visitCMember(CMember *p);
+  void visitCArray(CArray *p);
+  void visitCMethod(CMethod *p);
+  void visitNewArray(NewArray *p);
+  void visitNewObject(NewObject *p);
+  void visitComplexPart(ComplexPart *p); /* abstract class */
   void visitVariable(Variable *p);
   void visitArrElement(ArrElement *p);
-  void visitFunctionVal(FunctionVal *p);
-  void visitArrFunctionVal(ArrFunctionVal *p);
+  void visitMethod(Method *p);
+  void visitMemberAccess(MemberAccess *p);
   void visitArrType(ArrType *p); /* abstract class */
   void visitIntArrType(IntArrType *p);
   void visitStrArrType(StrArrType *p);
@@ -103,10 +109,9 @@ class PrintAbsyn : public Visitor
   void visitListDimDef(ListDimDef *p);
   void iterListDimDef(ListDimDef::const_iterator i, ListDimDef::const_iterator j);
   void visitExpr(Expr *p); /* abstract class */
+  void visitEVar(EVar *p);
   void visitEComplex(EComplex *p);
   void visitENullCast(ENullCast *p);
-  void visitENewArray(ENewArray *p);
-  void visitENewObject(ENewObject *p);
   void visitELitInt(ELitInt *p);
   void visitELitTrue(ELitTrue *p);
   void visitELitFalse(ELitFalse *p);
@@ -118,8 +123,8 @@ class PrintAbsyn : public Visitor
   void visitERel(ERel *p);
   void visitEAnd(EAnd *p);
   void visitEOr(EOr *p);
-  void visitListValue(ListValue *p);
-  void iterListValue(ListValue::const_iterator i, ListValue::const_iterator j);
+  void visitListComplexPart(ListComplexPart *p);
+  void iterListComplexPart(ListComplexPart::const_iterator i, ListComplexPart::const_iterator j);
   void visitListExpr(ListExpr *p);
   void iterListExpr(ListExpr::const_iterator i, ListExpr::const_iterator j);
   void visitAddOp(AddOp *p); /* abstract class */
@@ -253,11 +258,17 @@ class ShowAbsyn : public Visitor
   void visitInit(Init *p);
   void visitListItem(ListItem *p);
   void iterListItem(ListItem::const_iterator i, ListItem::const_iterator j);
-  void visitValue(Value *p); /* abstract class */
+  void visitComplexStart(ComplexStart *p); /* abstract class */
+  void visitCMember(CMember *p);
+  void visitCArray(CArray *p);
+  void visitCMethod(CMethod *p);
+  void visitNewArray(NewArray *p);
+  void visitNewObject(NewObject *p);
+  void visitComplexPart(ComplexPart *p); /* abstract class */
   void visitVariable(Variable *p);
   void visitArrElement(ArrElement *p);
-  void visitFunctionVal(FunctionVal *p);
-  void visitArrFunctionVal(ArrFunctionVal *p);
+  void visitMethod(Method *p);
+  void visitMemberAccess(MemberAccess *p);
   void visitArrType(ArrType *p); /* abstract class */
   void visitIntArrType(IntArrType *p);
   void visitStrArrType(StrArrType *p);
@@ -282,10 +293,9 @@ class ShowAbsyn : public Visitor
   void visitListDimDef(ListDimDef *p);
   void iterListDimDef(ListDimDef::const_iterator i, ListDimDef::const_iterator j);
   void visitExpr(Expr *p); /* abstract class */
+  void visitEVar(EVar *p);
   void visitEComplex(EComplex *p);
   void visitENullCast(ENullCast *p);
-  void visitENewArray(ENewArray *p);
-  void visitENewObject(ENewObject *p);
   void visitELitInt(ELitInt *p);
   void visitELitTrue(ELitTrue *p);
   void visitELitFalse(ELitFalse *p);
@@ -297,8 +307,8 @@ class ShowAbsyn : public Visitor
   void visitERel(ERel *p);
   void visitEAnd(EAnd *p);
   void visitEOr(EOr *p);
-  void visitListValue(ListValue *p);
-  void iterListValue(ListValue::const_iterator i, ListValue::const_iterator j);
+  void visitListComplexPart(ListComplexPart *p);
+  void iterListComplexPart(ListComplexPart::const_iterator i, ListComplexPart::const_iterator j);
   void visitListExpr(ListExpr *p);
   void iterListExpr(ListExpr::const_iterator i, ListExpr::const_iterator j);
   void visitAddOp(AddOp *p); /* abstract class */

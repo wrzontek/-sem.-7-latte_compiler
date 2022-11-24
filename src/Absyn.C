@@ -1084,6 +1084,237 @@ Init *Init::clone() const
 
 
 
+/********************   CMember    ********************/
+CMember::CMember(Ident p1, Ident p2)
+{
+  ident_1 = p1;
+  ident_2 = p2;
+
+}
+
+CMember::CMember(const CMember & other)
+{
+  ident_1 = other.ident_1;
+  ident_2 = other.ident_2;
+
+}
+
+CMember &CMember::operator=(const CMember & other)
+{
+  CMember tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void CMember::swap(CMember & other)
+{
+  std::swap(ident_1, other.ident_1);
+  std::swap(ident_2, other.ident_2);
+
+}
+
+CMember::~CMember()
+{
+
+}
+
+void CMember::accept(Visitor *v)
+{
+  v->visitCMember(this);
+}
+
+CMember *CMember::clone() const
+{
+  return new CMember(*this);
+}
+
+
+
+/********************   CArray    ********************/
+CArray::CArray(Ident p1, ListDimDef *p2)
+{
+  ident_ = p1;
+  listdimdef_ = p2;
+
+}
+
+CArray::CArray(const CArray & other)
+{
+  ident_ = other.ident_;
+  listdimdef_ = other.listdimdef_->clone();
+
+}
+
+CArray &CArray::operator=(const CArray & other)
+{
+  CArray tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void CArray::swap(CArray & other)
+{
+  std::swap(ident_, other.ident_);
+  std::swap(listdimdef_, other.listdimdef_);
+
+}
+
+CArray::~CArray()
+{
+  delete(listdimdef_);
+
+}
+
+void CArray::accept(Visitor *v)
+{
+  v->visitCArray(this);
+}
+
+CArray *CArray::clone() const
+{
+  return new CArray(*this);
+}
+
+
+
+/********************   CMethod    ********************/
+CMethod::CMethod(Ident p1, ListExpr *p2)
+{
+  ident_ = p1;
+  listexpr_ = p2;
+
+}
+
+CMethod::CMethod(const CMethod & other)
+{
+  ident_ = other.ident_;
+  listexpr_ = other.listexpr_->clone();
+
+}
+
+CMethod &CMethod::operator=(const CMethod & other)
+{
+  CMethod tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void CMethod::swap(CMethod & other)
+{
+  std::swap(ident_, other.ident_);
+  std::swap(listexpr_, other.listexpr_);
+
+}
+
+CMethod::~CMethod()
+{
+  delete(listexpr_);
+
+}
+
+void CMethod::accept(Visitor *v)
+{
+  v->visitCMethod(this);
+}
+
+CMethod *CMethod::clone() const
+{
+  return new CMethod(*this);
+}
+
+
+
+/********************   NewArray    ********************/
+NewArray::NewArray(ArrType *p1, ListDimDef *p2)
+{
+  arrtype_ = p1;
+  listdimdef_ = p2;
+
+}
+
+NewArray::NewArray(const NewArray & other)
+{
+  arrtype_ = other.arrtype_->clone();
+  listdimdef_ = other.listdimdef_->clone();
+
+}
+
+NewArray &NewArray::operator=(const NewArray & other)
+{
+  NewArray tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void NewArray::swap(NewArray & other)
+{
+  std::swap(arrtype_, other.arrtype_);
+  std::swap(listdimdef_, other.listdimdef_);
+
+}
+
+NewArray::~NewArray()
+{
+  delete(arrtype_);
+  delete(listdimdef_);
+
+}
+
+void NewArray::accept(Visitor *v)
+{
+  v->visitNewArray(this);
+}
+
+NewArray *NewArray::clone() const
+{
+  return new NewArray(*this);
+}
+
+
+
+/********************   NewObject    ********************/
+NewObject::NewObject(Ident p1)
+{
+  ident_ = p1;
+
+}
+
+NewObject::NewObject(const NewObject & other)
+{
+  ident_ = other.ident_;
+
+}
+
+NewObject &NewObject::operator=(const NewObject & other)
+{
+  NewObject tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void NewObject::swap(NewObject & other)
+{
+  std::swap(ident_, other.ident_);
+
+}
+
+NewObject::~NewObject()
+{
+
+}
+
+void NewObject::accept(Visitor *v)
+{
+  v->visitNewObject(this);
+}
+
+NewObject *NewObject::clone() const
+{
+  return new NewObject(*this);
+}
+
+
+
 /********************   Variable    ********************/
 Variable::Variable(Ident p1)
 {
@@ -1128,16 +1359,14 @@ Variable *Variable::clone() const
 
 
 /********************   ArrElement    ********************/
-ArrElement::ArrElement(Ident p1, ListDimDef *p2)
+ArrElement::ArrElement(ListDimDef *p1)
 {
-  ident_ = p1;
-  listdimdef_ = p2;
+  listdimdef_ = p1;
 
 }
 
 ArrElement::ArrElement(const ArrElement & other)
 {
-  ident_ = other.ident_;
   listdimdef_ = other.listdimdef_->clone();
 
 }
@@ -1151,7 +1380,6 @@ ArrElement &ArrElement::operator=(const ArrElement & other)
 
 void ArrElement::swap(ArrElement & other)
 {
-  std::swap(ident_, other.ident_);
   std::swap(listdimdef_, other.listdimdef_);
 
 }
@@ -1174,100 +1402,86 @@ ArrElement *ArrElement::clone() const
 
 
 
-/********************   FunctionVal    ********************/
-FunctionVal::FunctionVal(Ident p1, ListExpr *p2)
+/********************   Method    ********************/
+Method::Method(ListExpr *p1)
 {
-  ident_ = p1;
-  listexpr_ = p2;
+  listexpr_ = p1;
 
 }
 
-FunctionVal::FunctionVal(const FunctionVal & other)
+Method::Method(const Method & other)
 {
-  ident_ = other.ident_;
   listexpr_ = other.listexpr_->clone();
 
 }
 
-FunctionVal &FunctionVal::operator=(const FunctionVal & other)
+Method &Method::operator=(const Method & other)
 {
-  FunctionVal tmp(other);
+  Method tmp(other);
   swap(tmp);
   return *this;
 }
 
-void FunctionVal::swap(FunctionVal & other)
+void Method::swap(Method & other)
 {
-  std::swap(ident_, other.ident_);
   std::swap(listexpr_, other.listexpr_);
 
 }
 
-FunctionVal::~FunctionVal()
+Method::~Method()
 {
   delete(listexpr_);
 
 }
 
-void FunctionVal::accept(Visitor *v)
+void Method::accept(Visitor *v)
 {
-  v->visitFunctionVal(this);
+  v->visitMethod(this);
 }
 
-FunctionVal *FunctionVal::clone() const
+Method *Method::clone() const
 {
-  return new FunctionVal(*this);
+  return new Method(*this);
 }
 
 
 
-/********************   ArrFunctionVal    ********************/
-ArrFunctionVal::ArrFunctionVal(Ident p1, ListExpr *p2, ListDimDef *p3)
+/********************   MemberAccess    ********************/
+MemberAccess::MemberAccess()
 {
-  ident_ = p1;
-  listexpr_ = p2;
-  listdimdef_ = p3;
 
 }
 
-ArrFunctionVal::ArrFunctionVal(const ArrFunctionVal & other)
+MemberAccess::MemberAccess(const MemberAccess & other)
 {
-  ident_ = other.ident_;
-  listexpr_ = other.listexpr_->clone();
-  listdimdef_ = other.listdimdef_->clone();
 
 }
 
-ArrFunctionVal &ArrFunctionVal::operator=(const ArrFunctionVal & other)
+MemberAccess &MemberAccess::operator=(const MemberAccess & other)
 {
-  ArrFunctionVal tmp(other);
+  MemberAccess tmp(other);
   swap(tmp);
   return *this;
 }
 
-void ArrFunctionVal::swap(ArrFunctionVal & other)
+void MemberAccess::swap(MemberAccess & other)
 {
-  std::swap(ident_, other.ident_);
-  std::swap(listexpr_, other.listexpr_);
-  std::swap(listdimdef_, other.listdimdef_);
 
 }
 
-ArrFunctionVal::~ArrFunctionVal()
+MemberAccess::~MemberAccess()
 {
-  delete(listexpr_);
-  delete(listdimdef_);
 
 }
 
-void ArrFunctionVal::accept(Visitor *v)
+void MemberAccess::accept(Visitor *v)
 {
-  v->visitArrFunctionVal(this);
+  v->visitMemberAccess(this);
 }
 
-ArrFunctionVal *ArrFunctionVal::clone() const
+MemberAccess *MemberAccess::clone() const
 {
-  return new ArrFunctionVal(*this);
+  return new MemberAccess(*this);
 }
 
 
@@ -1818,16 +2032,61 @@ ArrDimDef *ArrDimDef::clone() const
 
 
 
-/********************   EComplex    ********************/
-EComplex::EComplex(ListValue *p1)
+/********************   EVar    ********************/
+EVar::EVar(Ident p1)
 {
-  listvalue_ = p1;
+  ident_ = p1;
+
+}
+
+EVar::EVar(const EVar & other)
+{
+  ident_ = other.ident_;
+
+}
+
+EVar &EVar::operator=(const EVar & other)
+{
+  EVar tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void EVar::swap(EVar & other)
+{
+  std::swap(ident_, other.ident_);
+
+}
+
+EVar::~EVar()
+{
+
+}
+
+void EVar::accept(Visitor *v)
+{
+  v->visitEVar(this);
+}
+
+EVar *EVar::clone() const
+{
+  return new EVar(*this);
+}
+
+
+
+/********************   EComplex    ********************/
+EComplex::EComplex(ComplexStart *p1, ListComplexPart *p2)
+{
+  complexstart_ = p1;
+  listcomplexpart_ = p2;
 
 }
 
 EComplex::EComplex(const EComplex & other)
 {
-  listvalue_ = other.listvalue_->clone();
+  complexstart_ = other.complexstart_->clone();
+  listcomplexpart_ = other.listcomplexpart_->clone();
 
 }
 
@@ -1840,13 +2099,15 @@ EComplex &EComplex::operator=(const EComplex & other)
 
 void EComplex::swap(EComplex & other)
 {
-  std::swap(listvalue_, other.listvalue_);
+  std::swap(complexstart_, other.complexstart_);
+  std::swap(listcomplexpart_, other.listcomplexpart_);
 
 }
 
 EComplex::~EComplex()
 {
-  delete(listvalue_);
+  delete(complexstart_);
+  delete(listcomplexpart_);
 
 }
 
@@ -1901,97 +2162,6 @@ void ENullCast::accept(Visitor *v)
 ENullCast *ENullCast::clone() const
 {
   return new ENullCast(*this);
-}
-
-
-
-/********************   ENewArray    ********************/
-ENewArray::ENewArray(ArrType *p1, ListDimDef *p2)
-{
-  arrtype_ = p1;
-  listdimdef_ = p2;
-
-}
-
-ENewArray::ENewArray(const ENewArray & other)
-{
-  arrtype_ = other.arrtype_->clone();
-  listdimdef_ = other.listdimdef_->clone();
-
-}
-
-ENewArray &ENewArray::operator=(const ENewArray & other)
-{
-  ENewArray tmp(other);
-  swap(tmp);
-  return *this;
-}
-
-void ENewArray::swap(ENewArray & other)
-{
-  std::swap(arrtype_, other.arrtype_);
-  std::swap(listdimdef_, other.listdimdef_);
-
-}
-
-ENewArray::~ENewArray()
-{
-  delete(arrtype_);
-  delete(listdimdef_);
-
-}
-
-void ENewArray::accept(Visitor *v)
-{
-  v->visitENewArray(this);
-}
-
-ENewArray *ENewArray::clone() const
-{
-  return new ENewArray(*this);
-}
-
-
-
-/********************   ENewObject    ********************/
-ENewObject::ENewObject(Ident p1)
-{
-  ident_ = p1;
-
-}
-
-ENewObject::ENewObject(const ENewObject & other)
-{
-  ident_ = other.ident_;
-
-}
-
-ENewObject &ENewObject::operator=(const ENewObject & other)
-{
-  ENewObject tmp(other);
-  swap(tmp);
-  return *this;
-}
-
-void ENewObject::swap(ENewObject & other)
-{
-  std::swap(ident_, other.ident_);
-
-}
-
-ENewObject::~ENewObject()
-{
-
-}
-
-void ENewObject::accept(Visitor *v)
-{
-  v->visitENewObject(this);
-}
-
-ENewObject *ENewObject::clone() const
-{
-  return new ENewObject(*this);
 }
 
 
@@ -3087,19 +3257,19 @@ ListDimDef* consListDimDef(DimDef* x, ListDimDef* xs) {
 }
 
 
-/********************   ListValue    ********************/
+/********************   ListComplexPart    ********************/
 
-void ListValue::accept(Visitor *v)
+void ListComplexPart::accept(Visitor *v)
 {
-  v->visitListValue(this);
+  v->visitListComplexPart(this);
 }
 
-ListValue *ListValue::clone() const
+ListComplexPart *ListComplexPart::clone() const
 {
-  return new ListValue(*this);
+  return new ListComplexPart(*this);
 }
 
-ListValue* consListValue(Value* x, ListValue* xs) {
+ListComplexPart* consListComplexPart(ComplexPart* x, ListComplexPart* xs) {
   xs->insert(xs->begin(), x);
   return xs;
 }

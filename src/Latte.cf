@@ -62,15 +62,27 @@ ForEach.   Stmt ::= "for" "(" Type Ident ":" Ident ")" Stmt ;
 
 SExp.      Stmt ::= Expr  ";" ;
 
--- Values (lvalues) ---------------------------
+-------------------------------------------------
 
-Variable.      Value ::= Ident ; -- basic/array/object/attribute
+CMember.      ComplexStart ::= Ident "." Ident;
 
-ArrElement.    Value ::= Ident [ DimDef ] ;
+CArray.       ComplexStart ::= Ident [ DimDef ] ;
 
-FunctionVal.   Value ::= Ident "(" [Expr] ")" ;
+CMethod.      ComplexStart ::= Ident "(" [Expr] ")" ;
 
-ArrFunctionVal. Value ::= Ident "(" [Expr] ")" [ DimDef ] ;
+NewArray.     ComplexStart ::= "new" ArrType [ DimDef ] ;
+
+NewObject.    ComplexStart ::= "new" Ident ;
+
+------------------------------------------------
+
+Variable.      ComplexPart ::= Ident ;
+
+ArrElement.    ComplexPart ::= [ DimDef ] ;
+
+Method.        ComplexPart ::= "(" [Expr] ")" ;
+
+MemberAccess.  ComplexPart ::= "." ;
 
 -- ArrTypes ------------------------------------------------
 
@@ -112,15 +124,13 @@ separator nonempty DimDef "" ;
 
 -- Expressions ---------------------------------------------
 
-EComplex.        Expr6 ::= [ Value ] ;
+EVar.      Expr6 ::= Ident ;
+
+EComplex.  Expr6 ::= ComplexStart [ ComplexPart ] ;
+
+separator ComplexPart "" ;
 
 ENullCast. Expr6 ::= "(" Ident ")" "null" ; --TODO to pewnie nie działa, Iwanicki coś gadał (o konflikcie?)
-
-separator nonempty Value "." ;
-
-ENewArray. Expr6 ::= "new" ArrType [ DimDef ] ;
-
-ENewObject. Expr6 ::= "new" Ident;
 
 ELitInt.   Expr6 ::= Integer ;
 

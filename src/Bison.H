@@ -121,7 +121,8 @@ union YYSTYPE
   Stmt* stmt_;
   Item* item_;
   ListItem* listitem_;
-  Value* value_;
+  ComplexStart* complexstart_;
+  ComplexPart* complexpart_;
   ArrType* arrtype_;
   Type* type_;
   ArrDimType* arrdimtype_;
@@ -130,13 +131,13 @@ union YYSTYPE
   DimDef* dimdef_;
   ListDimDef* listdimdef_;
   Expr* expr_;
-  ListValue* listvalue_;
+  ListComplexPart* listcomplexpart_;
   ListExpr* listexpr_;
   AddOp* addop_;
   MulOp* mulop_;
   RelOp* relop_;
 
-#line 140 "Bison.H"
+#line 141 "Bison.H"
 
 };
 typedef union YYSTYPE YYSTYPE;
