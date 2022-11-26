@@ -64,6 +64,7 @@ SExp.      Stmt ::= Expr  ";" ;
 
 -------------------------------------------------
 
+-- TODO można się pobawić z nawiasowaniem ComplexStart i ComplexPart jakby się nudziło
 CBracketed.   ComplexStart ::= "(" ComplexStart ")" ;
 
 CMember.      ComplexStart ::= Ident "." Ident ;
@@ -134,7 +135,7 @@ EComplex.  Expr6 ::= ComplexStart [ ComplexPart ] ;
 
 separator ComplexPart "" ;
 
-ENullCast. Expr6 ::= "(" Ident ")" "null" ; --TODO być może nie działa, Iwanicki coś gadał (o konflikcie?)
+ENullCast. Expr6 ::= "(" Ident ")" "null" ;
 
 ELitInt.   Expr6 ::= Integer ;
 

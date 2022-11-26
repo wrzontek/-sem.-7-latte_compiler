@@ -47,7 +47,6 @@ public:
     void visitClassDef(ClassDef *class_def) override {};
 
     void visitClassExtendDef(ClassExtendDef *class_def) override {};
-    // TODO pewnie można go też do klas użyć, dać mu mniejsze wycinki programu
 
     void visitFnDef(FnDef *fn_def) override {
         Ident name = fn_def->ident_;

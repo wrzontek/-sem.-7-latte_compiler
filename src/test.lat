@@ -1,11 +1,14 @@
-class B {}
+class B {
+    int a;
+}
 
 class A {
-    B b = (B) null;
+    int[] b;
+
+    int a = b.length;
 }
 
 int main() {
-    (a).b.c.d;
 //    return (a);
 //    Class[] a;
 //    Inst[1];

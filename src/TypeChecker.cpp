@@ -67,7 +67,10 @@ public:
         for (auto def: class_defs) {
             def->accept(classDefVisitor);
         }
-        program->accept(classDefVisitor); //check duplicates (member names)
 
+        delete (classDefOnlyNameVisitor);
+        delete (typeVisitor);
+        delete (functionDefVisitor);
+        delete (classDefVisitor);
     }
 };

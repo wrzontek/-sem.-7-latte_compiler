@@ -1,9 +1,12 @@
 #pragma once
 
 #include <iostream>
-#include <set>
 #include <vector>
 #include "Absyn.H"
+
+bool isBasicType(std::string type_name) {
+    return type_name == "int" || type_name == "boolean" || type_name == "string";
+}
 
 void throwError(int line_number, int char_number, std::string content) {
     std::cerr << "ERROR\n";

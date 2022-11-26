@@ -68,7 +68,7 @@ public:
             }
         }
         if (!defined) {
-            throwError(t->line_number, t->char_number, "undefined class");
+            throwError(t->line_number, t->char_number, "undefined class \"" + t->ident_ + "\"");
         }
 
         current_type = new CType(t->ident_, std::vector<int>());
@@ -172,8 +172,58 @@ public:
                              std::vector < Ident > {"boolean"}, false);
     }
 
-    void visitEComplex(EComplex *e) override {
-        // TODO
+    /////////////////////////////////////////////////////////////
+
+    CFun *current_method = nullptr;
+
+    void visitEComplex(EComplex *e_complex) override {
+        if (e_complex->complexstart_) e_complex->complexstart_->accept(this);
+        if (e_complex->listcomplexpart_) e_complex->listcomplexpart_->accept(this);
     }
 
+    void visitCMember(CMember *c) override { // a.b
+        CType *a_type = nullptr;
+        for (auto def: defined_variables) {
+            if (c->ident_1 == def->name) { // found variable "a"
+                a_type = def->type;
+                break;
+            }
+        }
+        if (a_type == nullptr) throwError(c->line_number, c->char_number, "undefined variable \"" + c->ident_1 + "\"");
+        if (isBasicType(a_type->name)) {
+            if (a_type->array_dims.empty()) // not an array
+                throwError(c->line_number, c->char_number, "attempted basic type member access");
+
+            if (c->ident_2 != "length")
+                throwError(c->line_number, c->char_number, "only member of array type is 'length'");
+
+            // special case - basic type array length
+            current_type = new CType("int", std::vector<int>());
+            return;
+        }
+
+        for (auto def: defined_classes) {
+            if (a_type->name == def->name) { // found class "a"
+                for (auto attribute: def->attributes) {
+                    if (c->ident_2 == attribute->name) { // found attribute "b"
+                        current_type = attribute->type;
+                        return;
+                    }
+                }
+                for (auto method: def->methods) {
+                    if (c->ident_2 == method->name) { // found method "b"
+                        current_method = method; // next token must be "Method" and contain proper args
+                        return;
+                    }
+                }
+            }
+
+            throwError(c->line_number, c->char_number,
+                       "class \"" + a_type->name + "\" has no member \"" + c->ident_2 + "\"");
+        }
+        throwError(c->line_number, c->char_number, "undefined class \"" + a_type->name + "\"");
+
+    }
+
+    // TODO pozostałe ComplexStart, ComplexPart
 };
