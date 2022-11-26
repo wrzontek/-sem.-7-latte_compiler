@@ -99,6 +99,8 @@ class ForEach;
 
 class SExp;
 
+class CBracketed;
+
 class CMember;
 
 class CArray;
@@ -144,6 +146,8 @@ class Fun;
 class ArrDimDef;
 
 class EVar;
+
+class EBracketVar;
 
 class EComplex;
 
@@ -299,6 +303,8 @@ public:
 
     virtual void visitSExp(SExp *p) = 0;
 
+    virtual void visitCBracketed(CBracketed *p) = 0;
+
     virtual void visitCMember(CMember *p) = 0;
 
     virtual void visitCArray(CArray *p) = 0;
@@ -344,6 +350,8 @@ public:
     virtual void visitArrDimDef(ArrDimDef *p) = 0;
 
     virtual void visitEVar(EVar *p) = 0;
+
+    virtual void visitEBracketVar(EBracketVar *p) = 0;
 
     virtual void visitEComplex(EComplex *p) = 0;
 
@@ -432,9 +440,6 @@ public:
     virtual ~Visitable() {}
 
     virtual void accept(Visitor *v) = 0;
-
-    int line_number;
-    int char_number;
 };
 
 
@@ -524,14 +529,14 @@ class Type : public Visitable {
 public:
     virtual Type *clone() const { return nullptr; };
 
-    //TODO
-    bool canBeArg() { return true; }
+    //TODO odpowiednie ustawić w dzieciach
+    virtual bool canBeArg() { return true; }
 
-    bool canBeReturned() { return true; }
+    virtual bool canBeReturned() { return true; }
 
-    bool canBeCalled() { return true; }
+    virtual bool canBeCalled() { return true; }
 
-    bool canAccessMember() { return true; }
+    virtual bool canAccessMember() { return true; }
 
     int line_number;
     int char_number;
@@ -1042,6 +1047,25 @@ public:
     void swap(Init &);
 };
 
+class CBracketed : public ComplexStart {
+public:
+    ComplexStart *complexstart_;
+
+    CBracketed(const CBracketed &);
+
+    CBracketed &operator=(const CBracketed &);
+
+    CBracketed(ComplexStart *p1);
+
+    ~CBracketed();
+
+    virtual void accept(Visitor *v);
+
+    virtual CBracketed *clone() const;
+
+    void swap(CBracketed &);
+};
+
 class CMember : public ComplexStart {
 public:
     Ident ident_1;
@@ -1354,6 +1378,10 @@ public:
 
     ~Void();
 
+    bool canBeArg() override {
+        return false;
+    }
+
     virtual void accept(Visitor *v);
 
     virtual Void *clone() const;
@@ -1474,6 +1502,25 @@ public:
     virtual EVar *clone() const;
 
     void swap(EVar &);
+};
+
+class EBracketVar : public Expr {
+public:
+    Ident ident_;
+
+    EBracketVar(const EBracketVar &);
+
+    EBracketVar &operator=(const EBracketVar &);
+
+    EBracketVar(Ident p1);
+
+    ~EBracketVar();
+
+    virtual void accept(Visitor *v);
+
+    virtual EBracketVar *clone() const;
+
+    void swap(EBracketVar &);
 };
 
 class EComplex : public Expr {

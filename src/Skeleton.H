@@ -7,112 +7,215 @@
 #include "Absyn.H"
 
 
-class Skeleton : public Visitor
-{
+class Skeleton : public Visitor {
 public:
-  void visitProgram(Program *p);
-  void visitTopDef(TopDef *p);
-  void visitArg(Arg *p);
-  void visitClassMember(ClassMember *p);
-  void visitBlock(Block *p);
-  void visitStmt(Stmt *p);
-  void visitItem(Item *p);
-  void visitComplexStart(ComplexStart *p);
-  void visitComplexPart(ComplexPart *p);
-  void visitArrType(ArrType *p);
-  void visitType(Type *p);
-  void visitArrDimType(ArrDimType *p);
-  void visitDimDef(DimDef *p);
-  void visitExpr(Expr *p);
-  void visitAddOp(AddOp *p);
-  void visitMulOp(MulOp *p);
-  void visitRelOp(RelOp *p);
-  void visitProg(Prog *p);
-  void visitFnDef(FnDef *p);
-  void visitClassDef(ClassDef *p);
-  void visitClassExtendDef(ClassExtendDef *p);
-  void visitAr(Ar *p);
-  void visitAttrMember(AttrMember *p);
-  void visitMethodMember(MethodMember *p);
-  void visitBlk(Blk *p);
-  void visitEmpty(Empty *p);
-  void visitBStmt(BStmt *p);
-  void visitDecl(Decl *p);
-  void visitNoInit(NoInit *p);
-  void visitInit(Init *p);
-  void visitAss(Ass *p);
-  void visitIncr(Incr *p);
-  void visitDecr(Decr *p);
-  void visitRet(Ret *p);
-  void visitVRet(VRet *p);
-  void visitCond(Cond *p);
-  void visitCondElse(CondElse *p);
-  void visitWhile(While *p);
-  void visitForEach(ForEach *p);
-  void visitSExp(SExp *p);
-  void visitCMember(CMember *p);
-  void visitCArray(CArray *p);
-  void visitCMethod(CMethod *p);
-  void visitNewArray(NewArray *p);
-  void visitNewObject(NewObject *p);
-  void visitVariable(Variable *p);
-  void visitArrElement(ArrElement *p);
-  void visitMethod(Method *p);
-  void visitMemberAccess(MemberAccess *p);
-  void visitIntArrType(IntArrType *p);
-  void visitStrArrType(StrArrType *p);
-  void visitBoolArrType(BoolArrType *p);
-  void visitClassArrType(ClassArrType *p);
-  void visitInt(Int *p);
-  void visitStr(Str *p);
-  void visitBool(Bool *p);
-  void visitVoid(Void *p);
-  void visitArr(Arr *p);
-  void visitClass(Class *p);
-  void visitDimType(DimType *p);
-  void visitFun(Fun *p);
-  void visitArrDimDef(ArrDimDef *p);
-  void visitEVar(EVar *p);
-  void visitEComplex(EComplex *p);
-  void visitENullCast(ENullCast *p);
-  void visitELitInt(ELitInt *p);
-  void visitELitTrue(ELitTrue *p);
-  void visitELitFalse(ELitFalse *p);
-  void visitEString(EString *p);
-  void visitNeg(Neg *p);
-  void visitNot(Not *p);
-  void visitEMul(EMul *p);
-  void visitEAdd(EAdd *p);
-  void visitERel(ERel *p);
-  void visitEAnd(EAnd *p);
-  void visitEOr(EOr *p);
-  void visitPlus(Plus *p);
-  void visitMinus(Minus *p);
-  void visitTimes(Times *p);
-  void visitDiv(Div *p);
-  void visitMod(Mod *p);
-  void visitLTH(LTH *p);
-  void visitLE(LE *p);
-  void visitGTH(GTH *p);
-  void visitGE(GE *p);
-  void visitEQU(EQU *p);
-  void visitNE(NE *p);
-  void visitListClassMember(ListClassMember *p);
-  void visitListTopDef(ListTopDef *p);
-  void visitListArg(ListArg *p);
-  void visitListStmt(ListStmt *p);
-  void visitListItem(ListItem *p);
-  void visitListArrDimType(ListArrDimType *p);
-  void visitListType(ListType *p);
-  void visitListDimDef(ListDimDef *p);
-  void visitListComplexPart(ListComplexPart *p);
-  void visitListExpr(ListExpr *p);
+    void visitProgram(Program *p);
 
-  void visitInteger(Integer x);
-  void visitChar(Char x);
-  void visitDouble(Double x);
-  void visitString(String x);
-  void visitIdent(Ident x);
+    void visitTopDef(TopDef *p);
+
+    void visitArg(Arg *p);
+
+    void visitClassMember(ClassMember *p);
+
+    void visitBlock(Block *p);
+
+    void visitStmt(Stmt *p);
+
+    void visitItem(Item *p);
+
+    void visitComplexStart(ComplexStart *p);
+
+    void visitComplexPart(ComplexPart *p);
+
+    void visitArrType(ArrType *p);
+
+    void visitType(Type *p);
+
+    void visitArrDimType(ArrDimType *p);
+
+    void visitDimDef(DimDef *p);
+
+    void visitExpr(Expr *p);
+
+    void visitAddOp(AddOp *p);
+
+    void visitMulOp(MulOp *p);
+
+    void visitRelOp(RelOp *p);
+
+    void visitProg(Prog *p);
+
+    void visitFnDef(FnDef *p);
+
+    void visitClassDef(ClassDef *p);
+
+    void visitClassExtendDef(ClassExtendDef *p);
+
+    void visitAr(Ar *p);
+
+    void visitAttrMember(AttrMember *p);
+
+    void visitMethodMember(MethodMember *p);
+
+    void visitBlk(Blk *p);
+
+    void visitEmpty(Empty *p);
+
+    void visitBStmt(BStmt *p);
+
+    void visitDecl(Decl *p);
+
+    void visitNoInit(NoInit *p);
+
+    void visitInit(Init *p);
+
+    void visitAss(Ass *p);
+
+    void visitIncr(Incr *p);
+
+    void visitDecr(Decr *p);
+
+    void visitRet(Ret *p);
+
+    void visitVRet(VRet *p);
+
+    void visitCond(Cond *p);
+
+    void visitCondElse(CondElse *p);
+
+    void visitWhile(While *p);
+
+    void visitForEach(ForEach *p);
+
+    void visitSExp(SExp *p);
+
+    void visitCBracketed(CBracketed *p);
+
+    void visitCMember(CMember *p);
+
+    void visitCArray(CArray *p);
+
+    void visitCMethod(CMethod *p);
+
+    void visitNewArray(NewArray *p);
+
+    void visitNewObject(NewObject *p);
+
+    void visitVariable(Variable *p);
+
+    void visitArrElement(ArrElement *p);
+
+    void visitMethod(Method *p);
+
+    void visitMemberAccess(MemberAccess *p);
+
+    void visitIntArrType(IntArrType *p);
+
+    void visitStrArrType(StrArrType *p);
+
+    void visitBoolArrType(BoolArrType *p);
+
+    void visitClassArrType(ClassArrType *p);
+
+    void visitInt(Int *p);
+
+    void visitStr(Str *p);
+
+    void visitBool(Bool *p);
+
+    void visitVoid(Void *p);
+
+    void visitArr(Arr *p);
+
+    void visitClass(Class *p);
+
+    void visitDimType(DimType *p);
+
+    void visitFun(Fun *p);
+
+    void visitArrDimDef(ArrDimDef *p);
+
+    void visitEVar(EVar *p);
+
+    void visitEBracketVar(EBracketVar *p);
+
+    void visitEComplex(EComplex *p);
+
+    void visitENullCast(ENullCast *p);
+
+    void visitELitInt(ELitInt *p);
+
+    void visitELitTrue(ELitTrue *p);
+
+    void visitELitFalse(ELitFalse *p);
+
+    void visitEString(EString *p);
+
+    void visitNeg(Neg *p);
+
+    void visitNot(Not *p);
+
+    void visitEMul(EMul *p);
+
+    void visitEAdd(EAdd *p);
+
+    void visitERel(ERel *p);
+
+    void visitEAnd(EAnd *p);
+
+    void visitEOr(EOr *p);
+
+    void visitPlus(Plus *p);
+
+    void visitMinus(Minus *p);
+
+    void visitTimes(Times *p);
+
+    void visitDiv(Div *p);
+
+    void visitMod(Mod *p);
+
+    void visitLTH(LTH *p);
+
+    void visitLE(LE *p);
+
+    void visitGTH(GTH *p);
+
+    void visitGE(GE *p);
+
+    void visitEQU(EQU *p);
+
+    void visitNE(NE *p);
+
+    void visitListClassMember(ListClassMember *p);
+
+    void visitListTopDef(ListTopDef *p);
+
+    void visitListArg(ListArg *p);
+
+    void visitListStmt(ListStmt *p);
+
+    void visitListItem(ListItem *p);
+
+    void visitListArrDimType(ListArrDimType *p);
+
+    void visitListType(ListType *p);
+
+    void visitListDimDef(ListDimDef *p);
+
+    void visitListComplexPart(ListComplexPart *p);
+
+    void visitListExpr(ListExpr *p);
+
+    void visitInteger(Integer x);
+
+    void visitChar(Char x);
+
+    void visitDouble(Double x);
+
+    void visitString(String x);
+
+    void visitIdent(Ident x);
 
 };
 

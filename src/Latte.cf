@@ -64,7 +64,9 @@ SExp.      Stmt ::= Expr  ";" ;
 
 -------------------------------------------------
 
-CMember.      ComplexStart ::= Ident "." Ident;
+CBracketed.   ComplexStart ::= "(" ComplexStart ")" ;
+
+CMember.      ComplexStart ::= Ident "." Ident ;
 
 CArray.       ComplexStart ::= Ident [ DimDef ] ;
 
@@ -126,11 +128,13 @@ separator nonempty DimDef "" ;
 
 EVar.      Expr6 ::= Ident ;
 
+EBracketVar. Expr6 ::= "(" Ident ")" ;
+
 EComplex.  Expr6 ::= ComplexStart [ ComplexPart ] ;
 
 separator ComplexPart "" ;
 
-ENullCast. Expr6 ::= "(" Ident ")" "null" ; --TODO to pewnie nie działa, Iwanicki coś gadał (o konflikcie?)
+ENullCast. Expr6 ::= "(" Ident ")" "null" ; --TODO być może nie działa, Iwanicki coś gadał (o konflikcie?)
 
 ELitInt.   Expr6 ::= Integer ;
 

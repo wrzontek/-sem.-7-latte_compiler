@@ -7,3289 +7,2779 @@
 #include "Absyn.H"
 
 /********************   Prog    ********************/
-Prog::Prog(ListTopDef *p1)
-{
-  listtopdef_ = p1;
+Prog::Prog(ListTopDef *p1) {
+    listtopdef_ = p1;
 
 }
 
-Prog::Prog(const Prog & other)
-{
-  listtopdef_ = other.listtopdef_->clone();
+Prog::Prog(const Prog &other) {
+    listtopdef_ = other.listtopdef_->clone();
 
 }
 
-Prog &Prog::operator=(const Prog & other)
-{
-  Prog tmp(other);
-  swap(tmp);
-  return *this;
+Prog &Prog::operator=(const Prog &other) {
+    Prog tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void Prog::swap(Prog & other)
-{
-  std::swap(listtopdef_, other.listtopdef_);
-
-}
-
-Prog::~Prog()
-{
-  delete(listtopdef_);
+void Prog::swap(Prog &other) {
+    std::swap(listtopdef_, other.listtopdef_);
 
 }
 
-void Prog::accept(Visitor *v)
-{
-  v->visitProg(this);
+Prog::~Prog() {
+    delete (listtopdef_);
+
 }
 
-Prog *Prog::clone() const
-{
-  return new Prog(*this);
+void Prog::accept(Visitor *v) {
+    v->visitProg(this);
 }
 
+Prog *Prog::clone() const {
+    return new Prog(*this);
+}
 
 
 /********************   FnDef    ********************/
-FnDef::FnDef(Type *p1, Ident p2, ListArg *p3, Block *p4)
-{
-  type_ = p1;
-  ident_ = p2;
-  listarg_ = p3;
-  block_ = p4;
+FnDef::FnDef(Type *p1, Ident p2, ListArg *p3, Block *p4) {
+    type_ = p1;
+    ident_ = p2;
+    listarg_ = p3;
+    block_ = p4;
 
 }
 
-FnDef::FnDef(const FnDef & other)
-{
-  type_ = other.type_->clone();
-  ident_ = other.ident_;
-  listarg_ = other.listarg_->clone();
-  block_ = other.block_->clone();
+FnDef::FnDef(const FnDef &other) {
+    type_ = other.type_->clone();
+    ident_ = other.ident_;
+    listarg_ = other.listarg_->clone();
+    block_ = other.block_->clone();
 
 }
 
-FnDef &FnDef::operator=(const FnDef & other)
-{
-  FnDef tmp(other);
-  swap(tmp);
-  return *this;
+FnDef &FnDef::operator=(const FnDef &other) {
+    FnDef tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void FnDef::swap(FnDef & other)
-{
-  std::swap(type_, other.type_);
-  std::swap(ident_, other.ident_);
-  std::swap(listarg_, other.listarg_);
-  std::swap(block_, other.block_);
-
-}
-
-FnDef::~FnDef()
-{
-  delete(type_);
-  delete(listarg_);
-  delete(block_);
+void FnDef::swap(FnDef &other) {
+    std::swap(type_, other.type_);
+    std::swap(ident_, other.ident_);
+    std::swap(listarg_, other.listarg_);
+    std::swap(block_, other.block_);
 
 }
 
-void FnDef::accept(Visitor *v)
-{
-  v->visitFnDef(this);
+FnDef::~FnDef() {
+    delete (type_);
+    delete (listarg_);
+    delete (block_);
+
 }
 
-FnDef *FnDef::clone() const
-{
-  return new FnDef(*this);
+void FnDef::accept(Visitor *v) {
+    v->visitFnDef(this);
 }
 
+FnDef *FnDef::clone() const {
+    return new FnDef(*this);
+}
 
 
 /********************   ClassDef    ********************/
-ClassDef::ClassDef(Ident p1, ListClassMember *p2)
-{
-  ident_ = p1;
-  listclassmember_ = p2;
+ClassDef::ClassDef(Ident p1, ListClassMember *p2) {
+    ident_ = p1;
+    listclassmember_ = p2;
 
 }
 
-ClassDef::ClassDef(const ClassDef & other)
-{
-  ident_ = other.ident_;
-  listclassmember_ = other.listclassmember_->clone();
+ClassDef::ClassDef(const ClassDef &other) {
+    ident_ = other.ident_;
+    listclassmember_ = other.listclassmember_->clone();
 
 }
 
-ClassDef &ClassDef::operator=(const ClassDef & other)
-{
-  ClassDef tmp(other);
-  swap(tmp);
-  return *this;
+ClassDef &ClassDef::operator=(const ClassDef &other) {
+    ClassDef tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void ClassDef::swap(ClassDef & other)
-{
-  std::swap(ident_, other.ident_);
-  std::swap(listclassmember_, other.listclassmember_);
-
-}
-
-ClassDef::~ClassDef()
-{
-  delete(listclassmember_);
+void ClassDef::swap(ClassDef &other) {
+    std::swap(ident_, other.ident_);
+    std::swap(listclassmember_, other.listclassmember_);
 
 }
 
-void ClassDef::accept(Visitor *v)
-{
-  v->visitClassDef(this);
+ClassDef::~ClassDef() {
+    delete (listclassmember_);
+
 }
 
-ClassDef *ClassDef::clone() const
-{
-  return new ClassDef(*this);
+void ClassDef::accept(Visitor *v) {
+    v->visitClassDef(this);
 }
 
+ClassDef *ClassDef::clone() const {
+    return new ClassDef(*this);
+}
 
 
 /********************   ClassExtendDef    ********************/
-ClassExtendDef::ClassExtendDef(Ident p1, Ident p2, ListClassMember *p3)
-{
-  ident_1 = p1;
-  ident_2 = p2;
-  listclassmember_ = p3;
+ClassExtendDef::ClassExtendDef(Ident p1, Ident p2, ListClassMember *p3) {
+    ident_1 = p1;
+    ident_2 = p2;
+    listclassmember_ = p3;
 
 }
 
-ClassExtendDef::ClassExtendDef(const ClassExtendDef & other)
-{
-  ident_1 = other.ident_1;
-  ident_2 = other.ident_2;
-  listclassmember_ = other.listclassmember_->clone();
+ClassExtendDef::ClassExtendDef(const ClassExtendDef &other) {
+    ident_1 = other.ident_1;
+    ident_2 = other.ident_2;
+    listclassmember_ = other.listclassmember_->clone();
 
 }
 
-ClassExtendDef &ClassExtendDef::operator=(const ClassExtendDef & other)
-{
-  ClassExtendDef tmp(other);
-  swap(tmp);
-  return *this;
+ClassExtendDef &ClassExtendDef::operator=(const ClassExtendDef &other) {
+    ClassExtendDef tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void ClassExtendDef::swap(ClassExtendDef & other)
-{
-  std::swap(ident_1, other.ident_1);
-  std::swap(ident_2, other.ident_2);
-  std::swap(listclassmember_, other.listclassmember_);
-
-}
-
-ClassExtendDef::~ClassExtendDef()
-{
-  delete(listclassmember_);
+void ClassExtendDef::swap(ClassExtendDef &other) {
+    std::swap(ident_1, other.ident_1);
+    std::swap(ident_2, other.ident_2);
+    std::swap(listclassmember_, other.listclassmember_);
 
 }
 
-void ClassExtendDef::accept(Visitor *v)
-{
-  v->visitClassExtendDef(this);
+ClassExtendDef::~ClassExtendDef() {
+    delete (listclassmember_);
+
 }
 
-ClassExtendDef *ClassExtendDef::clone() const
-{
-  return new ClassExtendDef(*this);
+void ClassExtendDef::accept(Visitor *v) {
+    v->visitClassExtendDef(this);
 }
 
+ClassExtendDef *ClassExtendDef::clone() const {
+    return new ClassExtendDef(*this);
+}
 
 
 /********************   Ar    ********************/
-Ar::Ar(Type *p1, Ident p2)
-{
-  type_ = p1;
-  ident_ = p2;
+Ar::Ar(Type *p1, Ident p2) {
+    type_ = p1;
+    ident_ = p2;
 
 }
 
-Ar::Ar(const Ar & other)
-{
-  type_ = other.type_->clone();
-  ident_ = other.ident_;
+Ar::Ar(const Ar &other) {
+    type_ = other.type_->clone();
+    ident_ = other.ident_;
 
 }
 
-Ar &Ar::operator=(const Ar & other)
-{
-  Ar tmp(other);
-  swap(tmp);
-  return *this;
+Ar &Ar::operator=(const Ar &other) {
+    Ar tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void Ar::swap(Ar & other)
-{
-  std::swap(type_, other.type_);
-  std::swap(ident_, other.ident_);
-
-}
-
-Ar::~Ar()
-{
-  delete(type_);
+void Ar::swap(Ar &other) {
+    std::swap(type_, other.type_);
+    std::swap(ident_, other.ident_);
 
 }
 
-void Ar::accept(Visitor *v)
-{
-  v->visitAr(this);
+Ar::~Ar() {
+    delete (type_);
+
 }
 
-Ar *Ar::clone() const
-{
-  return new Ar(*this);
+void Ar::accept(Visitor *v) {
+    v->visitAr(this);
 }
 
+Ar *Ar::clone() const {
+    return new Ar(*this);
+}
 
 
 /********************   AttrMember    ********************/
-AttrMember::AttrMember(Type *p1, ListItem *p2)
-{
-  type_ = p1;
-  listitem_ = p2;
+AttrMember::AttrMember(Type *p1, ListItem *p2) {
+    type_ = p1;
+    listitem_ = p2;
 
 }
 
-AttrMember::AttrMember(const AttrMember & other)
-{
-  type_ = other.type_->clone();
-  listitem_ = other.listitem_->clone();
+AttrMember::AttrMember(const AttrMember &other) {
+    type_ = other.type_->clone();
+    listitem_ = other.listitem_->clone();
 
 }
 
-AttrMember &AttrMember::operator=(const AttrMember & other)
-{
-  AttrMember tmp(other);
-  swap(tmp);
-  return *this;
+AttrMember &AttrMember::operator=(const AttrMember &other) {
+    AttrMember tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void AttrMember::swap(AttrMember & other)
-{
-  std::swap(type_, other.type_);
-  std::swap(listitem_, other.listitem_);
-
-}
-
-AttrMember::~AttrMember()
-{
-  delete(type_);
-  delete(listitem_);
+void AttrMember::swap(AttrMember &other) {
+    std::swap(type_, other.type_);
+    std::swap(listitem_, other.listitem_);
 
 }
 
-void AttrMember::accept(Visitor *v)
-{
-  v->visitAttrMember(this);
+AttrMember::~AttrMember() {
+    delete (type_);
+    delete (listitem_);
+
 }
 
-AttrMember *AttrMember::clone() const
-{
-  return new AttrMember(*this);
+void AttrMember::accept(Visitor *v) {
+    v->visitAttrMember(this);
 }
 
+AttrMember *AttrMember::clone() const {
+    return new AttrMember(*this);
+}
 
 
 /********************   MethodMember    ********************/
-MethodMember::MethodMember(Type *p1, Ident p2, ListArg *p3, Block *p4)
-{
-  type_ = p1;
-  ident_ = p2;
-  listarg_ = p3;
-  block_ = p4;
+MethodMember::MethodMember(Type *p1, Ident p2, ListArg *p3, Block *p4) {
+    type_ = p1;
+    ident_ = p2;
+    listarg_ = p3;
+    block_ = p4;
 
 }
 
-MethodMember::MethodMember(const MethodMember & other)
-{
-  type_ = other.type_->clone();
-  ident_ = other.ident_;
-  listarg_ = other.listarg_->clone();
-  block_ = other.block_->clone();
+MethodMember::MethodMember(const MethodMember &other) {
+    type_ = other.type_->clone();
+    ident_ = other.ident_;
+    listarg_ = other.listarg_->clone();
+    block_ = other.block_->clone();
 
 }
 
-MethodMember &MethodMember::operator=(const MethodMember & other)
-{
-  MethodMember tmp(other);
-  swap(tmp);
-  return *this;
+MethodMember &MethodMember::operator=(const MethodMember &other) {
+    MethodMember tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void MethodMember::swap(MethodMember & other)
-{
-  std::swap(type_, other.type_);
-  std::swap(ident_, other.ident_);
-  std::swap(listarg_, other.listarg_);
-  std::swap(block_, other.block_);
-
-}
-
-MethodMember::~MethodMember()
-{
-  delete(type_);
-  delete(listarg_);
-  delete(block_);
+void MethodMember::swap(MethodMember &other) {
+    std::swap(type_, other.type_);
+    std::swap(ident_, other.ident_);
+    std::swap(listarg_, other.listarg_);
+    std::swap(block_, other.block_);
 
 }
 
-void MethodMember::accept(Visitor *v)
-{
-  v->visitMethodMember(this);
+MethodMember::~MethodMember() {
+    delete (type_);
+    delete (listarg_);
+    delete (block_);
+
 }
 
-MethodMember *MethodMember::clone() const
-{
-  return new MethodMember(*this);
+void MethodMember::accept(Visitor *v) {
+    v->visitMethodMember(this);
 }
 
+MethodMember *MethodMember::clone() const {
+    return new MethodMember(*this);
+}
 
 
 /********************   Blk    ********************/
-Blk::Blk(ListStmt *p1)
-{
-  liststmt_ = p1;
+Blk::Blk(ListStmt *p1) {
+    liststmt_ = p1;
 
 }
 
-Blk::Blk(const Blk & other)
-{
-  liststmt_ = other.liststmt_->clone();
+Blk::Blk(const Blk &other) {
+    liststmt_ = other.liststmt_->clone();
 
 }
 
-Blk &Blk::operator=(const Blk & other)
-{
-  Blk tmp(other);
-  swap(tmp);
-  return *this;
+Blk &Blk::operator=(const Blk &other) {
+    Blk tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void Blk::swap(Blk & other)
-{
-  std::swap(liststmt_, other.liststmt_);
-
-}
-
-Blk::~Blk()
-{
-  delete(liststmt_);
+void Blk::swap(Blk &other) {
+    std::swap(liststmt_, other.liststmt_);
 
 }
 
-void Blk::accept(Visitor *v)
-{
-  v->visitBlk(this);
+Blk::~Blk() {
+    delete (liststmt_);
+
 }
 
-Blk *Blk::clone() const
-{
-  return new Blk(*this);
+void Blk::accept(Visitor *v) {
+    v->visitBlk(this);
 }
 
+Blk *Blk::clone() const {
+    return new Blk(*this);
+}
 
 
 /********************   Empty    ********************/
-Empty::Empty()
-{
+Empty::Empty() {
 
 }
 
-Empty::Empty(const Empty & other)
-{
+Empty::Empty(const Empty &other) {
 
 }
 
-Empty &Empty::operator=(const Empty & other)
-{
-  Empty tmp(other);
-  swap(tmp);
-  return *this;
+Empty &Empty::operator=(const Empty &other) {
+    Empty tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void Empty::swap(Empty & other)
-{
-
-}
-
-Empty::~Empty()
-{
+void Empty::swap(Empty &other) {
 
 }
 
-void Empty::accept(Visitor *v)
-{
-  v->visitEmpty(this);
+Empty::~Empty() {
+
 }
 
-Empty *Empty::clone() const
-{
-  return new Empty(*this);
+void Empty::accept(Visitor *v) {
+    v->visitEmpty(this);
 }
 
+Empty *Empty::clone() const {
+    return new Empty(*this);
+}
 
 
 /********************   BStmt    ********************/
-BStmt::BStmt(Block *p1)
-{
-  block_ = p1;
+BStmt::BStmt(Block *p1) {
+    block_ = p1;
 
 }
 
-BStmt::BStmt(const BStmt & other)
-{
-  block_ = other.block_->clone();
+BStmt::BStmt(const BStmt &other) {
+    block_ = other.block_->clone();
 
 }
 
-BStmt &BStmt::operator=(const BStmt & other)
-{
-  BStmt tmp(other);
-  swap(tmp);
-  return *this;
+BStmt &BStmt::operator=(const BStmt &other) {
+    BStmt tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void BStmt::swap(BStmt & other)
-{
-  std::swap(block_, other.block_);
-
-}
-
-BStmt::~BStmt()
-{
-  delete(block_);
+void BStmt::swap(BStmt &other) {
+    std::swap(block_, other.block_);
 
 }
 
-void BStmt::accept(Visitor *v)
-{
-  v->visitBStmt(this);
+BStmt::~BStmt() {
+    delete (block_);
+
 }
 
-BStmt *BStmt::clone() const
-{
-  return new BStmt(*this);
+void BStmt::accept(Visitor *v) {
+    v->visitBStmt(this);
 }
 
+BStmt *BStmt::clone() const {
+    return new BStmt(*this);
+}
 
 
 /********************   Decl    ********************/
-Decl::Decl(Type *p1, ListItem *p2)
-{
-  type_ = p1;
-  listitem_ = p2;
+Decl::Decl(Type *p1, ListItem *p2) {
+    type_ = p1;
+    listitem_ = p2;
 
 }
 
-Decl::Decl(const Decl & other)
-{
-  type_ = other.type_->clone();
-  listitem_ = other.listitem_->clone();
+Decl::Decl(const Decl &other) {
+    type_ = other.type_->clone();
+    listitem_ = other.listitem_->clone();
 
 }
 
-Decl &Decl::operator=(const Decl & other)
-{
-  Decl tmp(other);
-  swap(tmp);
-  return *this;
+Decl &Decl::operator=(const Decl &other) {
+    Decl tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void Decl::swap(Decl & other)
-{
-  std::swap(type_, other.type_);
-  std::swap(listitem_, other.listitem_);
-
-}
-
-Decl::~Decl()
-{
-  delete(type_);
-  delete(listitem_);
+void Decl::swap(Decl &other) {
+    std::swap(type_, other.type_);
+    std::swap(listitem_, other.listitem_);
 
 }
 
-void Decl::accept(Visitor *v)
-{
-  v->visitDecl(this);
+Decl::~Decl() {
+    delete (type_);
+    delete (listitem_);
+
 }
 
-Decl *Decl::clone() const
-{
-  return new Decl(*this);
+void Decl::accept(Visitor *v) {
+    v->visitDecl(this);
 }
 
+Decl *Decl::clone() const {
+    return new Decl(*this);
+}
 
 
 /********************   Ass    ********************/
-Ass::Ass(Expr *p1, Expr *p2)
-{
-  expr_1 = p1;
-  expr_2 = p2;
+Ass::Ass(Expr *p1, Expr *p2) {
+    expr_1 = p1;
+    expr_2 = p2;
 
 }
 
-Ass::Ass(const Ass & other)
-{
-  expr_1 = other.expr_1->clone();
-  expr_2 = other.expr_2->clone();
+Ass::Ass(const Ass &other) {
+    expr_1 = other.expr_1->clone();
+    expr_2 = other.expr_2->clone();
 
 }
 
-Ass &Ass::operator=(const Ass & other)
-{
-  Ass tmp(other);
-  swap(tmp);
-  return *this;
+Ass &Ass::operator=(const Ass &other) {
+    Ass tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void Ass::swap(Ass & other)
-{
-  std::swap(expr_1, other.expr_1);
-  std::swap(expr_2, other.expr_2);
-
-}
-
-Ass::~Ass()
-{
-  delete(expr_1);
-  delete(expr_2);
+void Ass::swap(Ass &other) {
+    std::swap(expr_1, other.expr_1);
+    std::swap(expr_2, other.expr_2);
 
 }
 
-void Ass::accept(Visitor *v)
-{
-  v->visitAss(this);
+Ass::~Ass() {
+    delete (expr_1);
+    delete (expr_2);
+
 }
 
-Ass *Ass::clone() const
-{
-  return new Ass(*this);
+void Ass::accept(Visitor *v) {
+    v->visitAss(this);
 }
 
+Ass *Ass::clone() const {
+    return new Ass(*this);
+}
 
 
 /********************   Incr    ********************/
-Incr::Incr(Expr *p1)
-{
-  expr_ = p1;
+Incr::Incr(Expr *p1) {
+    expr_ = p1;
 
 }
 
-Incr::Incr(const Incr & other)
-{
-  expr_ = other.expr_->clone();
+Incr::Incr(const Incr &other) {
+    expr_ = other.expr_->clone();
 
 }
 
-Incr &Incr::operator=(const Incr & other)
-{
-  Incr tmp(other);
-  swap(tmp);
-  return *this;
+Incr &Incr::operator=(const Incr &other) {
+    Incr tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void Incr::swap(Incr & other)
-{
-  std::swap(expr_, other.expr_);
-
-}
-
-Incr::~Incr()
-{
-  delete(expr_);
+void Incr::swap(Incr &other) {
+    std::swap(expr_, other.expr_);
 
 }
 
-void Incr::accept(Visitor *v)
-{
-  v->visitIncr(this);
+Incr::~Incr() {
+    delete (expr_);
+
 }
 
-Incr *Incr::clone() const
-{
-  return new Incr(*this);
+void Incr::accept(Visitor *v) {
+    v->visitIncr(this);
 }
 
+Incr *Incr::clone() const {
+    return new Incr(*this);
+}
 
 
 /********************   Decr    ********************/
-Decr::Decr(Expr *p1)
-{
-  expr_ = p1;
+Decr::Decr(Expr *p1) {
+    expr_ = p1;
 
 }
 
-Decr::Decr(const Decr & other)
-{
-  expr_ = other.expr_->clone();
+Decr::Decr(const Decr &other) {
+    expr_ = other.expr_->clone();
 
 }
 
-Decr &Decr::operator=(const Decr & other)
-{
-  Decr tmp(other);
-  swap(tmp);
-  return *this;
+Decr &Decr::operator=(const Decr &other) {
+    Decr tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void Decr::swap(Decr & other)
-{
-  std::swap(expr_, other.expr_);
-
-}
-
-Decr::~Decr()
-{
-  delete(expr_);
+void Decr::swap(Decr &other) {
+    std::swap(expr_, other.expr_);
 
 }
 
-void Decr::accept(Visitor *v)
-{
-  v->visitDecr(this);
+Decr::~Decr() {
+    delete (expr_);
+
 }
 
-Decr *Decr::clone() const
-{
-  return new Decr(*this);
+void Decr::accept(Visitor *v) {
+    v->visitDecr(this);
 }
 
+Decr *Decr::clone() const {
+    return new Decr(*this);
+}
 
 
 /********************   Ret    ********************/
-Ret::Ret(Expr *p1)
-{
-  expr_ = p1;
+Ret::Ret(Expr *p1) {
+    expr_ = p1;
 
 }
 
-Ret::Ret(const Ret & other)
-{
-  expr_ = other.expr_->clone();
+Ret::Ret(const Ret &other) {
+    expr_ = other.expr_->clone();
 
 }
 
-Ret &Ret::operator=(const Ret & other)
-{
-  Ret tmp(other);
-  swap(tmp);
-  return *this;
+Ret &Ret::operator=(const Ret &other) {
+    Ret tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void Ret::swap(Ret & other)
-{
-  std::swap(expr_, other.expr_);
-
-}
-
-Ret::~Ret()
-{
-  delete(expr_);
+void Ret::swap(Ret &other) {
+    std::swap(expr_, other.expr_);
 
 }
 
-void Ret::accept(Visitor *v)
-{
-  v->visitRet(this);
+Ret::~Ret() {
+    delete (expr_);
+
 }
 
-Ret *Ret::clone() const
-{
-  return new Ret(*this);
+void Ret::accept(Visitor *v) {
+    v->visitRet(this);
 }
 
+Ret *Ret::clone() const {
+    return new Ret(*this);
+}
 
 
 /********************   VRet    ********************/
-VRet::VRet()
-{
+VRet::VRet() {
 
 }
 
-VRet::VRet(const VRet & other)
-{
+VRet::VRet(const VRet &other) {
 
 }
 
-VRet &VRet::operator=(const VRet & other)
-{
-  VRet tmp(other);
-  swap(tmp);
-  return *this;
+VRet &VRet::operator=(const VRet &other) {
+    VRet tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void VRet::swap(VRet & other)
-{
-
-}
-
-VRet::~VRet()
-{
+void VRet::swap(VRet &other) {
 
 }
 
-void VRet::accept(Visitor *v)
-{
-  v->visitVRet(this);
+VRet::~VRet() {
+
 }
 
-VRet *VRet::clone() const
-{
-  return new VRet(*this);
+void VRet::accept(Visitor *v) {
+    v->visitVRet(this);
 }
 
+VRet *VRet::clone() const {
+    return new VRet(*this);
+}
 
 
 /********************   Cond    ********************/
-Cond::Cond(Expr *p1, Stmt *p2)
-{
-  expr_ = p1;
-  stmt_ = p2;
+Cond::Cond(Expr *p1, Stmt *p2) {
+    expr_ = p1;
+    stmt_ = p2;
 
 }
 
-Cond::Cond(const Cond & other)
-{
-  expr_ = other.expr_->clone();
-  stmt_ = other.stmt_->clone();
+Cond::Cond(const Cond &other) {
+    expr_ = other.expr_->clone();
+    stmt_ = other.stmt_->clone();
 
 }
 
-Cond &Cond::operator=(const Cond & other)
-{
-  Cond tmp(other);
-  swap(tmp);
-  return *this;
+Cond &Cond::operator=(const Cond &other) {
+    Cond tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void Cond::swap(Cond & other)
-{
-  std::swap(expr_, other.expr_);
-  std::swap(stmt_, other.stmt_);
-
-}
-
-Cond::~Cond()
-{
-  delete(expr_);
-  delete(stmt_);
+void Cond::swap(Cond &other) {
+    std::swap(expr_, other.expr_);
+    std::swap(stmt_, other.stmt_);
 
 }
 
-void Cond::accept(Visitor *v)
-{
-  v->visitCond(this);
+Cond::~Cond() {
+    delete (expr_);
+    delete (stmt_);
+
 }
 
-Cond *Cond::clone() const
-{
-  return new Cond(*this);
+void Cond::accept(Visitor *v) {
+    v->visitCond(this);
 }
 
+Cond *Cond::clone() const {
+    return new Cond(*this);
+}
 
 
 /********************   CondElse    ********************/
-CondElse::CondElse(Expr *p1, Stmt *p2, Stmt *p3)
-{
-  expr_ = p1;
-  stmt_1 = p2;
-  stmt_2 = p3;
+CondElse::CondElse(Expr *p1, Stmt *p2, Stmt *p3) {
+    expr_ = p1;
+    stmt_1 = p2;
+    stmt_2 = p3;
 
 }
 
-CondElse::CondElse(const CondElse & other)
-{
-  expr_ = other.expr_->clone();
-  stmt_1 = other.stmt_1->clone();
-  stmt_2 = other.stmt_2->clone();
+CondElse::CondElse(const CondElse &other) {
+    expr_ = other.expr_->clone();
+    stmt_1 = other.stmt_1->clone();
+    stmt_2 = other.stmt_2->clone();
 
 }
 
-CondElse &CondElse::operator=(const CondElse & other)
-{
-  CondElse tmp(other);
-  swap(tmp);
-  return *this;
+CondElse &CondElse::operator=(const CondElse &other) {
+    CondElse tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void CondElse::swap(CondElse & other)
-{
-  std::swap(expr_, other.expr_);
-  std::swap(stmt_1, other.stmt_1);
-  std::swap(stmt_2, other.stmt_2);
-
-}
-
-CondElse::~CondElse()
-{
-  delete(expr_);
-  delete(stmt_1);
-  delete(stmt_2);
+void CondElse::swap(CondElse &other) {
+    std::swap(expr_, other.expr_);
+    std::swap(stmt_1, other.stmt_1);
+    std::swap(stmt_2, other.stmt_2);
 
 }
 
-void CondElse::accept(Visitor *v)
-{
-  v->visitCondElse(this);
+CondElse::~CondElse() {
+    delete (expr_);
+    delete (stmt_1);
+    delete (stmt_2);
+
 }
 
-CondElse *CondElse::clone() const
-{
-  return new CondElse(*this);
+void CondElse::accept(Visitor *v) {
+    v->visitCondElse(this);
 }
 
+CondElse *CondElse::clone() const {
+    return new CondElse(*this);
+}
 
 
 /********************   While    ********************/
-While::While(Expr *p1, Stmt *p2)
-{
-  expr_ = p1;
-  stmt_ = p2;
+While::While(Expr *p1, Stmt *p2) {
+    expr_ = p1;
+    stmt_ = p2;
 
 }
 
-While::While(const While & other)
-{
-  expr_ = other.expr_->clone();
-  stmt_ = other.stmt_->clone();
+While::While(const While &other) {
+    expr_ = other.expr_->clone();
+    stmt_ = other.stmt_->clone();
 
 }
 
-While &While::operator=(const While & other)
-{
-  While tmp(other);
-  swap(tmp);
-  return *this;
+While &While::operator=(const While &other) {
+    While tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void While::swap(While & other)
-{
-  std::swap(expr_, other.expr_);
-  std::swap(stmt_, other.stmt_);
-
-}
-
-While::~While()
-{
-  delete(expr_);
-  delete(stmt_);
+void While::swap(While &other) {
+    std::swap(expr_, other.expr_);
+    std::swap(stmt_, other.stmt_);
 
 }
 
-void While::accept(Visitor *v)
-{
-  v->visitWhile(this);
+While::~While() {
+    delete (expr_);
+    delete (stmt_);
+
 }
 
-While *While::clone() const
-{
-  return new While(*this);
+void While::accept(Visitor *v) {
+    v->visitWhile(this);
 }
 
+While *While::clone() const {
+    return new While(*this);
+}
 
 
 /********************   ForEach    ********************/
-ForEach::ForEach(Type *p1, Ident p2, Ident p3, Stmt *p4)
-{
-  type_ = p1;
-  ident_1 = p2;
-  ident_2 = p3;
-  stmt_ = p4;
+ForEach::ForEach(Type *p1, Ident p2, Ident p3, Stmt *p4) {
+    type_ = p1;
+    ident_1 = p2;
+    ident_2 = p3;
+    stmt_ = p4;
 
 }
 
-ForEach::ForEach(const ForEach & other)
-{
-  type_ = other.type_->clone();
-  ident_1 = other.ident_1;
-  ident_2 = other.ident_2;
-  stmt_ = other.stmt_->clone();
+ForEach::ForEach(const ForEach &other) {
+    type_ = other.type_->clone();
+    ident_1 = other.ident_1;
+    ident_2 = other.ident_2;
+    stmt_ = other.stmt_->clone();
 
 }
 
-ForEach &ForEach::operator=(const ForEach & other)
-{
-  ForEach tmp(other);
-  swap(tmp);
-  return *this;
+ForEach &ForEach::operator=(const ForEach &other) {
+    ForEach tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void ForEach::swap(ForEach & other)
-{
-  std::swap(type_, other.type_);
-  std::swap(ident_1, other.ident_1);
-  std::swap(ident_2, other.ident_2);
-  std::swap(stmt_, other.stmt_);
-
-}
-
-ForEach::~ForEach()
-{
-  delete(type_);
-  delete(stmt_);
+void ForEach::swap(ForEach &other) {
+    std::swap(type_, other.type_);
+    std::swap(ident_1, other.ident_1);
+    std::swap(ident_2, other.ident_2);
+    std::swap(stmt_, other.stmt_);
 
 }
 
-void ForEach::accept(Visitor *v)
-{
-  v->visitForEach(this);
+ForEach::~ForEach() {
+    delete (type_);
+    delete (stmt_);
+
 }
 
-ForEach *ForEach::clone() const
-{
-  return new ForEach(*this);
+void ForEach::accept(Visitor *v) {
+    v->visitForEach(this);
 }
 
+ForEach *ForEach::clone() const {
+    return new ForEach(*this);
+}
 
 
 /********************   SExp    ********************/
-SExp::SExp(Expr *p1)
-{
-  expr_ = p1;
+SExp::SExp(Expr *p1) {
+    expr_ = p1;
 
 }
 
-SExp::SExp(const SExp & other)
-{
-  expr_ = other.expr_->clone();
+SExp::SExp(const SExp &other) {
+    expr_ = other.expr_->clone();
 
 }
 
-SExp &SExp::operator=(const SExp & other)
-{
-  SExp tmp(other);
-  swap(tmp);
-  return *this;
+SExp &SExp::operator=(const SExp &other) {
+    SExp tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void SExp::swap(SExp & other)
-{
-  std::swap(expr_, other.expr_);
-
-}
-
-SExp::~SExp()
-{
-  delete(expr_);
+void SExp::swap(SExp &other) {
+    std::swap(expr_, other.expr_);
 
 }
 
-void SExp::accept(Visitor *v)
-{
-  v->visitSExp(this);
+SExp::~SExp() {
+    delete (expr_);
+
 }
 
-SExp *SExp::clone() const
-{
-  return new SExp(*this);
+void SExp::accept(Visitor *v) {
+    v->visitSExp(this);
 }
 
+SExp *SExp::clone() const {
+    return new SExp(*this);
+}
 
 
 /********************   NoInit    ********************/
-NoInit::NoInit(Ident p1)
-{
-  ident_ = p1;
+NoInit::NoInit(Ident p1) {
+    ident_ = p1;
 
 }
 
-NoInit::NoInit(const NoInit & other)
-{
-  ident_ = other.ident_;
+NoInit::NoInit(const NoInit &other) {
+    ident_ = other.ident_;
 
 }
 
-NoInit &NoInit::operator=(const NoInit & other)
-{
-  NoInit tmp(other);
-  swap(tmp);
-  return *this;
+NoInit &NoInit::operator=(const NoInit &other) {
+    NoInit tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void NoInit::swap(NoInit & other)
-{
-  std::swap(ident_, other.ident_);
-
-}
-
-NoInit::~NoInit()
-{
+void NoInit::swap(NoInit &other) {
+    std::swap(ident_, other.ident_);
 
 }
 
-void NoInit::accept(Visitor *v)
-{
-  v->visitNoInit(this);
+NoInit::~NoInit() {
+
 }
 
-NoInit *NoInit::clone() const
-{
-  return new NoInit(*this);
+void NoInit::accept(Visitor *v) {
+    v->visitNoInit(this);
 }
 
+NoInit *NoInit::clone() const {
+    return new NoInit(*this);
+}
 
 
 /********************   Init    ********************/
-Init::Init(Ident p1, Expr *p2)
-{
-  ident_ = p1;
-  expr_ = p2;
+Init::Init(Ident p1, Expr *p2) {
+    ident_ = p1;
+    expr_ = p2;
 
 }
 
-Init::Init(const Init & other)
-{
-  ident_ = other.ident_;
-  expr_ = other.expr_->clone();
+Init::Init(const Init &other) {
+    ident_ = other.ident_;
+    expr_ = other.expr_->clone();
 
 }
 
-Init &Init::operator=(const Init & other)
-{
-  Init tmp(other);
-  swap(tmp);
-  return *this;
+Init &Init::operator=(const Init &other) {
+    Init tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void Init::swap(Init & other)
-{
-  std::swap(ident_, other.ident_);
-  std::swap(expr_, other.expr_);
-
-}
-
-Init::~Init()
-{
-  delete(expr_);
+void Init::swap(Init &other) {
+    std::swap(ident_, other.ident_);
+    std::swap(expr_, other.expr_);
 
 }
 
-void Init::accept(Visitor *v)
-{
-  v->visitInit(this);
+Init::~Init() {
+    delete (expr_);
+
 }
 
-Init *Init::clone() const
-{
-  return new Init(*this);
+void Init::accept(Visitor *v) {
+    v->visitInit(this);
 }
 
+Init *Init::clone() const {
+    return new Init(*this);
+}
+
+
+/********************   CBracketed    ********************/
+CBracketed::CBracketed(ComplexStart *p1) {
+    complexstart_ = p1;
+
+}
+
+CBracketed::CBracketed(const CBracketed &other) {
+    complexstart_ = other.complexstart_->clone();
+
+}
+
+CBracketed &CBracketed::operator=(const CBracketed &other) {
+    CBracketed tmp(other);
+    swap(tmp);
+    return *this;
+}
+
+void CBracketed::swap(CBracketed &other) {
+    std::swap(complexstart_, other.complexstart_);
+
+}
+
+CBracketed::~CBracketed() {
+    delete (complexstart_);
+
+}
+
+void CBracketed::accept(Visitor *v) {
+    v->visitCBracketed(this);
+}
+
+CBracketed *CBracketed::clone() const {
+    return new CBracketed(*this);
+}
 
 
 /********************   CMember    ********************/
-CMember::CMember(Ident p1, Ident p2)
-{
-  ident_1 = p1;
-  ident_2 = p2;
+CMember::CMember(Ident p1, Ident p2) {
+    ident_1 = p1;
+    ident_2 = p2;
 
 }
 
-CMember::CMember(const CMember & other)
-{
-  ident_1 = other.ident_1;
-  ident_2 = other.ident_2;
+CMember::CMember(const CMember &other) {
+    ident_1 = other.ident_1;
+    ident_2 = other.ident_2;
 
 }
 
-CMember &CMember::operator=(const CMember & other)
-{
-  CMember tmp(other);
-  swap(tmp);
-  return *this;
+CMember &CMember::operator=(const CMember &other) {
+    CMember tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void CMember::swap(CMember & other)
-{
-  std::swap(ident_1, other.ident_1);
-  std::swap(ident_2, other.ident_2);
-
-}
-
-CMember::~CMember()
-{
+void CMember::swap(CMember &other) {
+    std::swap(ident_1, other.ident_1);
+    std::swap(ident_2, other.ident_2);
 
 }
 
-void CMember::accept(Visitor *v)
-{
-  v->visitCMember(this);
+CMember::~CMember() {
+
 }
 
-CMember *CMember::clone() const
-{
-  return new CMember(*this);
+void CMember::accept(Visitor *v) {
+    v->visitCMember(this);
 }
 
+CMember *CMember::clone() const {
+    return new CMember(*this);
+}
 
 
 /********************   CArray    ********************/
-CArray::CArray(Ident p1, ListDimDef *p2)
-{
-  ident_ = p1;
-  listdimdef_ = p2;
+CArray::CArray(Ident p1, ListDimDef *p2) {
+    ident_ = p1;
+    listdimdef_ = p2;
 
 }
 
-CArray::CArray(const CArray & other)
-{
-  ident_ = other.ident_;
-  listdimdef_ = other.listdimdef_->clone();
+CArray::CArray(const CArray &other) {
+    ident_ = other.ident_;
+    listdimdef_ = other.listdimdef_->clone();
 
 }
 
-CArray &CArray::operator=(const CArray & other)
-{
-  CArray tmp(other);
-  swap(tmp);
-  return *this;
+CArray &CArray::operator=(const CArray &other) {
+    CArray tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void CArray::swap(CArray & other)
-{
-  std::swap(ident_, other.ident_);
-  std::swap(listdimdef_, other.listdimdef_);
-
-}
-
-CArray::~CArray()
-{
-  delete(listdimdef_);
+void CArray::swap(CArray &other) {
+    std::swap(ident_, other.ident_);
+    std::swap(listdimdef_, other.listdimdef_);
 
 }
 
-void CArray::accept(Visitor *v)
-{
-  v->visitCArray(this);
+CArray::~CArray() {
+    delete (listdimdef_);
+
 }
 
-CArray *CArray::clone() const
-{
-  return new CArray(*this);
+void CArray::accept(Visitor *v) {
+    v->visitCArray(this);
 }
 
+CArray *CArray::clone() const {
+    return new CArray(*this);
+}
 
 
 /********************   CMethod    ********************/
-CMethod::CMethod(Ident p1, ListExpr *p2)
-{
-  ident_ = p1;
-  listexpr_ = p2;
+CMethod::CMethod(Ident p1, ListExpr *p2) {
+    ident_ = p1;
+    listexpr_ = p2;
 
 }
 
-CMethod::CMethod(const CMethod & other)
-{
-  ident_ = other.ident_;
-  listexpr_ = other.listexpr_->clone();
+CMethod::CMethod(const CMethod &other) {
+    ident_ = other.ident_;
+    listexpr_ = other.listexpr_->clone();
 
 }
 
-CMethod &CMethod::operator=(const CMethod & other)
-{
-  CMethod tmp(other);
-  swap(tmp);
-  return *this;
+CMethod &CMethod::operator=(const CMethod &other) {
+    CMethod tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void CMethod::swap(CMethod & other)
-{
-  std::swap(ident_, other.ident_);
-  std::swap(listexpr_, other.listexpr_);
-
-}
-
-CMethod::~CMethod()
-{
-  delete(listexpr_);
+void CMethod::swap(CMethod &other) {
+    std::swap(ident_, other.ident_);
+    std::swap(listexpr_, other.listexpr_);
 
 }
 
-void CMethod::accept(Visitor *v)
-{
-  v->visitCMethod(this);
+CMethod::~CMethod() {
+    delete (listexpr_);
+
 }
 
-CMethod *CMethod::clone() const
-{
-  return new CMethod(*this);
+void CMethod::accept(Visitor *v) {
+    v->visitCMethod(this);
 }
 
+CMethod *CMethod::clone() const {
+    return new CMethod(*this);
+}
 
 
 /********************   NewArray    ********************/
-NewArray::NewArray(ArrType *p1, ListDimDef *p2)
-{
-  arrtype_ = p1;
-  listdimdef_ = p2;
+NewArray::NewArray(ArrType *p1, ListDimDef *p2) {
+    arrtype_ = p1;
+    listdimdef_ = p2;
 
 }
 
-NewArray::NewArray(const NewArray & other)
-{
-  arrtype_ = other.arrtype_->clone();
-  listdimdef_ = other.listdimdef_->clone();
+NewArray::NewArray(const NewArray &other) {
+    arrtype_ = other.arrtype_->clone();
+    listdimdef_ = other.listdimdef_->clone();
 
 }
 
-NewArray &NewArray::operator=(const NewArray & other)
-{
-  NewArray tmp(other);
-  swap(tmp);
-  return *this;
+NewArray &NewArray::operator=(const NewArray &other) {
+    NewArray tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void NewArray::swap(NewArray & other)
-{
-  std::swap(arrtype_, other.arrtype_);
-  std::swap(listdimdef_, other.listdimdef_);
-
-}
-
-NewArray::~NewArray()
-{
-  delete(arrtype_);
-  delete(listdimdef_);
+void NewArray::swap(NewArray &other) {
+    std::swap(arrtype_, other.arrtype_);
+    std::swap(listdimdef_, other.listdimdef_);
 
 }
 
-void NewArray::accept(Visitor *v)
-{
-  v->visitNewArray(this);
+NewArray::~NewArray() {
+    delete (arrtype_);
+    delete (listdimdef_);
+
 }
 
-NewArray *NewArray::clone() const
-{
-  return new NewArray(*this);
+void NewArray::accept(Visitor *v) {
+    v->visitNewArray(this);
 }
 
+NewArray *NewArray::clone() const {
+    return new NewArray(*this);
+}
 
 
 /********************   NewObject    ********************/
-NewObject::NewObject(Ident p1)
-{
-  ident_ = p1;
+NewObject::NewObject(Ident p1) {
+    ident_ = p1;
 
 }
 
-NewObject::NewObject(const NewObject & other)
-{
-  ident_ = other.ident_;
+NewObject::NewObject(const NewObject &other) {
+    ident_ = other.ident_;
 
 }
 
-NewObject &NewObject::operator=(const NewObject & other)
-{
-  NewObject tmp(other);
-  swap(tmp);
-  return *this;
+NewObject &NewObject::operator=(const NewObject &other) {
+    NewObject tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void NewObject::swap(NewObject & other)
-{
-  std::swap(ident_, other.ident_);
-
-}
-
-NewObject::~NewObject()
-{
+void NewObject::swap(NewObject &other) {
+    std::swap(ident_, other.ident_);
 
 }
 
-void NewObject::accept(Visitor *v)
-{
-  v->visitNewObject(this);
+NewObject::~NewObject() {
+
 }
 
-NewObject *NewObject::clone() const
-{
-  return new NewObject(*this);
+void NewObject::accept(Visitor *v) {
+    v->visitNewObject(this);
 }
 
+NewObject *NewObject::clone() const {
+    return new NewObject(*this);
+}
 
 
 /********************   Variable    ********************/
-Variable::Variable(Ident p1)
-{
-  ident_ = p1;
+Variable::Variable(Ident p1) {
+    ident_ = p1;
 
 }
 
-Variable::Variable(const Variable & other)
-{
-  ident_ = other.ident_;
+Variable::Variable(const Variable &other) {
+    ident_ = other.ident_;
 
 }
 
-Variable &Variable::operator=(const Variable & other)
-{
-  Variable tmp(other);
-  swap(tmp);
-  return *this;
+Variable &Variable::operator=(const Variable &other) {
+    Variable tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void Variable::swap(Variable & other)
-{
-  std::swap(ident_, other.ident_);
-
-}
-
-Variable::~Variable()
-{
+void Variable::swap(Variable &other) {
+    std::swap(ident_, other.ident_);
 
 }
 
-void Variable::accept(Visitor *v)
-{
-  v->visitVariable(this);
+Variable::~Variable() {
+
 }
 
-Variable *Variable::clone() const
-{
-  return new Variable(*this);
+void Variable::accept(Visitor *v) {
+    v->visitVariable(this);
 }
 
+Variable *Variable::clone() const {
+    return new Variable(*this);
+}
 
 
 /********************   ArrElement    ********************/
-ArrElement::ArrElement(ListDimDef *p1)
-{
-  listdimdef_ = p1;
+ArrElement::ArrElement(ListDimDef *p1) {
+    listdimdef_ = p1;
 
 }
 
-ArrElement::ArrElement(const ArrElement & other)
-{
-  listdimdef_ = other.listdimdef_->clone();
+ArrElement::ArrElement(const ArrElement &other) {
+    listdimdef_ = other.listdimdef_->clone();
 
 }
 
-ArrElement &ArrElement::operator=(const ArrElement & other)
-{
-  ArrElement tmp(other);
-  swap(tmp);
-  return *this;
+ArrElement &ArrElement::operator=(const ArrElement &other) {
+    ArrElement tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void ArrElement::swap(ArrElement & other)
-{
-  std::swap(listdimdef_, other.listdimdef_);
-
-}
-
-ArrElement::~ArrElement()
-{
-  delete(listdimdef_);
+void ArrElement::swap(ArrElement &other) {
+    std::swap(listdimdef_, other.listdimdef_);
 
 }
 
-void ArrElement::accept(Visitor *v)
-{
-  v->visitArrElement(this);
+ArrElement::~ArrElement() {
+    delete (listdimdef_);
+
 }
 
-ArrElement *ArrElement::clone() const
-{
-  return new ArrElement(*this);
+void ArrElement::accept(Visitor *v) {
+    v->visitArrElement(this);
 }
 
+ArrElement *ArrElement::clone() const {
+    return new ArrElement(*this);
+}
 
 
 /********************   Method    ********************/
-Method::Method(ListExpr *p1)
-{
-  listexpr_ = p1;
+Method::Method(ListExpr *p1) {
+    listexpr_ = p1;
 
 }
 
-Method::Method(const Method & other)
-{
-  listexpr_ = other.listexpr_->clone();
+Method::Method(const Method &other) {
+    listexpr_ = other.listexpr_->clone();
 
 }
 
-Method &Method::operator=(const Method & other)
-{
-  Method tmp(other);
-  swap(tmp);
-  return *this;
+Method &Method::operator=(const Method &other) {
+    Method tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void Method::swap(Method & other)
-{
-  std::swap(listexpr_, other.listexpr_);
-
-}
-
-Method::~Method()
-{
-  delete(listexpr_);
+void Method::swap(Method &other) {
+    std::swap(listexpr_, other.listexpr_);
 
 }
 
-void Method::accept(Visitor *v)
-{
-  v->visitMethod(this);
+Method::~Method() {
+    delete (listexpr_);
+
 }
 
-Method *Method::clone() const
-{
-  return new Method(*this);
+void Method::accept(Visitor *v) {
+    v->visitMethod(this);
 }
 
+Method *Method::clone() const {
+    return new Method(*this);
+}
 
 
 /********************   MemberAccess    ********************/
-MemberAccess::MemberAccess()
-{
+MemberAccess::MemberAccess() {
 
 }
 
-MemberAccess::MemberAccess(const MemberAccess & other)
-{
+MemberAccess::MemberAccess(const MemberAccess &other) {
 
 }
 
-MemberAccess &MemberAccess::operator=(const MemberAccess & other)
-{
-  MemberAccess tmp(other);
-  swap(tmp);
-  return *this;
+MemberAccess &MemberAccess::operator=(const MemberAccess &other) {
+    MemberAccess tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void MemberAccess::swap(MemberAccess & other)
-{
-
-}
-
-MemberAccess::~MemberAccess()
-{
+void MemberAccess::swap(MemberAccess &other) {
 
 }
 
-void MemberAccess::accept(Visitor *v)
-{
-  v->visitMemberAccess(this);
+MemberAccess::~MemberAccess() {
+
 }
 
-MemberAccess *MemberAccess::clone() const
-{
-  return new MemberAccess(*this);
+void MemberAccess::accept(Visitor *v) {
+    v->visitMemberAccess(this);
 }
 
+MemberAccess *MemberAccess::clone() const {
+    return new MemberAccess(*this);
+}
 
 
 /********************   IntArrType    ********************/
-IntArrType::IntArrType()
-{
+IntArrType::IntArrType() {
 
 }
 
-IntArrType::IntArrType(const IntArrType & other)
-{
+IntArrType::IntArrType(const IntArrType &other) {
 
 }
 
-IntArrType &IntArrType::operator=(const IntArrType & other)
-{
-  IntArrType tmp(other);
-  swap(tmp);
-  return *this;
+IntArrType &IntArrType::operator=(const IntArrType &other) {
+    IntArrType tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void IntArrType::swap(IntArrType & other)
-{
-
-}
-
-IntArrType::~IntArrType()
-{
+void IntArrType::swap(IntArrType &other) {
 
 }
 
-void IntArrType::accept(Visitor *v)
-{
-  v->visitIntArrType(this);
+IntArrType::~IntArrType() {
+
 }
 
-IntArrType *IntArrType::clone() const
-{
-  return new IntArrType(*this);
+void IntArrType::accept(Visitor *v) {
+    v->visitIntArrType(this);
 }
 
+IntArrType *IntArrType::clone() const {
+    return new IntArrType(*this);
+}
 
 
 /********************   StrArrType    ********************/
-StrArrType::StrArrType()
-{
+StrArrType::StrArrType() {
 
 }
 
-StrArrType::StrArrType(const StrArrType & other)
-{
+StrArrType::StrArrType(const StrArrType &other) {
 
 }
 
-StrArrType &StrArrType::operator=(const StrArrType & other)
-{
-  StrArrType tmp(other);
-  swap(tmp);
-  return *this;
+StrArrType &StrArrType::operator=(const StrArrType &other) {
+    StrArrType tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void StrArrType::swap(StrArrType & other)
-{
-
-}
-
-StrArrType::~StrArrType()
-{
+void StrArrType::swap(StrArrType &other) {
 
 }
 
-void StrArrType::accept(Visitor *v)
-{
-  v->visitStrArrType(this);
+StrArrType::~StrArrType() {
+
 }
 
-StrArrType *StrArrType::clone() const
-{
-  return new StrArrType(*this);
+void StrArrType::accept(Visitor *v) {
+    v->visitStrArrType(this);
 }
 
+StrArrType *StrArrType::clone() const {
+    return new StrArrType(*this);
+}
 
 
 /********************   BoolArrType    ********************/
-BoolArrType::BoolArrType()
-{
+BoolArrType::BoolArrType() {
 
 }
 
-BoolArrType::BoolArrType(const BoolArrType & other)
-{
+BoolArrType::BoolArrType(const BoolArrType &other) {
 
 }
 
-BoolArrType &BoolArrType::operator=(const BoolArrType & other)
-{
-  BoolArrType tmp(other);
-  swap(tmp);
-  return *this;
+BoolArrType &BoolArrType::operator=(const BoolArrType &other) {
+    BoolArrType tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void BoolArrType::swap(BoolArrType & other)
-{
-
-}
-
-BoolArrType::~BoolArrType()
-{
+void BoolArrType::swap(BoolArrType &other) {
 
 }
 
-void BoolArrType::accept(Visitor *v)
-{
-  v->visitBoolArrType(this);
+BoolArrType::~BoolArrType() {
+
 }
 
-BoolArrType *BoolArrType::clone() const
-{
-  return new BoolArrType(*this);
+void BoolArrType::accept(Visitor *v) {
+    v->visitBoolArrType(this);
 }
 
+BoolArrType *BoolArrType::clone() const {
+    return new BoolArrType(*this);
+}
 
 
 /********************   ClassArrType    ********************/
-ClassArrType::ClassArrType(Ident p1)
-{
-  ident_ = p1;
+ClassArrType::ClassArrType(Ident p1) {
+    ident_ = p1;
 
 }
 
-ClassArrType::ClassArrType(const ClassArrType & other)
-{
-  ident_ = other.ident_;
+ClassArrType::ClassArrType(const ClassArrType &other) {
+    ident_ = other.ident_;
 
 }
 
-ClassArrType &ClassArrType::operator=(const ClassArrType & other)
-{
-  ClassArrType tmp(other);
-  swap(tmp);
-  return *this;
+ClassArrType &ClassArrType::operator=(const ClassArrType &other) {
+    ClassArrType tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void ClassArrType::swap(ClassArrType & other)
-{
-  std::swap(ident_, other.ident_);
-
-}
-
-ClassArrType::~ClassArrType()
-{
+void ClassArrType::swap(ClassArrType &other) {
+    std::swap(ident_, other.ident_);
 
 }
 
-void ClassArrType::accept(Visitor *v)
-{
-  v->visitClassArrType(this);
+ClassArrType::~ClassArrType() {
+
 }
 
-ClassArrType *ClassArrType::clone() const
-{
-  return new ClassArrType(*this);
+void ClassArrType::accept(Visitor *v) {
+    v->visitClassArrType(this);
 }
 
+ClassArrType *ClassArrType::clone() const {
+    return new ClassArrType(*this);
+}
 
 
 /********************   Int    ********************/
-Int::Int()
-{
+Int::Int() {
 
 }
 
-Int::Int(const Int & other)
-{
+Int::Int(const Int &other) {
 
 }
 
-Int &Int::operator=(const Int & other)
-{
-  Int tmp(other);
-  swap(tmp);
-  return *this;
+Int &Int::operator=(const Int &other) {
+    Int tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void Int::swap(Int & other)
-{
-
-}
-
-Int::~Int()
-{
+void Int::swap(Int &other) {
 
 }
 
-void Int::accept(Visitor *v)
-{
-  v->visitInt(this);
+Int::~Int() {
+
 }
 
-Int *Int::clone() const
-{
-  return new Int(*this);
+void Int::accept(Visitor *v) {
+    v->visitInt(this);
 }
 
+Int *Int::clone() const {
+    return new Int(*this);
+}
 
 
 /********************   Str    ********************/
-Str::Str()
-{
+Str::Str() {
 
 }
 
-Str::Str(const Str & other)
-{
+Str::Str(const Str &other) {
 
 }
 
-Str &Str::operator=(const Str & other)
-{
-  Str tmp(other);
-  swap(tmp);
-  return *this;
+Str &Str::operator=(const Str &other) {
+    Str tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void Str::swap(Str & other)
-{
-
-}
-
-Str::~Str()
-{
+void Str::swap(Str &other) {
 
 }
 
-void Str::accept(Visitor *v)
-{
-  v->visitStr(this);
+Str::~Str() {
+
 }
 
-Str *Str::clone() const
-{
-  return new Str(*this);
+void Str::accept(Visitor *v) {
+    v->visitStr(this);
 }
 
+Str *Str::clone() const {
+    return new Str(*this);
+}
 
 
 /********************   Bool    ********************/
-Bool::Bool()
-{
+Bool::Bool() {
 
 }
 
-Bool::Bool(const Bool & other)
-{
+Bool::Bool(const Bool &other) {
 
 }
 
-Bool &Bool::operator=(const Bool & other)
-{
-  Bool tmp(other);
-  swap(tmp);
-  return *this;
+Bool &Bool::operator=(const Bool &other) {
+    Bool tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void Bool::swap(Bool & other)
-{
-
-}
-
-Bool::~Bool()
-{
+void Bool::swap(Bool &other) {
 
 }
 
-void Bool::accept(Visitor *v)
-{
-  v->visitBool(this);
+Bool::~Bool() {
+
 }
 
-Bool *Bool::clone() const
-{
-  return new Bool(*this);
+void Bool::accept(Visitor *v) {
+    v->visitBool(this);
 }
 
+Bool *Bool::clone() const {
+    return new Bool(*this);
+}
 
 
 /********************   Void    ********************/
-Void::Void()
-{
+Void::Void() {
 
 }
 
-Void::Void(const Void & other)
-{
+Void::Void(const Void &other) {
 
 }
 
-Void &Void::operator=(const Void & other)
-{
-  Void tmp(other);
-  swap(tmp);
-  return *this;
+Void &Void::operator=(const Void &other) {
+    Void tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void Void::swap(Void & other)
-{
-
-}
-
-Void::~Void()
-{
+void Void::swap(Void &other) {
 
 }
 
-void Void::accept(Visitor *v)
-{
-  v->visitVoid(this);
+Void::~Void() {
+
 }
 
-Void *Void::clone() const
-{
-  return new Void(*this);
+void Void::accept(Visitor *v) {
+    v->visitVoid(this);
 }
 
+Void *Void::clone() const {
+    return new Void(*this);
+}
 
 
 /********************   Arr    ********************/
-Arr::Arr(ArrType *p1, ListArrDimType *p2)
-{
-  arrtype_ = p1;
-  listarrdimtype_ = p2;
+Arr::Arr(ArrType *p1, ListArrDimType *p2) {
+    arrtype_ = p1;
+    listarrdimtype_ = p2;
 
 }
 
-Arr::Arr(const Arr & other)
-{
-  arrtype_ = other.arrtype_->clone();
-  listarrdimtype_ = other.listarrdimtype_->clone();
+Arr::Arr(const Arr &other) {
+    arrtype_ = other.arrtype_->clone();
+    listarrdimtype_ = other.listarrdimtype_->clone();
 
 }
 
-Arr &Arr::operator=(const Arr & other)
-{
-  Arr tmp(other);
-  swap(tmp);
-  return *this;
+Arr &Arr::operator=(const Arr &other) {
+    Arr tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void Arr::swap(Arr & other)
-{
-  std::swap(arrtype_, other.arrtype_);
-  std::swap(listarrdimtype_, other.listarrdimtype_);
-
-}
-
-Arr::~Arr()
-{
-  delete(arrtype_);
-  delete(listarrdimtype_);
+void Arr::swap(Arr &other) {
+    std::swap(arrtype_, other.arrtype_);
+    std::swap(listarrdimtype_, other.listarrdimtype_);
 
 }
 
-void Arr::accept(Visitor *v)
-{
-  v->visitArr(this);
+Arr::~Arr() {
+    delete (arrtype_);
+    delete (listarrdimtype_);
+
 }
 
-Arr *Arr::clone() const
-{
-  return new Arr(*this);
+void Arr::accept(Visitor *v) {
+    v->visitArr(this);
 }
 
+Arr *Arr::clone() const {
+    return new Arr(*this);
+}
 
 
 /********************   Class    ********************/
-Class::Class(Ident p1)
-{
-  ident_ = p1;
+Class::Class(Ident p1) {
+    ident_ = p1;
 
 }
 
-Class::Class(const Class & other)
-{
-  ident_ = other.ident_;
+Class::Class(const Class &other) {
+    ident_ = other.ident_;
 
 }
 
-Class &Class::operator=(const Class & other)
-{
-  Class tmp(other);
-  swap(tmp);
-  return *this;
+Class &Class::operator=(const Class &other) {
+    Class tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void Class::swap(Class & other)
-{
-  std::swap(ident_, other.ident_);
-
-}
-
-Class::~Class()
-{
+void Class::swap(Class &other) {
+    std::swap(ident_, other.ident_);
 
 }
 
-void Class::accept(Visitor *v)
-{
-  v->visitClass(this);
+Class::~Class() {
+
 }
 
-Class *Class::clone() const
-{
-  return new Class(*this);
+void Class::accept(Visitor *v) {
+    v->visitClass(this);
 }
 
+Class *Class::clone() const {
+    return new Class(*this);
+}
 
 
 /********************   Fun    ********************/
-Fun::Fun(Type *p1, ListType *p2)
-{
-  type_ = p1;
-  listtype_ = p2;
+Fun::Fun(Type *p1, ListType *p2) {
+    type_ = p1;
+    listtype_ = p2;
 
 }
 
-Fun::Fun(const Fun & other)
-{
-  type_ = other.type_->clone();
-  listtype_ = other.listtype_->clone();
+Fun::Fun(const Fun &other) {
+    type_ = other.type_->clone();
+    listtype_ = other.listtype_->clone();
 
 }
 
-Fun &Fun::operator=(const Fun & other)
-{
-  Fun tmp(other);
-  swap(tmp);
-  return *this;
+Fun &Fun::operator=(const Fun &other) {
+    Fun tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void Fun::swap(Fun & other)
-{
-  std::swap(type_, other.type_);
-  std::swap(listtype_, other.listtype_);
-
-}
-
-Fun::~Fun()
-{
-  delete(type_);
-  delete(listtype_);
+void Fun::swap(Fun &other) {
+    std::swap(type_, other.type_);
+    std::swap(listtype_, other.listtype_);
 
 }
 
-void Fun::accept(Visitor *v)
-{
-  v->visitFun(this);
+Fun::~Fun() {
+    delete (type_);
+    delete (listtype_);
+
 }
 
-Fun *Fun::clone() const
-{
-  return new Fun(*this);
+void Fun::accept(Visitor *v) {
+    v->visitFun(this);
 }
 
+Fun *Fun::clone() const {
+    return new Fun(*this);
+}
 
 
 /********************   DimType    ********************/
-DimType::DimType()
-{
+DimType::DimType() {
 
 }
 
-DimType::DimType(const DimType & other)
-{
+DimType::DimType(const DimType &other) {
 
 }
 
-DimType &DimType::operator=(const DimType & other)
-{
-  DimType tmp(other);
-  swap(tmp);
-  return *this;
+DimType &DimType::operator=(const DimType &other) {
+    DimType tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void DimType::swap(DimType & other)
-{
-
-}
-
-DimType::~DimType()
-{
+void DimType::swap(DimType &other) {
 
 }
 
-void DimType::accept(Visitor *v)
-{
-  v->visitDimType(this);
+DimType::~DimType() {
+
 }
 
-DimType *DimType::clone() const
-{
-  return new DimType(*this);
+void DimType::accept(Visitor *v) {
+    v->visitDimType(this);
 }
 
+DimType *DimType::clone() const {
+    return new DimType(*this);
+}
 
 
 /********************   ArrDimDef    ********************/
-ArrDimDef::ArrDimDef(Expr *p1)
-{
-  expr_ = p1;
+ArrDimDef::ArrDimDef(Expr *p1) {
+    expr_ = p1;
 
 }
 
-ArrDimDef::ArrDimDef(const ArrDimDef & other)
-{
-  expr_ = other.expr_->clone();
+ArrDimDef::ArrDimDef(const ArrDimDef &other) {
+    expr_ = other.expr_->clone();
 
 }
 
-ArrDimDef &ArrDimDef::operator=(const ArrDimDef & other)
-{
-  ArrDimDef tmp(other);
-  swap(tmp);
-  return *this;
+ArrDimDef &ArrDimDef::operator=(const ArrDimDef &other) {
+    ArrDimDef tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void ArrDimDef::swap(ArrDimDef & other)
-{
-  std::swap(expr_, other.expr_);
-
-}
-
-ArrDimDef::~ArrDimDef()
-{
-  delete(expr_);
+void ArrDimDef::swap(ArrDimDef &other) {
+    std::swap(expr_, other.expr_);
 
 }
 
-void ArrDimDef::accept(Visitor *v)
-{
-  v->visitArrDimDef(this);
+ArrDimDef::~ArrDimDef() {
+    delete (expr_);
+
 }
 
-ArrDimDef *ArrDimDef::clone() const
-{
-  return new ArrDimDef(*this);
+void ArrDimDef::accept(Visitor *v) {
+    v->visitArrDimDef(this);
 }
 
+ArrDimDef *ArrDimDef::clone() const {
+    return new ArrDimDef(*this);
+}
 
 
 /********************   EVar    ********************/
-EVar::EVar(Ident p1)
-{
-  ident_ = p1;
+EVar::EVar(Ident p1) {
+    ident_ = p1;
 
 }
 
-EVar::EVar(const EVar & other)
-{
-  ident_ = other.ident_;
+EVar::EVar(const EVar &other) {
+    ident_ = other.ident_;
 
 }
 
-EVar &EVar::operator=(const EVar & other)
-{
-  EVar tmp(other);
-  swap(tmp);
-  return *this;
+EVar &EVar::operator=(const EVar &other) {
+    EVar tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void EVar::swap(EVar & other)
-{
-  std::swap(ident_, other.ident_);
-
-}
-
-EVar::~EVar()
-{
+void EVar::swap(EVar &other) {
+    std::swap(ident_, other.ident_);
 
 }
 
-void EVar::accept(Visitor *v)
-{
-  v->visitEVar(this);
+EVar::~EVar() {
+
 }
 
-EVar *EVar::clone() const
-{
-  return new EVar(*this);
+void EVar::accept(Visitor *v) {
+    v->visitEVar(this);
 }
 
+EVar *EVar::clone() const {
+    return new EVar(*this);
+}
+
+
+/********************   EBracketVar    ********************/
+EBracketVar::EBracketVar(Ident p1) {
+    ident_ = p1;
+
+}
+
+EBracketVar::EBracketVar(const EBracketVar &other) {
+    ident_ = other.ident_;
+
+}
+
+EBracketVar &EBracketVar::operator=(const EBracketVar &other) {
+    EBracketVar tmp(other);
+    swap(tmp);
+    return *this;
+}
+
+void EBracketVar::swap(EBracketVar &other) {
+    std::swap(ident_, other.ident_);
+
+}
+
+EBracketVar::~EBracketVar() {
+
+}
+
+void EBracketVar::accept(Visitor *v) {
+    v->visitEBracketVar(this);
+}
+
+EBracketVar *EBracketVar::clone() const {
+    return new EBracketVar(*this);
+}
 
 
 /********************   EComplex    ********************/
-EComplex::EComplex(ComplexStart *p1, ListComplexPart *p2)
-{
-  complexstart_ = p1;
-  listcomplexpart_ = p2;
+EComplex::EComplex(ComplexStart *p1, ListComplexPart *p2) {
+    complexstart_ = p1;
+    listcomplexpart_ = p2;
 
 }
 
-EComplex::EComplex(const EComplex & other)
-{
-  complexstart_ = other.complexstart_->clone();
-  listcomplexpart_ = other.listcomplexpart_->clone();
+EComplex::EComplex(const EComplex &other) {
+    complexstart_ = other.complexstart_->clone();
+    listcomplexpart_ = other.listcomplexpart_->clone();
 
 }
 
-EComplex &EComplex::operator=(const EComplex & other)
-{
-  EComplex tmp(other);
-  swap(tmp);
-  return *this;
+EComplex &EComplex::operator=(const EComplex &other) {
+    EComplex tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void EComplex::swap(EComplex & other)
-{
-  std::swap(complexstart_, other.complexstart_);
-  std::swap(listcomplexpart_, other.listcomplexpart_);
-
-}
-
-EComplex::~EComplex()
-{
-  delete(complexstart_);
-  delete(listcomplexpart_);
+void EComplex::swap(EComplex &other) {
+    std::swap(complexstart_, other.complexstart_);
+    std::swap(listcomplexpart_, other.listcomplexpart_);
 
 }
 
-void EComplex::accept(Visitor *v)
-{
-  v->visitEComplex(this);
+EComplex::~EComplex() {
+    delete (complexstart_);
+    delete (listcomplexpart_);
+
 }
 
-EComplex *EComplex::clone() const
-{
-  return new EComplex(*this);
+void EComplex::accept(Visitor *v) {
+    v->visitEComplex(this);
 }
 
+EComplex *EComplex::clone() const {
+    return new EComplex(*this);
+}
 
 
 /********************   ENullCast    ********************/
-ENullCast::ENullCast(Ident p1)
-{
-  ident_ = p1;
+ENullCast::ENullCast(Ident p1) {
+    ident_ = p1;
 
 }
 
-ENullCast::ENullCast(const ENullCast & other)
-{
-  ident_ = other.ident_;
+ENullCast::ENullCast(const ENullCast &other) {
+    ident_ = other.ident_;
 
 }
 
-ENullCast &ENullCast::operator=(const ENullCast & other)
-{
-  ENullCast tmp(other);
-  swap(tmp);
-  return *this;
+ENullCast &ENullCast::operator=(const ENullCast &other) {
+    ENullCast tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void ENullCast::swap(ENullCast & other)
-{
-  std::swap(ident_, other.ident_);
-
-}
-
-ENullCast::~ENullCast()
-{
+void ENullCast::swap(ENullCast &other) {
+    std::swap(ident_, other.ident_);
 
 }
 
-void ENullCast::accept(Visitor *v)
-{
-  v->visitENullCast(this);
+ENullCast::~ENullCast() {
+
 }
 
-ENullCast *ENullCast::clone() const
-{
-  return new ENullCast(*this);
+void ENullCast::accept(Visitor *v) {
+    v->visitENullCast(this);
 }
 
+ENullCast *ENullCast::clone() const {
+    return new ENullCast(*this);
+}
 
 
 /********************   ELitInt    ********************/
-ELitInt::ELitInt(Integer p1)
-{
-  integer_ = p1;
+ELitInt::ELitInt(Integer p1) {
+    integer_ = p1;
 
 }
 
-ELitInt::ELitInt(const ELitInt & other)
-{
-  integer_ = other.integer_;
+ELitInt::ELitInt(const ELitInt &other) {
+    integer_ = other.integer_;
 
 }
 
-ELitInt &ELitInt::operator=(const ELitInt & other)
-{
-  ELitInt tmp(other);
-  swap(tmp);
-  return *this;
+ELitInt &ELitInt::operator=(const ELitInt &other) {
+    ELitInt tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void ELitInt::swap(ELitInt & other)
-{
-  std::swap(integer_, other.integer_);
-
-}
-
-ELitInt::~ELitInt()
-{
+void ELitInt::swap(ELitInt &other) {
+    std::swap(integer_, other.integer_);
 
 }
 
-void ELitInt::accept(Visitor *v)
-{
-  v->visitELitInt(this);
+ELitInt::~ELitInt() {
+
 }
 
-ELitInt *ELitInt::clone() const
-{
-  return new ELitInt(*this);
+void ELitInt::accept(Visitor *v) {
+    v->visitELitInt(this);
 }
 
+ELitInt *ELitInt::clone() const {
+    return new ELitInt(*this);
+}
 
 
 /********************   ELitTrue    ********************/
-ELitTrue::ELitTrue()
-{
+ELitTrue::ELitTrue() {
 
 }
 
-ELitTrue::ELitTrue(const ELitTrue & other)
-{
+ELitTrue::ELitTrue(const ELitTrue &other) {
 
 }
 
-ELitTrue &ELitTrue::operator=(const ELitTrue & other)
-{
-  ELitTrue tmp(other);
-  swap(tmp);
-  return *this;
+ELitTrue &ELitTrue::operator=(const ELitTrue &other) {
+    ELitTrue tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void ELitTrue::swap(ELitTrue & other)
-{
-
-}
-
-ELitTrue::~ELitTrue()
-{
+void ELitTrue::swap(ELitTrue &other) {
 
 }
 
-void ELitTrue::accept(Visitor *v)
-{
-  v->visitELitTrue(this);
+ELitTrue::~ELitTrue() {
+
 }
 
-ELitTrue *ELitTrue::clone() const
-{
-  return new ELitTrue(*this);
+void ELitTrue::accept(Visitor *v) {
+    v->visitELitTrue(this);
 }
 
+ELitTrue *ELitTrue::clone() const {
+    return new ELitTrue(*this);
+}
 
 
 /********************   ELitFalse    ********************/
-ELitFalse::ELitFalse()
-{
+ELitFalse::ELitFalse() {
 
 }
 
-ELitFalse::ELitFalse(const ELitFalse & other)
-{
+ELitFalse::ELitFalse(const ELitFalse &other) {
 
 }
 
-ELitFalse &ELitFalse::operator=(const ELitFalse & other)
-{
-  ELitFalse tmp(other);
-  swap(tmp);
-  return *this;
+ELitFalse &ELitFalse::operator=(const ELitFalse &other) {
+    ELitFalse tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void ELitFalse::swap(ELitFalse & other)
-{
-
-}
-
-ELitFalse::~ELitFalse()
-{
+void ELitFalse::swap(ELitFalse &other) {
 
 }
 
-void ELitFalse::accept(Visitor *v)
-{
-  v->visitELitFalse(this);
+ELitFalse::~ELitFalse() {
+
 }
 
-ELitFalse *ELitFalse::clone() const
-{
-  return new ELitFalse(*this);
+void ELitFalse::accept(Visitor *v) {
+    v->visitELitFalse(this);
 }
 
+ELitFalse *ELitFalse::clone() const {
+    return new ELitFalse(*this);
+}
 
 
 /********************   EString    ********************/
-EString::EString(String p1)
-{
-  string_ = p1;
+EString::EString(String p1) {
+    string_ = p1;
 
 }
 
-EString::EString(const EString & other)
-{
-  string_ = other.string_;
+EString::EString(const EString &other) {
+    string_ = other.string_;
 
 }
 
-EString &EString::operator=(const EString & other)
-{
-  EString tmp(other);
-  swap(tmp);
-  return *this;
+EString &EString::operator=(const EString &other) {
+    EString tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void EString::swap(EString & other)
-{
-  std::swap(string_, other.string_);
-
-}
-
-EString::~EString()
-{
+void EString::swap(EString &other) {
+    std::swap(string_, other.string_);
 
 }
 
-void EString::accept(Visitor *v)
-{
-  v->visitEString(this);
+EString::~EString() {
+
 }
 
-EString *EString::clone() const
-{
-  return new EString(*this);
+void EString::accept(Visitor *v) {
+    v->visitEString(this);
 }
 
+EString *EString::clone() const {
+    return new EString(*this);
+}
 
 
 /********************   Neg    ********************/
-Neg::Neg(Expr *p1)
-{
-  expr_ = p1;
+Neg::Neg(Expr *p1) {
+    expr_ = p1;
 
 }
 
-Neg::Neg(const Neg & other)
-{
-  expr_ = other.expr_->clone();
+Neg::Neg(const Neg &other) {
+    expr_ = other.expr_->clone();
 
 }
 
-Neg &Neg::operator=(const Neg & other)
-{
-  Neg tmp(other);
-  swap(tmp);
-  return *this;
+Neg &Neg::operator=(const Neg &other) {
+    Neg tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void Neg::swap(Neg & other)
-{
-  std::swap(expr_, other.expr_);
-
-}
-
-Neg::~Neg()
-{
-  delete(expr_);
+void Neg::swap(Neg &other) {
+    std::swap(expr_, other.expr_);
 
 }
 
-void Neg::accept(Visitor *v)
-{
-  v->visitNeg(this);
+Neg::~Neg() {
+    delete (expr_);
+
 }
 
-Neg *Neg::clone() const
-{
-  return new Neg(*this);
+void Neg::accept(Visitor *v) {
+    v->visitNeg(this);
 }
 
+Neg *Neg::clone() const {
+    return new Neg(*this);
+}
 
 
 /********************   Not    ********************/
-Not::Not(Expr *p1)
-{
-  expr_ = p1;
+Not::Not(Expr *p1) {
+    expr_ = p1;
 
 }
 
-Not::Not(const Not & other)
-{
-  expr_ = other.expr_->clone();
+Not::Not(const Not &other) {
+    expr_ = other.expr_->clone();
 
 }
 
-Not &Not::operator=(const Not & other)
-{
-  Not tmp(other);
-  swap(tmp);
-  return *this;
+Not &Not::operator=(const Not &other) {
+    Not tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void Not::swap(Not & other)
-{
-  std::swap(expr_, other.expr_);
-
-}
-
-Not::~Not()
-{
-  delete(expr_);
+void Not::swap(Not &other) {
+    std::swap(expr_, other.expr_);
 
 }
 
-void Not::accept(Visitor *v)
-{
-  v->visitNot(this);
+Not::~Not() {
+    delete (expr_);
+
 }
 
-Not *Not::clone() const
-{
-  return new Not(*this);
+void Not::accept(Visitor *v) {
+    v->visitNot(this);
 }
 
+Not *Not::clone() const {
+    return new Not(*this);
+}
 
 
 /********************   EMul    ********************/
-EMul::EMul(Expr *p1, MulOp *p2, Expr *p3)
-{
-  expr_1 = p1;
-  mulop_ = p2;
-  expr_2 = p3;
+EMul::EMul(Expr *p1, MulOp *p2, Expr *p3) {
+    expr_1 = p1;
+    mulop_ = p2;
+    expr_2 = p3;
 
 }
 
-EMul::EMul(const EMul & other)
-{
-  expr_1 = other.expr_1->clone();
-  mulop_ = other.mulop_->clone();
-  expr_2 = other.expr_2->clone();
+EMul::EMul(const EMul &other) {
+    expr_1 = other.expr_1->clone();
+    mulop_ = other.mulop_->clone();
+    expr_2 = other.expr_2->clone();
 
 }
 
-EMul &EMul::operator=(const EMul & other)
-{
-  EMul tmp(other);
-  swap(tmp);
-  return *this;
+EMul &EMul::operator=(const EMul &other) {
+    EMul tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void EMul::swap(EMul & other)
-{
-  std::swap(expr_1, other.expr_1);
-  std::swap(mulop_, other.mulop_);
-  std::swap(expr_2, other.expr_2);
-
-}
-
-EMul::~EMul()
-{
-  delete(expr_1);
-  delete(mulop_);
-  delete(expr_2);
+void EMul::swap(EMul &other) {
+    std::swap(expr_1, other.expr_1);
+    std::swap(mulop_, other.mulop_);
+    std::swap(expr_2, other.expr_2);
 
 }
 
-void EMul::accept(Visitor *v)
-{
-  v->visitEMul(this);
+EMul::~EMul() {
+    delete (expr_1);
+    delete (mulop_);
+    delete (expr_2);
+
 }
 
-EMul *EMul::clone() const
-{
-  return new EMul(*this);
+void EMul::accept(Visitor *v) {
+    v->visitEMul(this);
 }
 
+EMul *EMul::clone() const {
+    return new EMul(*this);
+}
 
 
 /********************   EAdd    ********************/
-EAdd::EAdd(Expr *p1, AddOp *p2, Expr *p3)
-{
-  expr_1 = p1;
-  addop_ = p2;
-  expr_2 = p3;
+EAdd::EAdd(Expr *p1, AddOp *p2, Expr *p3) {
+    expr_1 = p1;
+    addop_ = p2;
+    expr_2 = p3;
 
 }
 
-EAdd::EAdd(const EAdd & other)
-{
-  expr_1 = other.expr_1->clone();
-  addop_ = other.addop_->clone();
-  expr_2 = other.expr_2->clone();
+EAdd::EAdd(const EAdd &other) {
+    expr_1 = other.expr_1->clone();
+    addop_ = other.addop_->clone();
+    expr_2 = other.expr_2->clone();
 
 }
 
-EAdd &EAdd::operator=(const EAdd & other)
-{
-  EAdd tmp(other);
-  swap(tmp);
-  return *this;
+EAdd &EAdd::operator=(const EAdd &other) {
+    EAdd tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void EAdd::swap(EAdd & other)
-{
-  std::swap(expr_1, other.expr_1);
-  std::swap(addop_, other.addop_);
-  std::swap(expr_2, other.expr_2);
-
-}
-
-EAdd::~EAdd()
-{
-  delete(expr_1);
-  delete(addop_);
-  delete(expr_2);
+void EAdd::swap(EAdd &other) {
+    std::swap(expr_1, other.expr_1);
+    std::swap(addop_, other.addop_);
+    std::swap(expr_2, other.expr_2);
 
 }
 
-void EAdd::accept(Visitor *v)
-{
-  v->visitEAdd(this);
+EAdd::~EAdd() {
+    delete (expr_1);
+    delete (addop_);
+    delete (expr_2);
+
 }
 
-EAdd *EAdd::clone() const
-{
-  return new EAdd(*this);
+void EAdd::accept(Visitor *v) {
+    v->visitEAdd(this);
 }
 
+EAdd *EAdd::clone() const {
+    return new EAdd(*this);
+}
 
 
 /********************   ERel    ********************/
-ERel::ERel(Expr *p1, RelOp *p2, Expr *p3)
-{
-  expr_1 = p1;
-  relop_ = p2;
-  expr_2 = p3;
+ERel::ERel(Expr *p1, RelOp *p2, Expr *p3) {
+    expr_1 = p1;
+    relop_ = p2;
+    expr_2 = p3;
 
 }
 
-ERel::ERel(const ERel & other)
-{
-  expr_1 = other.expr_1->clone();
-  relop_ = other.relop_->clone();
-  expr_2 = other.expr_2->clone();
+ERel::ERel(const ERel &other) {
+    expr_1 = other.expr_1->clone();
+    relop_ = other.relop_->clone();
+    expr_2 = other.expr_2->clone();
 
 }
 
-ERel &ERel::operator=(const ERel & other)
-{
-  ERel tmp(other);
-  swap(tmp);
-  return *this;
+ERel &ERel::operator=(const ERel &other) {
+    ERel tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void ERel::swap(ERel & other)
-{
-  std::swap(expr_1, other.expr_1);
-  std::swap(relop_, other.relop_);
-  std::swap(expr_2, other.expr_2);
-
-}
-
-ERel::~ERel()
-{
-  delete(expr_1);
-  delete(relop_);
-  delete(expr_2);
+void ERel::swap(ERel &other) {
+    std::swap(expr_1, other.expr_1);
+    std::swap(relop_, other.relop_);
+    std::swap(expr_2, other.expr_2);
 
 }
 
-void ERel::accept(Visitor *v)
-{
-  v->visitERel(this);
+ERel::~ERel() {
+    delete (expr_1);
+    delete (relop_);
+    delete (expr_2);
+
 }
 
-ERel *ERel::clone() const
-{
-  return new ERel(*this);
+void ERel::accept(Visitor *v) {
+    v->visitERel(this);
 }
 
+ERel *ERel::clone() const {
+    return new ERel(*this);
+}
 
 
 /********************   EAnd    ********************/
-EAnd::EAnd(Expr *p1, Expr *p2)
-{
-  expr_1 = p1;
-  expr_2 = p2;
+EAnd::EAnd(Expr *p1, Expr *p2) {
+    expr_1 = p1;
+    expr_2 = p2;
 
 }
 
-EAnd::EAnd(const EAnd & other)
-{
-  expr_1 = other.expr_1->clone();
-  expr_2 = other.expr_2->clone();
+EAnd::EAnd(const EAnd &other) {
+    expr_1 = other.expr_1->clone();
+    expr_2 = other.expr_2->clone();
 
 }
 
-EAnd &EAnd::operator=(const EAnd & other)
-{
-  EAnd tmp(other);
-  swap(tmp);
-  return *this;
+EAnd &EAnd::operator=(const EAnd &other) {
+    EAnd tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void EAnd::swap(EAnd & other)
-{
-  std::swap(expr_1, other.expr_1);
-  std::swap(expr_2, other.expr_2);
-
-}
-
-EAnd::~EAnd()
-{
-  delete(expr_1);
-  delete(expr_2);
+void EAnd::swap(EAnd &other) {
+    std::swap(expr_1, other.expr_1);
+    std::swap(expr_2, other.expr_2);
 
 }
 
-void EAnd::accept(Visitor *v)
-{
-  v->visitEAnd(this);
+EAnd::~EAnd() {
+    delete (expr_1);
+    delete (expr_2);
+
 }
 
-EAnd *EAnd::clone() const
-{
-  return new EAnd(*this);
+void EAnd::accept(Visitor *v) {
+    v->visitEAnd(this);
 }
 
+EAnd *EAnd::clone() const {
+    return new EAnd(*this);
+}
 
 
 /********************   EOr    ********************/
-EOr::EOr(Expr *p1, Expr *p2)
-{
-  expr_1 = p1;
-  expr_2 = p2;
+EOr::EOr(Expr *p1, Expr *p2) {
+    expr_1 = p1;
+    expr_2 = p2;
 
 }
 
-EOr::EOr(const EOr & other)
-{
-  expr_1 = other.expr_1->clone();
-  expr_2 = other.expr_2->clone();
+EOr::EOr(const EOr &other) {
+    expr_1 = other.expr_1->clone();
+    expr_2 = other.expr_2->clone();
 
 }
 
-EOr &EOr::operator=(const EOr & other)
-{
-  EOr tmp(other);
-  swap(tmp);
-  return *this;
+EOr &EOr::operator=(const EOr &other) {
+    EOr tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void EOr::swap(EOr & other)
-{
-  std::swap(expr_1, other.expr_1);
-  std::swap(expr_2, other.expr_2);
-
-}
-
-EOr::~EOr()
-{
-  delete(expr_1);
-  delete(expr_2);
+void EOr::swap(EOr &other) {
+    std::swap(expr_1, other.expr_1);
+    std::swap(expr_2, other.expr_2);
 
 }
 
-void EOr::accept(Visitor *v)
-{
-  v->visitEOr(this);
+EOr::~EOr() {
+    delete (expr_1);
+    delete (expr_2);
+
 }
 
-EOr *EOr::clone() const
-{
-  return new EOr(*this);
+void EOr::accept(Visitor *v) {
+    v->visitEOr(this);
 }
 
+EOr *EOr::clone() const {
+    return new EOr(*this);
+}
 
 
 /********************   Plus    ********************/
-Plus::Plus()
-{
+Plus::Plus() {
 
 }
 
-Plus::Plus(const Plus & other)
-{
+Plus::Plus(const Plus &other) {
 
 }
 
-Plus &Plus::operator=(const Plus & other)
-{
-  Plus tmp(other);
-  swap(tmp);
-  return *this;
+Plus &Plus::operator=(const Plus &other) {
+    Plus tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void Plus::swap(Plus & other)
-{
-
-}
-
-Plus::~Plus()
-{
+void Plus::swap(Plus &other) {
 
 }
 
-void Plus::accept(Visitor *v)
-{
-  v->visitPlus(this);
+Plus::~Plus() {
+
 }
 
-Plus *Plus::clone() const
-{
-  return new Plus(*this);
+void Plus::accept(Visitor *v) {
+    v->visitPlus(this);
 }
 
+Plus *Plus::clone() const {
+    return new Plus(*this);
+}
 
 
 /********************   Minus    ********************/
-Minus::Minus()
-{
+Minus::Minus() {
 
 }
 
-Minus::Minus(const Minus & other)
-{
+Minus::Minus(const Minus &other) {
 
 }
 
-Minus &Minus::operator=(const Minus & other)
-{
-  Minus tmp(other);
-  swap(tmp);
-  return *this;
+Minus &Minus::operator=(const Minus &other) {
+    Minus tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void Minus::swap(Minus & other)
-{
-
-}
-
-Minus::~Minus()
-{
+void Minus::swap(Minus &other) {
 
 }
 
-void Minus::accept(Visitor *v)
-{
-  v->visitMinus(this);
+Minus::~Minus() {
+
 }
 
-Minus *Minus::clone() const
-{
-  return new Minus(*this);
+void Minus::accept(Visitor *v) {
+    v->visitMinus(this);
 }
 
+Minus *Minus::clone() const {
+    return new Minus(*this);
+}
 
 
 /********************   Times    ********************/
-Times::Times()
-{
+Times::Times() {
 
 }
 
-Times::Times(const Times & other)
-{
+Times::Times(const Times &other) {
 
 }
 
-Times &Times::operator=(const Times & other)
-{
-  Times tmp(other);
-  swap(tmp);
-  return *this;
+Times &Times::operator=(const Times &other) {
+    Times tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void Times::swap(Times & other)
-{
-
-}
-
-Times::~Times()
-{
+void Times::swap(Times &other) {
 
 }
 
-void Times::accept(Visitor *v)
-{
-  v->visitTimes(this);
+Times::~Times() {
+
 }
 
-Times *Times::clone() const
-{
-  return new Times(*this);
+void Times::accept(Visitor *v) {
+    v->visitTimes(this);
 }
 
+Times *Times::clone() const {
+    return new Times(*this);
+}
 
 
 /********************   Div    ********************/
-Div::Div()
-{
+Div::Div() {
 
 }
 
-Div::Div(const Div & other)
-{
+Div::Div(const Div &other) {
 
 }
 
-Div &Div::operator=(const Div & other)
-{
-  Div tmp(other);
-  swap(tmp);
-  return *this;
+Div &Div::operator=(const Div &other) {
+    Div tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void Div::swap(Div & other)
-{
-
-}
-
-Div::~Div()
-{
+void Div::swap(Div &other) {
 
 }
 
-void Div::accept(Visitor *v)
-{
-  v->visitDiv(this);
+Div::~Div() {
+
 }
 
-Div *Div::clone() const
-{
-  return new Div(*this);
+void Div::accept(Visitor *v) {
+    v->visitDiv(this);
 }
 
+Div *Div::clone() const {
+    return new Div(*this);
+}
 
 
 /********************   Mod    ********************/
-Mod::Mod()
-{
+Mod::Mod() {
 
 }
 
-Mod::Mod(const Mod & other)
-{
+Mod::Mod(const Mod &other) {
 
 }
 
-Mod &Mod::operator=(const Mod & other)
-{
-  Mod tmp(other);
-  swap(tmp);
-  return *this;
+Mod &Mod::operator=(const Mod &other) {
+    Mod tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void Mod::swap(Mod & other)
-{
-
-}
-
-Mod::~Mod()
-{
+void Mod::swap(Mod &other) {
 
 }
 
-void Mod::accept(Visitor *v)
-{
-  v->visitMod(this);
+Mod::~Mod() {
+
 }
 
-Mod *Mod::clone() const
-{
-  return new Mod(*this);
+void Mod::accept(Visitor *v) {
+    v->visitMod(this);
 }
 
+Mod *Mod::clone() const {
+    return new Mod(*this);
+}
 
 
 /********************   LTH    ********************/
-LTH::LTH()
-{
+LTH::LTH() {
 
 }
 
-LTH::LTH(const LTH & other)
-{
+LTH::LTH(const LTH &other) {
 
 }
 
-LTH &LTH::operator=(const LTH & other)
-{
-  LTH tmp(other);
-  swap(tmp);
-  return *this;
+LTH &LTH::operator=(const LTH &other) {
+    LTH tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void LTH::swap(LTH & other)
-{
-
-}
-
-LTH::~LTH()
-{
+void LTH::swap(LTH &other) {
 
 }
 
-void LTH::accept(Visitor *v)
-{
-  v->visitLTH(this);
+LTH::~LTH() {
+
 }
 
-LTH *LTH::clone() const
-{
-  return new LTH(*this);
+void LTH::accept(Visitor *v) {
+    v->visitLTH(this);
 }
 
+LTH *LTH::clone() const {
+    return new LTH(*this);
+}
 
 
 /********************   LE    ********************/
-LE::LE()
-{
+LE::LE() {
 
 }
 
-LE::LE(const LE & other)
-{
+LE::LE(const LE &other) {
 
 }
 
-LE &LE::operator=(const LE & other)
-{
-  LE tmp(other);
-  swap(tmp);
-  return *this;
+LE &LE::operator=(const LE &other) {
+    LE tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void LE::swap(LE & other)
-{
-
-}
-
-LE::~LE()
-{
+void LE::swap(LE &other) {
 
 }
 
-void LE::accept(Visitor *v)
-{
-  v->visitLE(this);
+LE::~LE() {
+
 }
 
-LE *LE::clone() const
-{
-  return new LE(*this);
+void LE::accept(Visitor *v) {
+    v->visitLE(this);
 }
 
+LE *LE::clone() const {
+    return new LE(*this);
+}
 
 
 /********************   GTH    ********************/
-GTH::GTH()
-{
+GTH::GTH() {
 
 }
 
-GTH::GTH(const GTH & other)
-{
+GTH::GTH(const GTH &other) {
 
 }
 
-GTH &GTH::operator=(const GTH & other)
-{
-  GTH tmp(other);
-  swap(tmp);
-  return *this;
+GTH &GTH::operator=(const GTH &other) {
+    GTH tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void GTH::swap(GTH & other)
-{
-
-}
-
-GTH::~GTH()
-{
+void GTH::swap(GTH &other) {
 
 }
 
-void GTH::accept(Visitor *v)
-{
-  v->visitGTH(this);
+GTH::~GTH() {
+
 }
 
-GTH *GTH::clone() const
-{
-  return new GTH(*this);
+void GTH::accept(Visitor *v) {
+    v->visitGTH(this);
 }
 
+GTH *GTH::clone() const {
+    return new GTH(*this);
+}
 
 
 /********************   GE    ********************/
-GE::GE()
-{
+GE::GE() {
 
 }
 
-GE::GE(const GE & other)
-{
+GE::GE(const GE &other) {
 
 }
 
-GE &GE::operator=(const GE & other)
-{
-  GE tmp(other);
-  swap(tmp);
-  return *this;
+GE &GE::operator=(const GE &other) {
+    GE tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void GE::swap(GE & other)
-{
-
-}
-
-GE::~GE()
-{
+void GE::swap(GE &other) {
 
 }
 
-void GE::accept(Visitor *v)
-{
-  v->visitGE(this);
+GE::~GE() {
+
 }
 
-GE *GE::clone() const
-{
-  return new GE(*this);
+void GE::accept(Visitor *v) {
+    v->visitGE(this);
 }
 
+GE *GE::clone() const {
+    return new GE(*this);
+}
 
 
 /********************   EQU    ********************/
-EQU::EQU()
-{
+EQU::EQU() {
 
 }
 
-EQU::EQU(const EQU & other)
-{
+EQU::EQU(const EQU &other) {
 
 }
 
-EQU &EQU::operator=(const EQU & other)
-{
-  EQU tmp(other);
-  swap(tmp);
-  return *this;
+EQU &EQU::operator=(const EQU &other) {
+    EQU tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void EQU::swap(EQU & other)
-{
-
-}
-
-EQU::~EQU()
-{
+void EQU::swap(EQU &other) {
 
 }
 
-void EQU::accept(Visitor *v)
-{
-  v->visitEQU(this);
+EQU::~EQU() {
+
 }
 
-EQU *EQU::clone() const
-{
-  return new EQU(*this);
+void EQU::accept(Visitor *v) {
+    v->visitEQU(this);
 }
 
+EQU *EQU::clone() const {
+    return new EQU(*this);
+}
 
 
 /********************   NE    ********************/
-NE::NE()
-{
+NE::NE() {
 
 }
 
-NE::NE(const NE & other)
-{
+NE::NE(const NE &other) {
 
 }
 
-NE &NE::operator=(const NE & other)
-{
-  NE tmp(other);
-  swap(tmp);
-  return *this;
+NE &NE::operator=(const NE &other) {
+    NE tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void NE::swap(NE & other)
-{
-
-}
-
-NE::~NE()
-{
+void NE::swap(NE &other) {
 
 }
 
-void NE::accept(Visitor *v)
-{
-  v->visitNE(this);
+NE::~NE() {
+
 }
 
-NE *NE::clone() const
-{
-  return new NE(*this);
+void NE::accept(Visitor *v) {
+    v->visitNE(this);
 }
 
-
+NE *NE::clone() const {
+    return new NE(*this);
+}
 
 
 /********************   ListClassMember    ********************/
 
-void ListClassMember::accept(Visitor *v)
-{
-  v->visitListClassMember(this);
+void ListClassMember::accept(Visitor *v) {
+    v->visitListClassMember(this);
 }
 
-ListClassMember *ListClassMember::clone() const
-{
-  return new ListClassMember(*this);
+ListClassMember *ListClassMember::clone() const {
+    return new ListClassMember(*this);
 }
 
-ListClassMember* consListClassMember(ClassMember* x, ListClassMember* xs) {
-  xs->insert(xs->begin(), x);
-  return xs;
+ListClassMember *consListClassMember(ClassMember *x, ListClassMember *xs) {
+    xs->insert(xs->begin(), x);
+    return xs;
 }
 
 
 /********************   ListTopDef    ********************/
 
-void ListTopDef::accept(Visitor *v)
-{
-  v->visitListTopDef(this);
+void ListTopDef::accept(Visitor *v) {
+    v->visitListTopDef(this);
 }
 
-ListTopDef *ListTopDef::clone() const
-{
-  return new ListTopDef(*this);
+ListTopDef *ListTopDef::clone() const {
+    return new ListTopDef(*this);
 }
 
-ListTopDef* consListTopDef(TopDef* x, ListTopDef* xs) {
-  xs->insert(xs->begin(), x);
-  return xs;
+ListTopDef *consListTopDef(TopDef *x, ListTopDef *xs) {
+    xs->insert(xs->begin(), x);
+    return xs;
 }
 
 
 /********************   ListArg    ********************/
 
-void ListArg::accept(Visitor *v)
-{
-  v->visitListArg(this);
+void ListArg::accept(Visitor *v) {
+    v->visitListArg(this);
 }
 
-ListArg *ListArg::clone() const
-{
-  return new ListArg(*this);
+ListArg *ListArg::clone() const {
+    return new ListArg(*this);
 }
 
-ListArg* consListArg(Arg* x, ListArg* xs) {
-  xs->insert(xs->begin(), x);
-  return xs;
+ListArg *consListArg(Arg *x, ListArg *xs) {
+    xs->insert(xs->begin(), x);
+    return xs;
 }
 
 
 /********************   ListStmt    ********************/
 
-void ListStmt::accept(Visitor *v)
-{
-  v->visitListStmt(this);
+void ListStmt::accept(Visitor *v) {
+    v->visitListStmt(this);
 }
 
-ListStmt *ListStmt::clone() const
-{
-  return new ListStmt(*this);
+ListStmt *ListStmt::clone() const {
+    return new ListStmt(*this);
 }
 
-ListStmt* consListStmt(Stmt* x, ListStmt* xs) {
-  xs->insert(xs->begin(), x);
-  return xs;
+ListStmt *consListStmt(Stmt *x, ListStmt *xs) {
+    xs->insert(xs->begin(), x);
+    return xs;
 }
 
 
 /********************   ListItem    ********************/
 
-void ListItem::accept(Visitor *v)
-{
-  v->visitListItem(this);
+void ListItem::accept(Visitor *v) {
+    v->visitListItem(this);
 }
 
-ListItem *ListItem::clone() const
-{
-  return new ListItem(*this);
+ListItem *ListItem::clone() const {
+    return new ListItem(*this);
 }
 
-ListItem* consListItem(Item* x, ListItem* xs) {
-  xs->insert(xs->begin(), x);
-  return xs;
+ListItem *consListItem(Item *x, ListItem *xs) {
+    xs->insert(xs->begin(), x);
+    return xs;
 }
 
 
 /********************   ListArrDimType    ********************/
 
-void ListArrDimType::accept(Visitor *v)
-{
-  v->visitListArrDimType(this);
+void ListArrDimType::accept(Visitor *v) {
+    v->visitListArrDimType(this);
 }
 
-ListArrDimType *ListArrDimType::clone() const
-{
-  return new ListArrDimType(*this);
+ListArrDimType *ListArrDimType::clone() const {
+    return new ListArrDimType(*this);
 }
 
-ListArrDimType* consListArrDimType(ArrDimType* x, ListArrDimType* xs) {
-  xs->insert(xs->begin(), x);
-  return xs;
+ListArrDimType *consListArrDimType(ArrDimType *x, ListArrDimType *xs) {
+    xs->insert(xs->begin(), x);
+    return xs;
 }
 
 
 /********************   ListType    ********************/
 
-void ListType::accept(Visitor *v)
-{
-  v->visitListType(this);
+void ListType::accept(Visitor *v) {
+    v->visitListType(this);
 }
 
-ListType *ListType::clone() const
-{
-  return new ListType(*this);
+ListType *ListType::clone() const {
+    return new ListType(*this);
 }
 
-ListType* consListType(Type* x, ListType* xs) {
-  xs->insert(xs->begin(), x);
-  return xs;
+ListType *consListType(Type *x, ListType *xs) {
+    xs->insert(xs->begin(), x);
+    return xs;
 }
 
 
 /********************   ListDimDef    ********************/
 
-void ListDimDef::accept(Visitor *v)
-{
-  v->visitListDimDef(this);
+void ListDimDef::accept(Visitor *v) {
+    v->visitListDimDef(this);
 }
 
-ListDimDef *ListDimDef::clone() const
-{
-  return new ListDimDef(*this);
+ListDimDef *ListDimDef::clone() const {
+    return new ListDimDef(*this);
 }
 
-ListDimDef* consListDimDef(DimDef* x, ListDimDef* xs) {
-  xs->insert(xs->begin(), x);
-  return xs;
+ListDimDef *consListDimDef(DimDef *x, ListDimDef *xs) {
+    xs->insert(xs->begin(), x);
+    return xs;
 }
 
 
 /********************   ListComplexPart    ********************/
 
-void ListComplexPart::accept(Visitor *v)
-{
-  v->visitListComplexPart(this);
+void ListComplexPart::accept(Visitor *v) {
+    v->visitListComplexPart(this);
 }
 
-ListComplexPart *ListComplexPart::clone() const
-{
-  return new ListComplexPart(*this);
+ListComplexPart *ListComplexPart::clone() const {
+    return new ListComplexPart(*this);
 }
 
-ListComplexPart* consListComplexPart(ComplexPart* x, ListComplexPart* xs) {
-  xs->insert(xs->begin(), x);
-  return xs;
+ListComplexPart *consListComplexPart(ComplexPart *x, ListComplexPart *xs) {
+    xs->insert(xs->begin(), x);
+    return xs;
 }
 
 
 /********************   ListExpr    ********************/
 
-void ListExpr::accept(Visitor *v)
-{
-  v->visitListExpr(this);
+void ListExpr::accept(Visitor *v) {
+    v->visitListExpr(this);
 }
 
-ListExpr *ListExpr::clone() const
-{
-  return new ListExpr(*this);
+ListExpr *ListExpr::clone() const {
+    return new ListExpr(*this);
 }
 
-ListExpr* consListExpr(Expr* x, ListExpr* xs) {
-  xs->insert(xs->begin(), x);
-  return xs;
+ListExpr *consListExpr(Expr *x, ListExpr *xs) {
+    xs->insert(xs->begin(), x);
+    return xs;
 }
 
 

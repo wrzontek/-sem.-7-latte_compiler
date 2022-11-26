@@ -7,23 +7,23 @@ FLEX=flex
 FLEX_OPTS=-Platte_
 
 BISON=bison
-BISON_OPTS=-t -platte_
+BISON_OPTS=-t -platte_ -v
 
 OBJS=Absyn.o Buffer.o Lexer.o Parser.o Printer.o
 
 .PHONY : clean distclean
 
-all : TestLatte
+all : Main
 
 clean :
-	rm -f *.o TestLatte Latte.aux Latte.log Latte.pdf Latte.dvi Latte.ps Latte
+	rm -f *.o Main Latte.aux Latte.log Latte.pdf Latte.dvi Latte.ps Latte
 
 distclean : clean
-	rm -f Absyn.C Absyn.H Buffer.C Buffer.H Test.C Bison.H Parser.C Parser.H ParserError.H Latte.y Lexer.C Latte.l Skeleton.C Skeleton.H Printer.C Printer.H Makefile Latte.tex
+	rm -f Absyn.C Absyn.H Buffer.C Buffer.H Main.C Bison.H Parser.C Parser.H ParserError.H Latte.y Lexer.C Latte.l Skeleton.C Skeleton.H Printer.C Printer.H Makefile Latte.tex
 
-TestLatte : ${OBJS} Test.o
-	@echo "Linking TestLatte..."
-	${CXX} ${OBJS} Test.o -o TestLatte
+Main : ${OBJS} Main.o
+	@echo "Linking Main..."
+	${CXX} ${OBJS} Main.o -o Main
 
 Absyn.o : Absyn.C Absyn.H
 	${CXX} ${CXXFLAGS} -c Absyn.C
@@ -49,5 +49,5 @@ Printer.o : Printer.C Printer.H Absyn.H
 Skeleton.o : Skeleton.C Skeleton.H Absyn.H
 	${CXX} ${CXXFLAGS} -Wno-unused-parameter -c Skeleton.C
 
-Test.o : Test.C Parser.H Printer.H Absyn.H
-	${CXX} ${CXXFLAGS} -c Test.C
+Main.o : Main.C Parser.H Printer.H Absyn.H TypeChecker.cpp FunctionDefVisitor.cpp Common.cpp ClassDefNameOnlyVisitor.cpp TypeVisitor.cpp
+	${CXX} ${CXXFLAGS} -c Main.C

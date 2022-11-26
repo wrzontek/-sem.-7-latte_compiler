@@ -1,11 +1,18 @@
 
-int f(int a, int[] a) {
+class A extends B {
+}
+
+class B {}
+
+int f(int a, string[] b, B yy) {
     return 1;
 }
 
 void g() {}
 
 int main() {
-//    (a[1]).b; //TODO
-//    return (a); TODO
+    (new int[6])[4];
+    return (a);
+//    Class[] a;
+//    Inst[1];
 }

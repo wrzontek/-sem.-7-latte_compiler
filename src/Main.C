@@ -67,7 +67,7 @@ int main(int argc, char **argv) {
         }
         auto type_checker = new TypeChecker(parse_tree);
         type_checker->checkCorrectness();
-
+//        std::cerr << "OK\n"; TODO
         delete (parse_tree);
         return 0;
     }

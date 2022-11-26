@@ -1,122 +1,145 @@
 #include <string>
-#include <iosfwd>
-#include <iostream>
 #include <set>
 #include <vector>
 #include "Absyn.H"
 #include "Skeleton.C"
+#include "Common.cpp"
+#include "FunctionDefVisitor.cpp"
+#include "ClassDefNameOnlyVisitor.cpp"
+#include "TypeVisitor.cpp"
 
-void throwError(int line_number, int char_number, std::string content) {
-    std::cerr << "ERROR\n";
-    std::cerr << "error at: " + std::to_string(line_number) + ", " + std::to_string(char_number) << std::endl;
-    std::cerr << content << std::endl;
-    exit(1);
-}
-
-struct CType {
-    explicit CType(Ident name, std::vector<int> array_dims) : name(name), array_dims(array_dims) {}
-
-    Ident name; // void, int, bool, string, <class>
-    std::vector<int> array_dims; // empty if type is not array
-};
-
-struct CVar {
-    explicit CVar(Ident name, CType *type) : name(name), type(type) {}
-
-    Ident name;
-    CType *type;
-};
-
-struct CFun {
-    explicit CFun(Ident name, CType *return_type, std::vector<CVar *> args) : name(name), return_type(return_type),
-                                                                              args(args) {}
-
-    Ident name;
-    CType *return_type;
-    std::vector<CVar *> args;
-};
-
-struct CClass {
-    Ident name;
-    std::vector<CVar *> attributes;
-    std::vector<CFun *> methods;
-};
-
-class Function_Def_Visitor : public Skeleton {
+class Class_Def_Visitor : public Skeleton {
 public:
-    std::set<CFun *> &defined_functions;
-    std::vector<CVar *> current_function_args;
+    Type_Visitor *typeVisitor;
+
+    std::vector<CFun *> &defined_functions;
+    std::vector<CClass *> &defined_classes;
+
+    std::vector<CVar *> current_class_attributes;
+    std::vector<CFun *> current_class_methods;
+
     Ident current_arg_name;
     CType *current_type = nullptr;
 
-    explicit Function_Def_Visitor(std::set<CFun *> &defined_functions) : defined_functions(defined_functions) {}
+    explicit Class_Def_Visitor(std::vector<CFun *> &defined_functions, std::vector<CClass *> &defined_classes,
+                               Type_Visitor *typeVisitor)
+            : defined_functions(defined_functions), defined_classes(defined_classes), typeVisitor(typeVisitor) {
+    }
 
-    void visitClassDef(ClassDef *class_def) override {};
+    void visitFnDef(FnDef *fn_def) override {}; // dont visit global functions
 
-    void visitClassExtendDef(ClassExtendDef *class_def) override {};
-    // TODO pewnie można go też do klas użyć, dać mu mniejsze wycinki programu
-
-    void visitFnDef(FnDef *fn_def) override {
-        Ident name = fn_def->ident_;
-        if (!fn_def->type_->canBeReturned()) {
-            throwError(fn_def->line_number, fn_def->char_number, "invalid return type");
-        }
-
-        fn_def->type_->accept(this);
-        CType *return_type = current_type;
-
-        for (auto &def: defined_functions) {
-            if (def->name == name) {
-                throwError(fn_def->line_number, fn_def->char_number, "redefinition of function");
+    // todo do metod można odgrzać FunctionDefVisitor'a
+    void visitClassDef(ClassDef *class_def) override {
+        CClass *cclass = nullptr;
+        for (auto def: defined_classes) {
+            if (def->name == class_def->ident_) {
+                cclass = def;
+                break;
             }
         }
+        if (cclass == nullptr) { exit(1); /*should never happen */}
 
-        current_function_args = std::vector<CVar *>();
-        fn_def->listarg_->accept(this);
-        defined_functions.insert(new CFun(name, return_type, current_function_args));
+        cclass->visited = true;
+        current_class_attributes = std::vector<CVar *>();
+        current_class_methods = std::vector<CFun *>();
 
-        current_function_args.clear();
+        class_def->listclassmember_->accept(this);
+
+        cclass->attributes = current_class_attributes;
+        cclass->methods = current_class_methods;
     };
 
-    void visitAr(Ar *arg) override {
-        Ident name = arg->ident_;
-        for (auto &def: current_function_args) {
-            if (def->name == name) {
-                throwError(arg->line_number, arg->char_number, "redefinition of argument");
+    void visitAttrMember(AttrMember *attr_member) override {
+        current_type = typeVisitor->getType(attr_member->type_);
+        attr_member->listitem_->accept(this);
+    }
+
+    void checkAttrRedefinition(Ident name, int line_number, int char_number) {
+        for (auto attribute: current_class_attributes) {
+            if (attribute->name == name) {
+                throwError(line_number, char_number, "redefinition of attribute");
             }
         }
+    }
 
-        if (!arg->type_->canBeArg()) { // np void nie może być
-            throwError(arg->line_number, arg->char_number, "invalid argument type");
+    void visitNoInit(NoInit *no_init) override {
+        checkAttrRedefinition(no_init->ident_, no_init->line_number, no_init->char_number);
+        current_class_attributes.push_back(new CVar(no_init->ident_, current_type));
+    }
+
+    void visitInit(Init *init) override {
+        checkAttrRedefinition(init->ident_, init->line_number, init->char_number);
+        if (*current_type != *(typeVisitor->getExprType(init->expr_))) {
+            throwError(init->line_number, init->char_number,
+                       "initialization expression of different type than declared");
         }
 
-        current_arg_name = arg->ident_;
-        arg->type_->accept(this);
-
-        current_function_args.push_back(new CVar(current_arg_name, current_type));
+        current_class_attributes.push_back(new CVar(init->ident_, current_type));
     }
 
-    void visitInt(Int *t) override {
-        current_type = new CType(current_arg_name, std::vector<int>());
-    }
+    void visitClassExtendDef(ClassExtendDef *class_def) override {};
 
 };
 
 class TypeChecker {
 private:
     Program *program;
-    std::set<CFun *> defined_functions;
-    std::set<CClass *> defined_classes;
-public:
-    explicit TypeChecker(Program *program) : program(program) {
-//        defined_functions.insert()
+    std::vector<CFun *> defined_functions;
+    std::vector<CClass *> defined_classes;
+
+    // for ordering the visits, first the parents then the children
+    std::vector<ClassDef *> class_defs;
+    std::vector<ClassExtendDef *> class_extend_defs;
+
+    void checkNoIllegalExtend() {
+        for (auto def: defined_classes) {
+            if (!def->parent.empty()) {
+                bool parent_defined = false;
+                for (auto def2: defined_classes) {
+                    if (def->parent == def2->name) parent_defined = true;
+                }
+                if (!parent_defined)
+                    throwError("class " + def->name + " extends undefined class " + def->parent);
+            }
+        }
     }
 
+    void checkMain() {
+        bool defined = false;
+        for (auto def: defined_functions) {
+            if (def->name == "main") {
+                if (!def->args.empty())
+                    throwError("main function mustn't take arguments");
+                if (def->return_type->name != "int" || !def->return_type->array_dims.empty())
+                    throwError("main function must return int");
+
+                defined = true;
+            }
+        }
+
+        if (!defined)
+            throwError("main function not defined");
+    }
+
+public:
+    explicit TypeChecker(Program *program) : program(program) {}
+
     void checkCorrectness() {
-        auto functionDefVisitor = new Function_Def_Visitor(defined_functions);
+        auto classDefOnlyNameVisitor = new Class_Def_Name_Only_Visitor(defined_classes, class_defs, class_extend_defs);
+        program->accept(classDefOnlyNameVisitor);
+        checkNoIllegalExtend();
+
+        auto typeVisitor = new Type_Visitor(defined_classes);
+
+        auto functionDefVisitor = new Function_Def_Visitor(defined_functions, defined_classes, typeVisitor);
         program->accept(functionDefVisitor); // check duplicates (function names and arg names)
-// crash if no main
-//        program->accept(classDefVisitor);check duplicates (class names and member names)
+        checkMain();
+
+        auto classDefVisitor = new Class_Def_Visitor(defined_functions, defined_classes, typeVisitor);
+        for (auto def: class_defs) {
+            def->accept(classDefVisitor);
+        }
+        program->accept(classDefVisitor); //check duplicates (member names)
 
     }
 };

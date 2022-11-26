@@ -162,7 +162,6 @@ extern int yylex(YYSTYPE *lvalp, YYLTYPE *llocp, yyscan_t scanner);
 %type <listtype_> ListType
 %type <dimdef_> DimDef
 %type <listdimdef_> ListDimDef
-%type <expr_> Expr7
 %type <expr_> Expr6
 %type <listcomplexpart_> ListComplexPart
 %type <expr_> Expr5
@@ -226,7 +225,8 @@ Item : _IDENT_ { $$ = new NoInit($1); $$->line_number = @$.first_line; $$->char_
 ListItem : Item { $$ = new ListItem(); $$->push_back($1); }
   | Item _COMMA ListItem { $3->push_back($1); $$ = $3; }
 ;
-ComplexStart : _IDENT_ _DOT _IDENT_ { $$ = new CMember($1, $3); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
+ComplexStart : _LPAREN ComplexStart _RPAREN { $$ = new CBracketed($2); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
+  | _IDENT_ _DOT _IDENT_ { $$ = new CMember($1, $3); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _IDENT_ ListDimDef { std::reverse($2->begin(),$2->end()) ;$$ = new CArray($1, $2); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _IDENT_ _LPAREN ListExpr _RPAREN { std::reverse($3->begin(),$3->end()) ;$$ = new CMethod($1, $3); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _KW_new ArrType ListDimDef { std::reverse($3->begin(),$3->end()) ;$$ = new NewArray($2, $3); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
@@ -263,16 +263,15 @@ DimDef : _LBRACK Expr _RBRACK { $$ = new ArrDimDef($2); $$->line_number = @$.fir
 ListDimDef : DimDef { $$ = new ListDimDef(); $$->push_back($1); }
   | DimDef ListDimDef { $2->push_back($1); $$ = $2; }
 ;
-Expr7 : _IDENT_ { $$ = new EVar($1); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
-  | _LPAREN Expr _RPAREN { $$ = $2; $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
-;
-Expr6 : ComplexStart ListComplexPart { $$ = new EComplex($1, $2); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
+Expr6 : _IDENT_ { $$ = new EVar($1); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
+  | _LPAREN _IDENT_ _RPAREN { $$ = new EBracketVar($2); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
+  | ComplexStart ListComplexPart { $$ = new EComplex($1, $2); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _LPAREN _IDENT_ _RPAREN _KW_null { $$ = new ENullCast($2); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _INTEGER_ { $$ = new ELitInt($1); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _KW_true { $$ = new ELitTrue(); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _KW_false { $$ = new ELitFalse(); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _STRING_ { $$ = new EString($1); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
-  | Expr7 { $$ = $1; $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
+  | _LPAREN Expr _RPAREN { $$ = $2; $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
 ;
 ListComplexPart : /* empty */ { $$ = new ListComplexPart(); }
   | ListComplexPart ComplexPart { $1->push_back($2); $$ = $1; }
