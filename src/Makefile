@@ -49,5 +49,7 @@ Printer.o : Printer.C Printer.H Absyn.H
 Skeleton.o : Skeleton.C Skeleton.H Absyn.H
 	${CXX} ${CXXFLAGS} -Wno-unused-parameter -c Skeleton.C
 
-Main.o : Main.C Parser.H Printer.H Absyn.H TypeChecker.cpp FunctionDefVisitor.cpp Common.cpp ClassDefNameOnlyVisitor.cpp TypeVisitor.cpp
+Main.o : Main.C Parser.H Printer.H Absyn.H TypeChecker.cpp \
+		 FunctionDefVisitor.cpp Common.cpp ClassDefNameOnlyVisitor.cpp \
+		 TypeVisitor.cpp ClassDefVisitor.cpp
 	${CXX} ${CXXFLAGS} -c Main.C

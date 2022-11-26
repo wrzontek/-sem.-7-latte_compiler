@@ -586,6 +586,8 @@ class RelOp : public Visitable {
 public:
     virtual RelOp *clone() const = 0;
 
+    virtual std::vector <Ident> allowed_types() const = 0;
+
     int line_number;
     int char_number;
 };
@@ -1870,6 +1872,12 @@ public:
 class LTH : public RelOp {
 public:
 
+    virtual std::vector <Ident> allowed_types() const {
+        auto v = std::vector<Ident>();
+        v.push_back("int");
+        return v;
+    };
+
     LTH(const LTH &);
 
     LTH &operator=(const LTH &);
@@ -1887,6 +1895,12 @@ public:
 
 class LE : public RelOp {
 public:
+
+    virtual std::vector <Ident> allowed_types() const {
+        auto v = std::vector<Ident>();
+        v.push_back("int");
+        return v;
+    };
 
     LE(const LE &);
 
@@ -1906,6 +1920,12 @@ public:
 class GTH : public RelOp {
 public:
 
+    virtual std::vector <Ident> allowed_types() const {
+        auto v = std::vector<Ident>();
+        v.push_back("int");
+        return v;
+    };
+
     GTH(const GTH &);
 
     GTH &operator=(const GTH &);
@@ -1923,6 +1943,12 @@ public:
 
 class GE : public RelOp {
 public:
+
+    virtual std::vector <Ident> allowed_types() const {
+        auto v = std::vector<Ident>();
+        v.push_back("int");
+        return v;
+    };
 
     GE(const GE &);
 
@@ -1942,6 +1968,13 @@ public:
 class EQU : public RelOp {
 public:
 
+    virtual std::vector <Ident> allowed_types() const {
+        auto v = std::vector<Ident>();
+        v.push_back("int");
+        v.push_back("boolean");
+        return v;
+    };
+
     EQU(const EQU &);
 
     EQU &operator=(const EQU &);
@@ -1959,6 +1992,13 @@ public:
 
 class NE : public RelOp {
 public:
+
+    virtual std::vector <Ident> allowed_types() const {
+        auto v = std::vector<Ident>();
+        v.push_back("int");
+        v.push_back("boolean");
+        return v;
+    };
 
     NE(const NE &);
 

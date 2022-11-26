@@ -1,18 +1,12 @@
-
-class A extends B {
-}
-
 class B {}
 
-int f(int a, string[] b, B yy) {
-    return 1;
+class A {
+    B b = (B) null;
 }
 
-void g() {}
-
 int main() {
-    (new int[6])[4];
-    return (a);
+    (a).b.c.d;
+//    return (a);
 //    Class[] a;
 //    Inst[1];
 }

@@ -3,6 +3,7 @@
 #include <iostream>
 #include <set>
 #include <vector>
+#include "Absyn.H"
 
 void throwError(int line_number, int char_number, std::string content) {
     std::cerr << "ERROR\n";
