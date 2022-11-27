@@ -50,14 +50,14 @@ private:
 
 public:
     explicit TypeChecker(Program *program) : program(program) {
-        std::vector<CVar*> printIntArgs;
+        std::vector < CVar * > printIntArgs;
         printIntArgs.push_back(new CVar("arg", new CType("int", std::vector<int>())));
         defined_functions.push_back(new CFun(
                 std::string("printInt"),
                 new CType("void", std::vector<int>()),
                 printIntArgs));
 
-        std::vector<CVar*> printStringArgs;
+        std::vector < CVar * > printStringArgs;
         printStringArgs.push_back(new CVar("arg", new CType("string", std::vector<int>())));
         defined_functions.push_back(new CFun(
                 "printString",
@@ -67,12 +67,12 @@ public:
         defined_functions.push_back(new CFun(
                 "error",
                 new CType("void", std::vector<int>()),
-                std::vector<CVar*>()));
+                std::vector<CVar *>()));
 
         defined_functions.push_back(new CFun(
                 "readString",
                 new CType("string", std::vector<int>()),
-                std::vector<CVar*>()));
+                std::vector<CVar *>()));
     }
 
     void checkCorrectness() {

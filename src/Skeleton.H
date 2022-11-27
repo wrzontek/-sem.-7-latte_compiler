@@ -97,8 +97,6 @@ public:
 
     void visitCFunction(CFunction *p);
 
-    void visitNewArray(NewArray *p);
-
     void visitNewObject(NewObject *p);
 
     void visitVariable(Variable *p);

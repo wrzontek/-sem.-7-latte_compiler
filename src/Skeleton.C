@@ -230,19 +230,11 @@ void Skeleton::visitCArray(CArray *c_array) {
 
 }
 
-void Skeleton::visitCFunction(CFunction *c_method) {
+void Skeleton::visitCFunction(CFunction *c_function) {
     /* Code For CFunction Goes Here */
 
-    visitIdent(c_method->ident_);
-    if (c_method->listexpr_) c_method->listexpr_->accept(this);
-
-}
-
-void Skeleton::visitNewArray(NewArray *new_array) {
-    /* Code For NewArray Goes Here */
-
-    if (new_array->arrtype_) new_array->arrtype_->accept(this);
-    if (new_array->listdimdef_) new_array->listdimdef_->accept(this);
+    visitIdent(c_function->ident_);
+    if (c_function->listexpr_) c_function->listexpr_->accept(this);
 
 }
 

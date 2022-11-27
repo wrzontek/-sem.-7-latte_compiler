@@ -11,6 +11,7 @@
 /********************   TypeDef Section    ********************/
 
 typedef int Integer;
+typedef int State;
 typedef char Char;
 typedef double Double;
 typedef std::string String;
@@ -106,8 +107,6 @@ class CMember;
 class CArray;
 
 class CFunction;
-
-class NewArray;
 
 class NewObject;
 
@@ -310,8 +309,6 @@ public:
     virtual void visitCArray(CArray *p) = 0;
 
     virtual void visitCFunction(CFunction *p) = 0;
-
-    virtual void visitNewArray(NewArray *p) = 0;
 
     virtual void visitNewObject(NewObject *p) = 0;
 

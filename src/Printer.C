@@ -572,20 +572,6 @@ void PrintAbsyn::visitCFunction(CFunction *p) {
     _i_ = oldi;
 }
 
-void PrintAbsyn::visitNewArray(NewArray *p) {
-    int oldi = _i_;
-    if (oldi > 0) render(_L_PAREN);
-
-    render("new");
-    _i_ = 0;
-    p->arrtype_->accept(this);
-    _i_ = 0;
-    visitListDimDef(p->listdimdef_);
-
-    if (oldi > 0) render(_R_PAREN);
-    _i_ = oldi;
-}
-
 void PrintAbsyn::visitNewObject(NewObject *p) {
     int oldi = _i_;
     if (oldi > 0) render(_L_PAREN);
@@ -1586,20 +1572,6 @@ void ShowAbsyn::visitCFunction(CFunction *p) {
     if (p->listexpr_) p->listexpr_->accept(this);
     bufAppend(']');
     bufAppend(' ');
-    bufAppend(')');
-}
-
-void ShowAbsyn::visitNewArray(NewArray *p) {
-    bufAppend('(');
-    bufAppend("NewArray");
-    bufAppend(' ');
-    bufAppend('[');
-    if (p->arrtype_) p->arrtype_->accept(this);
-    bufAppend(']');
-    bufAppend(' ');
-    bufAppend('[');
-    if (p->listdimdef_) p->listdimdef_->accept(this);
-    bufAppend(']');
     bufAppend(')');
 }
 

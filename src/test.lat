@@ -8,10 +8,10 @@ class A {
 //    int []arr;
 //    int y = arr[x];
 
-    int[] arr2 = new A[4];
+    int arr = new int[1];
 }
 //
-//class B {
+class B {}
 //    A a;
 //    int attr;
 //

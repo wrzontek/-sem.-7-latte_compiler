@@ -125,8 +125,6 @@ public:
 
     void visitCFunction(CFunction *p);
 
-    void visitNewArray(NewArray *p);
-
     void visitNewObject(NewObject *p);
 
     void visitComplexPart(ComplexPart *p); /* abstract class */
@@ -399,8 +397,6 @@ public:
     void visitCArray(CArray *p);
 
     void visitCFunction(CFunction *p);
-
-    void visitNewArray(NewArray *p);
 
     void visitNewObject(NewObject *p);
 

@@ -13,6 +13,8 @@ public:
     CType *current_type = nullptr;
     std::vector<CVar *> current_call_arguments = std::vector<CVar *>();
 
+    Ident new_object_type;
+
     explicit Type_Visitor(std::vector<CClass *> defined_classes, std::vector<CVar *> defined_variables,
                           std::vector<CFun *> defined_global_functions)
             : defined_classes(defined_classes), defined_variables(defined_variables),
@@ -199,8 +201,18 @@ public:
     CFun *current_method = nullptr;
 
     void visitEComplex(EComplex *e_complex) override {
-        if (e_complex->complexstart_) e_complex->complexstart_->accept(this);
-        if (e_complex->listcomplexpart_) e_complex->listcomplexpart_->accept(this);
+        e_complex->complexstart_->accept(this);
+
+        if (e_complex->listcomplexpart_->empty()) {
+            if (!new_object_type.empty()) {
+                if (!isBasicType(new_object_type))
+                    current_type = new CType(new_object_type, std::vector<int>());
+                else
+                    throwError(e_complex->line_number, e_complex->char_number, "can't 'new' basic non-array type");
+            }
+        } else {
+            e_complex->listcomplexpart_->accept(this);
+        }
     }
 
     CType *find_var(Ident name, int line_number, int char_number) {
@@ -273,7 +285,7 @@ public:
         for (ListDimDef::iterator i = list_dim_def->begin(); i != list_dim_def->end(); ++i) {
             (*i)->accept(this);
             if (current_type->name != "int" || !current_type->array_dims.empty())
-                throwError((*i)->line_number, (*i)->char_number, "array index must be integer");
+                throwError((*i)->line_number, (*i)->char_number, "array size must be integer");
         }
     }
 
@@ -287,7 +299,7 @@ public:
             throwError(c->line_number, c->char_number,
                        "array does not have enough dimensions");
 
-        c->listdimdef_->accept(this); // make sure indexes are ints
+        c->listdimdef_->accept(this); // make sure sizes are ints
 
         std::vector<int> dims;
         dims.insert(dims.end(), atype->array_dims.begin(), atype->array_dims.end());
@@ -311,14 +323,34 @@ public:
         current_type = fun->return_type;
     }
 
-    void visitNewArray(NewArray *c) override { // new int[][]
-        std::cout << "AAAAAAAAAAAAAAAAAAA\n";
-        auto arr_type = getArrayType(c->arrtype_);
-        if (!isBasicType(arr_type->name)) {
-            getClass(arr_type->name, c->line_number, c->line_number); // make sure class exists
+    void visitNewObject(NewObject *c) override { // new <class> / new int[14][2] / new <class>[14][2]
+        if (!isBasicType(c->ident_)) {
+            getClass(c->ident_, c->line_number, c->line_number); // make sure class exists
         }
-        c->listdimdef_->accept(this); // make sure indexes are ints
-        current_type = new CType(arr_type->name, std::vector<int>(c->listdimdef_->size(), -1));
+        new_object_type = c->ident_;
     }
-    // TODO pozostałe ComplexStart, ComplexPart
+
+    void visitArrElement(ArrElement *p) override {
+        p->listdimdef_->accept(this); // make sure sizes are ints
+        if (!new_object_type.empty()) { // initializing array
+            current_type = new CType(new_object_type, std::vector<int>(p->listdimdef_->size(), -1));
+            new_object_type = "";
+        } else { // accessing array
+            if (current_type->array_dims.empty())
+                throwError(p->line_number, p->char_number, "attempted array element access on non-array");
+
+            if (current_type->array_dims.size() < p->listdimdef_->size())
+                throwError(p->line_number, p->char_number, "array does not have enough dimensions");
+
+            std::vector<int> dims;
+            dims.insert(dims.end(), current_type->array_dims.begin(), current_type->array_dims.end());
+            for (int i = 0; i < p->listdimdef_->size(); i++) {
+                dims.erase(dims.begin());
+            }
+
+            current_type = new CType(current_type->name, dims);
+        }
+    }
+
+    // TODO pozostałe ComplexPart
 };

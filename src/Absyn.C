@@ -1052,46 +1052,6 @@ CFunction *CFunction::clone() const {
 }
 
 
-/********************   NewArray    ********************/
-NewArray::NewArray(ArrType *p1, ListDimDef *p2) {
-    arrtype_ = p1;
-    listdimdef_ = p2;
-
-}
-
-NewArray::NewArray(const NewArray &other) {
-    arrtype_ = other.arrtype_->clone();
-    listdimdef_ = other.listdimdef_->clone();
-
-}
-
-NewArray &NewArray::operator=(const NewArray &other) {
-    NewArray tmp(other);
-    swap(tmp);
-    return *this;
-}
-
-void NewArray::swap(NewArray &other) {
-    std::swap(arrtype_, other.arrtype_);
-    std::swap(listdimdef_, other.listdimdef_);
-
-}
-
-NewArray::~NewArray() {
-    delete (arrtype_);
-    delete (listdimdef_);
-
-}
-
-void NewArray::accept(Visitor *v) {
-    v->visitNewArray(this);
-}
-
-NewArray *NewArray::clone() const {
-    return new NewArray(*this);
-}
-
-
 /********************   NewObject    ********************/
 NewObject::NewObject(Ident p1) {
     ident_ = p1;
