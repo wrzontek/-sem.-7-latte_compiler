@@ -1,17 +1,23 @@
 class A {
-//    A a;
+    A a;
 //    B b;
 //
 //    int x = f(1, "a");
 //    int attr;
-//
-//    int []arr;
+
+    int length;
+
+    int []arr;
+    A []arr2;
+    A f(int a) {  }
+
 //    int y = arr[x];
 
-    int arr = new int[1];
+    int x = a.length;
 }
+
 //
-class B {}
+//class B {
 //    A a;
 //    int attr;
 //

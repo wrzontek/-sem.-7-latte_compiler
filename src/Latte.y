@@ -229,7 +229,7 @@ ComplexStart : _LPAREN ComplexStart _RPAREN { $$ = new CBracketed($2); $$->line_
   | _IDENT_ _DOT _IDENT_ { $$ = new CMember($1, $3); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _IDENT_ ListDimDef { std::reverse($2->begin(),$2->end()) ;$$ = new CArray($1, $2); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _IDENT_ _LPAREN ListExpr _RPAREN { std::reverse($3->begin(),$3->end()) ;$$ = new CFunction($1, $3); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
-  | _KW_new _IDENT_ { $$ = new NewObject($2); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
+  | _KW_new ArrType { $$ = new NewObject($2); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
 ;
 ComplexPart : _IDENT_ { $$ = new Variable($1); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | ListDimDef { std::reverse($1->begin(),$1->end()) ;$$ = new ArrElement($1); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }

@@ -47,7 +47,8 @@ extern int latte_debug;
 /* Token type.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
-enum yytokentype {
+  enum yytokentype
+  {
     _ERROR_ = 258,
     _BANG = 259,
     _BANGEQ = 260,
@@ -95,45 +96,46 @@ enum yytokentype {
     _STRING_ = 302,
     _INTEGER_ = 303,
     _IDENT_ = 304
-};
+  };
 #endif
 
 /* Value type.  */
-#if !defined YYSTYPE && !defined YYSTYPE_IS_DECLARED
-union YYSTYPE {
+#if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
+union YYSTYPE
+{
 #line 50 "Latte.y"
 
-    int _int;
-    char _char;
-    double _double;
-    char *_string;
-    Program *program_;
-    TopDef *topdef_;
-    ListClassMember *listclassmember_;
-    ListTopDef *listtopdef_;
-    Arg *arg_;
-    ListArg *listarg_;
-    ClassMember *classmember_;
-    Block *block_;
-    ListStmt *liststmt_;
-    Stmt *stmt_;
-    Item *item_;
-    ListItem *listitem_;
-    ComplexStart *complexstart_;
-    ComplexPart *complexpart_;
-    ArrType *arrtype_;
-    Type *type_;
-    ArrDimType *arrdimtype_;
-    ListArrDimType *listarrdimtype_;
-    ListType *listtype_;
-    DimDef *dimdef_;
-    ListDimDef *listdimdef_;
-    Expr *expr_;
-    ListComplexPart *listcomplexpart_;
-    ListExpr *listexpr_;
-    AddOp *addop_;
-    MulOp *mulop_;
-    RelOp *relop_;
+  int    _int;
+  char   _char;
+  double _double;
+  char*  _string;
+  Program* program_;
+  TopDef* topdef_;
+  ListClassMember* listclassmember_;
+  ListTopDef* listtopdef_;
+  Arg* arg_;
+  ListArg* listarg_;
+  ClassMember* classmember_;
+  Block* block_;
+  ListStmt* liststmt_;
+  Stmt* stmt_;
+  Item* item_;
+  ListItem* listitem_;
+  ComplexStart* complexstart_;
+  ComplexPart* complexpart_;
+  ArrType* arrtype_;
+  Type* type_;
+  ArrDimType* arrdimtype_;
+  ListArrDimType* listarrdimtype_;
+  ListType* listtype_;
+  DimDef* dimdef_;
+  ListDimDef* listdimdef_;
+  Expr* expr_;
+  ListComplexPart* listcomplexpart_;
+  ListExpr* listexpr_;
+  AddOp* addop_;
+  MulOp* mulop_;
+  RelOp* relop_;
 
 #line 141 "Bison.H"
 
@@ -144,19 +146,21 @@ typedef union YYSTYPE YYSTYPE;
 #endif
 
 /* Location type.  */
-#if !defined YYLTYPE && !defined YYLTYPE_IS_DECLARED
+#if ! defined YYLTYPE && ! defined YYLTYPE_IS_DECLARED
 typedef struct YYLTYPE YYLTYPE;
-struct YYLTYPE {
-    int first_line;
-    int first_column;
-    int last_line;
-    int last_column;
+struct YYLTYPE
+{
+  int first_line;
+  int first_column;
+  int last_line;
+  int last_column;
 };
 # define YYLTYPE_IS_DECLARED 1
 # define YYLTYPE_IS_TRIVIAL 1
 #endif
 
 
-int latte_parse(yyscan_t scanner, YYSTYPE *result);
+
+int latte_parse (yyscan_t scanner, YYSTYPE *result);
 
 #endif /* !YY_LATTE_BISON_H_INCLUDED  */

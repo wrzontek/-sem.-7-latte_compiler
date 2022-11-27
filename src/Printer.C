@@ -577,7 +577,8 @@ void PrintAbsyn::visitNewObject(NewObject *p) {
     if (oldi > 0) render(_L_PAREN);
 
     render("new");
-    visitIdent(p->ident_);
+    _i_ = 0;
+    p->arrtype_->accept(this);
 
     if (oldi > 0) render(_R_PAREN);
     _i_ = oldi;
@@ -1579,7 +1580,9 @@ void ShowAbsyn::visitNewObject(NewObject *p) {
     bufAppend('(');
     bufAppend("NewObject");
     bufAppend(' ');
-    visitIdent(p->ident_);
+    bufAppend('[');
+    if (p->arrtype_) p->arrtype_->accept(this);
+    bufAppend(']');
     bufAppend(')');
 }
 

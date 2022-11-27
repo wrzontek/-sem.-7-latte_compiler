@@ -241,7 +241,7 @@ void Skeleton::visitCFunction(CFunction *c_function) {
 void Skeleton::visitNewObject(NewObject *new_object) {
     /* Code For NewObject Goes Here */
 
-    visitIdent(new_object->ident_);
+    if (new_object->arrtype_) new_object->arrtype_->accept(this);
 
 }
 

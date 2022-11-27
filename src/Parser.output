@@ -17,8 +17,8 @@ Rules useless in grammar
 
 State 81 conflicts: 1 shift/reduce
 State 82 conflicts: 1 shift/reduce
-State 89 conflicts: 1 shift/reduce
-State 157 conflicts: 1 shift/reduce
+State 93 conflicts: 1 shift/reduce
+State 161 conflicts: 1 shift/reduce
 
 
 Grammar
@@ -75,7 +75,7 @@ Grammar
    36             | _IDENT_ _DOT _IDENT_
    37             | _IDENT_ ListDimDef
    38             | _IDENT_ _LPAREN ListExpr _RPAREN
-   39             | _KW_new _IDENT_
+   39             | _KW_new ArrType
 
    40 ComplexPart: _IDENT_
    41            | ListDimDef
@@ -205,7 +205,7 @@ Terminals, with rules where they appear
     _RBRACE (301) 3 4 15
     _STRING_ <_string> (302) 67
     _INTEGER_ <_int> (303) 64
-    _IDENT_ <_string> (304) 2 3 4 9 14 29 31 32 36 37 38 39 40 47 53 60 61 63
+    _IDENT_ <_string> (304) 2 3 4 9 14 29 31 32 36 37 38 40 47 53 60 61 63
 
 
 Nonterminals, with rules where they appear
@@ -256,7 +256,7 @@ Nonterminals, with rules where they appear
         on right: 70
     ArrType <arrtype_> (65)
         on left: 44 45 46 47
-        on right: 52
+        on right: 39 52
     Type <type_> (66)
         on left: 48 49 50 51 52 53
         on right: 2 9 13 14 20 29
@@ -894,9 +894,14 @@ State 52
 
 State 53
 
-   39 ComplexStart: _KW_new . _IDENT_
+   39 ComplexStart: _KW_new . ArrType
 
-    _IDENT_  shift, and go to state 85
+    _KW_boolean  shift, and go to state 85
+    _KW_int      shift, and go to state 86
+    _KW_string   shift, and go to state 87
+    _IDENT_      shift, and go to state 88
+
+    ArrType  go to state 89
 
 
 State 54
@@ -927,14 +932,14 @@ State 57
    38             | _IDENT_ . _LPAREN ListExpr _RPAREN
    60 Expr6: _IDENT_ .
 
-    _LPAREN  shift, and go to state 86
-    _DOT     shift, and go to state 87
-    _LBRACK  shift, and go to state 88
+    _LPAREN  shift, and go to state 90
+    _DOT     shift, and go to state 91
+    _LBRACK  shift, and go to state 92
 
     $default  reduce using rule 60 (Expr6)
 
-    DimDef      go to state 89
-    ListDimDef  go to state 90
+    DimDef      go to state 93
+    ListDimDef  go to state 94
 
 
 State 58
@@ -943,7 +948,7 @@ State 58
 
     $default  reduce using rule 69 (ListComplexPart)
 
-    ListComplexPart  go to state 91
+    ListComplexPart  go to state 95
 
 
 State 59
@@ -965,13 +970,13 @@ State 61
    74 Expr4: Expr4 . MulOp Expr5
    77 Expr3: Expr4 .
 
-    _PERCENT  shift, and go to state 92
-    _STAR     shift, and go to state 93
-    _SLASH    shift, and go to state 94
+    _PERCENT  shift, and go to state 96
+    _STAR     shift, and go to state 97
+    _SLASH    shift, and go to state 98
 
     $default  reduce using rule 77 (Expr3)
 
-    MulOp  go to state 95
+    MulOp  go to state 99
 
 
 State 62
@@ -979,12 +984,12 @@ State 62
    76 Expr3: Expr3 . AddOp Expr4
    79 Expr2: Expr3 .
 
-    _PLUS   shift, and go to state 96
-    _MINUS  shift, and go to state 97
+    _PLUS   shift, and go to state 100
+    _MINUS  shift, and go to state 101
 
     $default  reduce using rule 79 (Expr2)
 
-    AddOp  go to state 98
+    AddOp  go to state 102
 
 
 State 63
@@ -993,17 +998,17 @@ State 63
    80 Expr1: Expr2 . _DAMP Expr1
    81      | Expr2 .
 
-    _BANGEQ   shift, and go to state 99
-    _DAMP     shift, and go to state 100
-    _LT       shift, and go to state 101
-    _LDARROW  shift, and go to state 102
-    _DEQ      shift, and go to state 103
-    _GT       shift, and go to state 104
-    _GTEQ     shift, and go to state 105
+    _BANGEQ   shift, and go to state 103
+    _DAMP     shift, and go to state 104
+    _LT       shift, and go to state 105
+    _LDARROW  shift, and go to state 106
+    _DEQ      shift, and go to state 107
+    _GT       shift, and go to state 108
+    _GTEQ     shift, and go to state 109
 
     $default  reduce using rule 81 (Expr1)
 
-    RelOp  go to state 106
+    RelOp  go to state 110
 
 
 State 64
@@ -1011,7 +1016,7 @@ State 64
    82 Expr: Expr1 . _DBAR Expr
    83     | Expr1 .
 
-    _DBAR  shift, and go to state 107
+    _DBAR  shift, and go to state 111
 
     $default  reduce using rule 83 (Expr)
 
@@ -1051,7 +1056,7 @@ State 69
 
    29 Stmt: _KW_for . _LPAREN Type _IDENT_ _COLON _IDENT_ _RPAREN Stmt
 
-    _LPAREN  shift, and go to state 108
+    _LPAREN  shift, and go to state 112
 
 
 State 70
@@ -1059,7 +1064,7 @@ State 70
    26 Stmt: _KW_if . _LPAREN Expr _RPAREN Stmt
    27     | _KW_if . _LPAREN Expr _RPAREN Stmt _KW_else Stmt
 
-    _LPAREN  shift, and go to state 109
+    _LPAREN  shift, and go to state 113
 
 
 State 71
@@ -1070,7 +1075,7 @@ State 71
     _BANG      shift, and go to state 49
     _LPAREN    shift, and go to state 50
     _MINUS     shift, and go to state 51
-    _SEMI      shift, and go to state 110
+    _SEMI      shift, and go to state 114
     _KW_false  shift, and go to state 52
     _KW_new    shift, and go to state 53
     _KW_true   shift, and go to state 54
@@ -1085,14 +1090,14 @@ State 71
     Expr3         go to state 62
     Expr2         go to state 63
     Expr1         go to state 64
-    Expr          go to state 111
+    Expr          go to state 115
 
 
 State 72
 
    28 Stmt: _KW_while . _LPAREN Expr _RPAREN Stmt
 
-    _LPAREN  shift, and go to state 112
+    _LPAREN  shift, and go to state 116
 
 
 State 73
@@ -1111,16 +1116,16 @@ State 74
    53 Type: _IDENT_ .
    60 Expr6: _IDENT_ .
 
-    _LPAREN  shift, and go to state 86
-    _DOT     shift, and go to state 87
-    _LBRACK  shift, and go to state 88
+    _LPAREN  shift, and go to state 90
+    _DOT     shift, and go to state 91
+    _LBRACK  shift, and go to state 92
 
     _EMPTYBRACK  reduce using rule 47 (ArrType)
     _IDENT_      reduce using rule 53 (Type)
     $default     reduce using rule 60 (Expr6)
 
-    DimDef      go to state 89
-    ListDimDef  go to state 90
+    DimDef      go to state 93
+    ListDimDef  go to state 94
 
 
 State 75
@@ -1144,7 +1149,7 @@ State 77
     _IDENT_  shift, and go to state 66
 
     Item      go to state 37
-    ListItem  go to state 113
+    ListItem  go to state 117
 
 
 State 78
@@ -1154,10 +1159,10 @@ State 78
    23     | Expr . _DMINUS _SEMI
    30     | Expr . _SEMI
 
-    _DPLUS   shift, and go to state 114
-    _DMINUS  shift, and go to state 115
-    _SEMI    shift, and go to state 116
-    _EQ      shift, and go to state 117
+    _DPLUS   shift, and go to state 118
+    _DMINUS  shift, and go to state 119
+    _SEMI    shift, and go to state 120
+    _EQ      shift, and go to state 121
 
 
 State 79
@@ -1166,7 +1171,7 @@ State 79
 
     _LBRACE  shift, and go to state 40
 
-    Block  go to state 118
+    Block  go to state 122
 
 
 State 80
@@ -1185,16 +1190,16 @@ State 81
    61      | _LPAREN _IDENT_ . _RPAREN
    63      | _LPAREN _IDENT_ . _RPAREN _KW_null
 
-    _LPAREN  shift, and go to state 86
-    _RPAREN  shift, and go to state 119
-    _DOT     shift, and go to state 87
-    _LBRACK  shift, and go to state 88
+    _LPAREN  shift, and go to state 90
+    _RPAREN  shift, and go to state 123
+    _DOT     shift, and go to state 91
+    _LBRACK  shift, and go to state 92
 
     _RPAREN   [reduce using rule 60 (Expr6)]
     $default  reduce using rule 60 (Expr6)
 
-    DimDef      go to state 89
-    ListDimDef  go to state 90
+    DimDef      go to state 93
+    ListDimDef  go to state 94
 
 
 State 82
@@ -1202,19 +1207,19 @@ State 82
    35 ComplexStart: _LPAREN ComplexStart . _RPAREN
    62 Expr6: ComplexStart . ListComplexPart
 
-    _RPAREN  shift, and go to state 120
+    _RPAREN  shift, and go to state 124
 
     _RPAREN   [reduce using rule 69 (ListComplexPart)]
     $default  reduce using rule 69 (ListComplexPart)
 
-    ListComplexPart  go to state 91
+    ListComplexPart  go to state 95
 
 
 State 83
 
    68 Expr6: _LPAREN Expr . _RPAREN
 
-    _RPAREN  shift, and go to state 121
+    _RPAREN  shift, and go to state 125
 
 
 State 84
@@ -1226,12 +1231,40 @@ State 84
 
 State 85
 
-   39 ComplexStart: _KW_new _IDENT_ .
+   46 ArrType: _KW_boolean .
+
+    $default  reduce using rule 46 (ArrType)
+
+
+State 86
+
+   44 ArrType: _KW_int .
+
+    $default  reduce using rule 44 (ArrType)
+
+
+State 87
+
+   45 ArrType: _KW_string .
+
+    $default  reduce using rule 45 (ArrType)
+
+
+State 88
+
+   47 ArrType: _IDENT_ .
+
+    $default  reduce using rule 47 (ArrType)
+
+
+State 89
+
+   39 ComplexStart: _KW_new ArrType .
 
     $default  reduce using rule 39 (ComplexStart)
 
 
-State 86
+State 90
 
    38 ComplexStart: _IDENT_ _LPAREN . ListExpr _RPAREN
 
@@ -1254,18 +1287,18 @@ State 86
     Expr3         go to state 62
     Expr2         go to state 63
     Expr1         go to state 64
-    Expr          go to state 122
-    ListExpr      go to state 123
+    Expr          go to state 126
+    ListExpr      go to state 127
 
 
-State 87
+State 91
 
    36 ComplexStart: _IDENT_ _DOT . _IDENT_
 
-    _IDENT_  shift, and go to state 124
+    _IDENT_  shift, and go to state 128
 
 
-State 88
+State 92
 
    57 DimDef: _LBRACK . Expr _RBRACK
 
@@ -1286,69 +1319,69 @@ State 88
     Expr3         go to state 62
     Expr2         go to state 63
     Expr1         go to state 64
-    Expr          go to state 125
+    Expr          go to state 129
 
 
-State 89
+State 93
 
    58 ListDimDef: DimDef .
    59           | DimDef . ListDimDef
 
-    _LBRACK  shift, and go to state 88
+    _LBRACK  shift, and go to state 92
 
     _LBRACK   [reduce using rule 58 (ListDimDef)]
     $default  reduce using rule 58 (ListDimDef)
 
-    DimDef      go to state 89
-    ListDimDef  go to state 126
+    DimDef      go to state 93
+    ListDimDef  go to state 130
 
 
-State 90
+State 94
 
    37 ComplexStart: _IDENT_ ListDimDef .
 
     $default  reduce using rule 37 (ComplexStart)
 
 
-State 91
+State 95
 
    62 Expr6: ComplexStart ListComplexPart .
    70 ListComplexPart: ListComplexPart . ComplexPart
 
-    _LPAREN  shift, and go to state 127
-    _DOT     shift, and go to state 128
-    _LBRACK  shift, and go to state 88
-    _IDENT_  shift, and go to state 129
+    _LPAREN  shift, and go to state 131
+    _DOT     shift, and go to state 132
+    _LBRACK  shift, and go to state 92
+    _IDENT_  shift, and go to state 133
 
     $default  reduce using rule 62 (Expr6)
 
-    ComplexPart  go to state 130
-    DimDef       go to state 89
-    ListDimDef   go to state 131
+    ComplexPart  go to state 134
+    DimDef       go to state 93
+    ListDimDef   go to state 135
 
 
-State 92
+State 96
 
    91 MulOp: _PERCENT .
 
     $default  reduce using rule 91 (MulOp)
 
 
-State 93
+State 97
 
    89 MulOp: _STAR .
 
     $default  reduce using rule 89 (MulOp)
 
 
-State 94
+State 98
 
    90 MulOp: _SLASH .
 
     $default  reduce using rule 90 (MulOp)
 
 
-State 95
+State 99
 
    74 Expr4: Expr4 MulOp . Expr5
 
@@ -1364,24 +1397,24 @@ State 95
 
     ComplexStart  go to state 58
     Expr6         go to state 59
-    Expr5         go to state 132
+    Expr5         go to state 136
 
 
-State 96
+State 100
 
    87 AddOp: _PLUS .
 
     $default  reduce using rule 87 (AddOp)
 
 
-State 97
+State 101
 
    88 AddOp: _MINUS .
 
     $default  reduce using rule 88 (AddOp)
 
 
-State 98
+State 102
 
    76 Expr3: Expr3 AddOp . Expr4
 
@@ -1398,17 +1431,17 @@ State 98
     ComplexStart  go to state 58
     Expr6         go to state 59
     Expr5         go to state 60
-    Expr4         go to state 133
+    Expr4         go to state 137
 
 
-State 99
+State 103
 
    97 RelOp: _BANGEQ .
 
     $default  reduce using rule 97 (RelOp)
 
 
-State 100
+State 104
 
    80 Expr1: Expr2 _DAMP . Expr1
 
@@ -1428,45 +1461,45 @@ State 100
     Expr4         go to state 61
     Expr3         go to state 62
     Expr2         go to state 63
-    Expr1         go to state 134
+    Expr1         go to state 138
 
 
-State 101
+State 105
 
    92 RelOp: _LT .
 
     $default  reduce using rule 92 (RelOp)
 
 
-State 102
+State 106
 
    93 RelOp: _LDARROW .
 
     $default  reduce using rule 93 (RelOp)
 
 
-State 103
+State 107
 
    96 RelOp: _DEQ .
 
     $default  reduce using rule 96 (RelOp)
 
 
-State 104
+State 108
 
    94 RelOp: _GT .
 
     $default  reduce using rule 94 (RelOp)
 
 
-State 105
+State 109
 
    95 RelOp: _GTEQ .
 
     $default  reduce using rule 95 (RelOp)
 
 
-State 106
+State 110
 
    78 Expr2: Expr2 RelOp . Expr3
 
@@ -1484,89 +1517,12 @@ State 106
     Expr6         go to state 59
     Expr5         go to state 60
     Expr4         go to state 61
-    Expr3         go to state 135
-
-
-State 107
-
-   82 Expr: Expr1 _DBAR . Expr
-
-    _BANG      shift, and go to state 49
-    _LPAREN    shift, and go to state 50
-    _MINUS     shift, and go to state 51
-    _KW_false  shift, and go to state 52
-    _KW_new    shift, and go to state 53
-    _KW_true   shift, and go to state 54
-    _STRING_   shift, and go to state 55
-    _INTEGER_  shift, and go to state 56
-    _IDENT_    shift, and go to state 57
-
-    ComplexStart  go to state 58
-    Expr6         go to state 59
-    Expr5         go to state 60
-    Expr4         go to state 61
-    Expr3         go to state 62
-    Expr2         go to state 63
-    Expr1         go to state 64
-    Expr          go to state 136
-
-
-State 108
-
-   29 Stmt: _KW_for _LPAREN . Type _IDENT_ _COLON _IDENT_ _RPAREN Stmt
-
-    _KW_boolean  shift, and go to state 1
-    _KW_int      shift, and go to state 3
-    _KW_string   shift, and go to state 4
-    _KW_void     shift, and go to state 5
-    _IDENT_      shift, and go to state 6
-
-    ArrType  go to state 10
-    Type     go to state 137
-
-
-State 109
-
-   26 Stmt: _KW_if _LPAREN . Expr _RPAREN Stmt
-   27     | _KW_if _LPAREN . Expr _RPAREN Stmt _KW_else Stmt
-
-    _BANG      shift, and go to state 49
-    _LPAREN    shift, and go to state 50
-    _MINUS     shift, and go to state 51
-    _KW_false  shift, and go to state 52
-    _KW_new    shift, and go to state 53
-    _KW_true   shift, and go to state 54
-    _STRING_   shift, and go to state 55
-    _INTEGER_  shift, and go to state 56
-    _IDENT_    shift, and go to state 57
-
-    ComplexStart  go to state 58
-    Expr6         go to state 59
-    Expr5         go to state 60
-    Expr4         go to state 61
-    Expr3         go to state 62
-    Expr2         go to state 63
-    Expr1         go to state 64
-    Expr          go to state 138
-
-
-State 110
-
-   25 Stmt: _KW_return _SEMI .
-
-    $default  reduce using rule 25 (Stmt)
+    Expr3         go to state 139
 
 
 State 111
 
-   24 Stmt: _KW_return Expr . _SEMI
-
-    _SEMI  shift, and go to state 139
-
-
-State 112
-
-   28 Stmt: _KW_while _LPAREN . Expr _RPAREN Stmt
+   82 Expr: Expr1 _DBAR . Expr
 
     _BANG      shift, and go to state 49
     _LPAREN    shift, and go to state 50
@@ -1588,37 +1544,62 @@ State 112
     Expr          go to state 140
 
 
+State 112
+
+   29 Stmt: _KW_for _LPAREN . Type _IDENT_ _COLON _IDENT_ _RPAREN Stmt
+
+    _KW_boolean  shift, and go to state 1
+    _KW_int      shift, and go to state 3
+    _KW_string   shift, and go to state 4
+    _KW_void     shift, and go to state 5
+    _IDENT_      shift, and go to state 6
+
+    ArrType  go to state 10
+    Type     go to state 141
+
+
 State 113
 
-   20 Stmt: Type ListItem . _SEMI
+   26 Stmt: _KW_if _LPAREN . Expr _RPAREN Stmt
+   27     | _KW_if _LPAREN . Expr _RPAREN Stmt _KW_else Stmt
 
-    _SEMI  shift, and go to state 141
+    _BANG      shift, and go to state 49
+    _LPAREN    shift, and go to state 50
+    _MINUS     shift, and go to state 51
+    _KW_false  shift, and go to state 52
+    _KW_new    shift, and go to state 53
+    _KW_true   shift, and go to state 54
+    _STRING_   shift, and go to state 55
+    _INTEGER_  shift, and go to state 56
+    _IDENT_    shift, and go to state 57
+
+    ComplexStart  go to state 58
+    Expr6         go to state 59
+    Expr5         go to state 60
+    Expr4         go to state 61
+    Expr3         go to state 62
+    Expr2         go to state 63
+    Expr1         go to state 64
+    Expr          go to state 142
 
 
 State 114
 
-   22 Stmt: Expr _DPLUS . _SEMI
+   25 Stmt: _KW_return _SEMI .
 
-    _SEMI  shift, and go to state 142
+    $default  reduce using rule 25 (Stmt)
 
 
 State 115
 
-   23 Stmt: Expr _DMINUS . _SEMI
+   24 Stmt: _KW_return Expr . _SEMI
 
     _SEMI  shift, and go to state 143
 
 
 State 116
 
-   30 Stmt: Expr _SEMI .
-
-    $default  reduce using rule 30 (Stmt)
-
-
-State 117
-
-   21 Stmt: Expr _EQ . Expr _SEMI
+   28 Stmt: _KW_while _LPAREN . Expr _RPAREN Stmt
 
     _BANG      shift, and go to state 49
     _LPAREN    shift, and go to state 50
@@ -1640,76 +1621,128 @@ State 117
     Expr          go to state 144
 
 
+State 117
+
+   20 Stmt: Type ListItem . _SEMI
+
+    _SEMI  shift, and go to state 145
+
+
 State 118
+
+   22 Stmt: Expr _DPLUS . _SEMI
+
+    _SEMI  shift, and go to state 146
+
+
+State 119
+
+   23 Stmt: Expr _DMINUS . _SEMI
+
+    _SEMI  shift, and go to state 147
+
+
+State 120
+
+   30 Stmt: Expr _SEMI .
+
+    $default  reduce using rule 30 (Stmt)
+
+
+State 121
+
+   21 Stmt: Expr _EQ . Expr _SEMI
+
+    _BANG      shift, and go to state 49
+    _LPAREN    shift, and go to state 50
+    _MINUS     shift, and go to state 51
+    _KW_false  shift, and go to state 52
+    _KW_new    shift, and go to state 53
+    _KW_true   shift, and go to state 54
+    _STRING_   shift, and go to state 55
+    _INTEGER_  shift, and go to state 56
+    _IDENT_    shift, and go to state 57
+
+    ComplexStart  go to state 58
+    Expr6         go to state 59
+    Expr5         go to state 60
+    Expr4         go to state 61
+    Expr3         go to state 62
+    Expr2         go to state 63
+    Expr1         go to state 64
+    Expr          go to state 148
+
+
+State 122
 
    14 ClassMember: Type _IDENT_ _LPAREN ListArg _RPAREN Block .
 
     $default  reduce using rule 14 (ClassMember)
 
 
-State 119
+State 123
 
    61 Expr6: _LPAREN _IDENT_ _RPAREN .
    63      | _LPAREN _IDENT_ _RPAREN . _KW_null
 
-    _KW_null  shift, and go to state 145
+    _KW_null  shift, and go to state 149
 
     $default  reduce using rule 61 (Expr6)
 
 
-State 120
+State 124
 
    35 ComplexStart: _LPAREN ComplexStart _RPAREN .
 
     $default  reduce using rule 35 (ComplexStart)
 
 
-State 121
+State 125
 
    68 Expr6: _LPAREN Expr _RPAREN .
 
     $default  reduce using rule 68 (Expr6)
 
 
-State 122
+State 126
 
    85 ListExpr: Expr .
    86         | Expr . _COMMA ListExpr
 
-    _COMMA  shift, and go to state 146
+    _COMMA  shift, and go to state 150
 
     $default  reduce using rule 85 (ListExpr)
 
 
-State 123
+State 127
 
    38 ComplexStart: _IDENT_ _LPAREN ListExpr . _RPAREN
 
-    _RPAREN  shift, and go to state 147
+    _RPAREN  shift, and go to state 151
 
 
-State 124
+State 128
 
    36 ComplexStart: _IDENT_ _DOT _IDENT_ .
 
     $default  reduce using rule 36 (ComplexStart)
 
 
-State 125
+State 129
 
    57 DimDef: _LBRACK Expr . _RBRACK
 
-    _RBRACK  shift, and go to state 148
+    _RBRACK  shift, and go to state 152
 
 
-State 126
+State 130
 
    59 ListDimDef: DimDef ListDimDef .
 
     $default  reduce using rule 59 (ListDimDef)
 
 
-State 127
+State 131
 
    42 ComplexPart: _LPAREN . ListExpr _RPAREN
 
@@ -1732,151 +1765,151 @@ State 127
     Expr3         go to state 62
     Expr2         go to state 63
     Expr1         go to state 64
-    Expr          go to state 122
-    ListExpr      go to state 149
+    Expr          go to state 126
+    ListExpr      go to state 153
 
 
-State 128
+State 132
 
    43 ComplexPart: _DOT .
 
     $default  reduce using rule 43 (ComplexPart)
 
 
-State 129
+State 133
 
    40 ComplexPart: _IDENT_ .
 
     $default  reduce using rule 40 (ComplexPart)
 
 
-State 130
+State 134
 
    70 ListComplexPart: ListComplexPart ComplexPart .
 
     $default  reduce using rule 70 (ListComplexPart)
 
 
-State 131
+State 135
 
    41 ComplexPart: ListDimDef .
 
     $default  reduce using rule 41 (ComplexPart)
 
 
-State 132
+State 136
 
    74 Expr4: Expr4 MulOp Expr5 .
 
     $default  reduce using rule 74 (Expr4)
 
 
-State 133
+State 137
 
    74 Expr4: Expr4 . MulOp Expr5
    76 Expr3: Expr3 AddOp Expr4 .
 
-    _PERCENT  shift, and go to state 92
-    _STAR     shift, and go to state 93
-    _SLASH    shift, and go to state 94
+    _PERCENT  shift, and go to state 96
+    _STAR     shift, and go to state 97
+    _SLASH    shift, and go to state 98
 
     $default  reduce using rule 76 (Expr3)
 
-    MulOp  go to state 95
+    MulOp  go to state 99
 
 
-State 134
+State 138
 
    80 Expr1: Expr2 _DAMP Expr1 .
 
     $default  reduce using rule 80 (Expr1)
 
 
-State 135
+State 139
 
    76 Expr3: Expr3 . AddOp Expr4
    78 Expr2: Expr2 RelOp Expr3 .
 
-    _PLUS   shift, and go to state 96
-    _MINUS  shift, and go to state 97
+    _PLUS   shift, and go to state 100
+    _MINUS  shift, and go to state 101
 
     $default  reduce using rule 78 (Expr2)
 
-    AddOp  go to state 98
+    AddOp  go to state 102
 
 
-State 136
+State 140
 
    82 Expr: Expr1 _DBAR Expr .
 
     $default  reduce using rule 82 (Expr)
 
 
-State 137
+State 141
 
    29 Stmt: _KW_for _LPAREN Type . _IDENT_ _COLON _IDENT_ _RPAREN Stmt
 
-    _IDENT_  shift, and go to state 150
+    _IDENT_  shift, and go to state 154
 
 
-State 138
+State 142
 
    26 Stmt: _KW_if _LPAREN Expr . _RPAREN Stmt
    27     | _KW_if _LPAREN Expr . _RPAREN Stmt _KW_else Stmt
 
-    _RPAREN  shift, and go to state 151
+    _RPAREN  shift, and go to state 155
 
 
-State 139
+State 143
 
    24 Stmt: _KW_return Expr _SEMI .
 
     $default  reduce using rule 24 (Stmt)
 
 
-State 140
+State 144
 
    28 Stmt: _KW_while _LPAREN Expr . _RPAREN Stmt
 
-    _RPAREN  shift, and go to state 152
+    _RPAREN  shift, and go to state 156
 
 
-State 141
+State 145
 
    20 Stmt: Type ListItem _SEMI .
 
     $default  reduce using rule 20 (Stmt)
 
 
-State 142
+State 146
 
    22 Stmt: Expr _DPLUS _SEMI .
 
     $default  reduce using rule 22 (Stmt)
 
 
-State 143
+State 147
 
    23 Stmt: Expr _DMINUS _SEMI .
 
     $default  reduce using rule 23 (Stmt)
 
 
-State 144
+State 148
 
    21 Stmt: Expr _EQ Expr . _SEMI
 
-    _SEMI  shift, and go to state 153
+    _SEMI  shift, and go to state 157
 
 
-State 145
+State 149
 
    63 Expr6: _LPAREN _IDENT_ _RPAREN _KW_null .
 
     $default  reduce using rule 63 (Expr6)
 
 
-State 146
+State 150
 
    86 ListExpr: Expr _COMMA . ListExpr
 
@@ -1899,39 +1932,39 @@ State 146
     Expr3         go to state 62
     Expr2         go to state 63
     Expr1         go to state 64
-    Expr          go to state 122
-    ListExpr      go to state 154
+    Expr          go to state 126
+    ListExpr      go to state 158
 
 
-State 147
+State 151
 
    38 ComplexStart: _IDENT_ _LPAREN ListExpr _RPAREN .
 
     $default  reduce using rule 38 (ComplexStart)
 
 
-State 148
+State 152
 
    57 DimDef: _LBRACK Expr _RBRACK .
 
     $default  reduce using rule 57 (DimDef)
 
 
-State 149
+State 153
 
    42 ComplexPart: _LPAREN ListExpr . _RPAREN
 
-    _RPAREN  shift, and go to state 155
+    _RPAREN  shift, and go to state 159
 
 
-State 150
+State 154
 
    29 Stmt: _KW_for _LPAREN Type _IDENT_ . _COLON _IDENT_ _RPAREN Stmt
 
-    _COLON  shift, and go to state 156
+    _COLON  shift, and go to state 160
 
 
-State 151
+State 155
 
    26 Stmt: _KW_if _LPAREN Expr _RPAREN . Stmt
    27     | _KW_if _LPAREN Expr _RPAREN . Stmt _KW_else Stmt
@@ -1957,7 +1990,7 @@ State 151
     _IDENT_      shift, and go to state 74
 
     Block         go to state 75
-    Stmt          go to state 157
+    Stmt          go to state 161
     ComplexStart  go to state 58
     ArrType       go to state 10
     Type          go to state 77
@@ -1968,102 +2001,11 @@ State 151
     Expr2         go to state 63
     Expr1         go to state 64
     Expr          go to state 78
-
-
-State 152
-
-   28 Stmt: _KW_while _LPAREN Expr _RPAREN . Stmt
-
-    _BANG        shift, and go to state 49
-    _LPAREN      shift, and go to state 50
-    _MINUS       shift, and go to state 51
-    _SEMI        shift, and go to state 68
-    _KW_boolean  shift, and go to state 1
-    _KW_false    shift, and go to state 52
-    _KW_for      shift, and go to state 69
-    _KW_if       shift, and go to state 70
-    _KW_int      shift, and go to state 3
-    _KW_new      shift, and go to state 53
-    _KW_return   shift, and go to state 71
-    _KW_string   shift, and go to state 4
-    _KW_true     shift, and go to state 54
-    _KW_void     shift, and go to state 5
-    _KW_while    shift, and go to state 72
-    _LBRACE      shift, and go to state 40
-    _STRING_     shift, and go to state 55
-    _INTEGER_    shift, and go to state 56
-    _IDENT_      shift, and go to state 74
-
-    Block         go to state 75
-    Stmt          go to state 158
-    ComplexStart  go to state 58
-    ArrType       go to state 10
-    Type          go to state 77
-    Expr6         go to state 59
-    Expr5         go to state 60
-    Expr4         go to state 61
-    Expr3         go to state 62
-    Expr2         go to state 63
-    Expr1         go to state 64
-    Expr          go to state 78
-
-
-State 153
-
-   21 Stmt: Expr _EQ Expr _SEMI .
-
-    $default  reduce using rule 21 (Stmt)
-
-
-State 154
-
-   86 ListExpr: Expr _COMMA ListExpr .
-
-    $default  reduce using rule 86 (ListExpr)
-
-
-State 155
-
-   42 ComplexPart: _LPAREN ListExpr _RPAREN .
-
-    $default  reduce using rule 42 (ComplexPart)
 
 
 State 156
 
-   29 Stmt: _KW_for _LPAREN Type _IDENT_ _COLON . _IDENT_ _RPAREN Stmt
-
-    _IDENT_  shift, and go to state 159
-
-
-State 157
-
-   26 Stmt: _KW_if _LPAREN Expr _RPAREN Stmt .
-   27     | _KW_if _LPAREN Expr _RPAREN Stmt . _KW_else Stmt
-
-    _KW_else  shift, and go to state 160
-
-    _KW_else  [reduce using rule 26 (Stmt)]
-    $default  reduce using rule 26 (Stmt)
-
-
-State 158
-
-   28 Stmt: _KW_while _LPAREN Expr _RPAREN Stmt .
-
-    $default  reduce using rule 28 (Stmt)
-
-
-State 159
-
-   29 Stmt: _KW_for _LPAREN Type _IDENT_ _COLON _IDENT_ . _RPAREN Stmt
-
-    _RPAREN  shift, and go to state 161
-
-
-State 160
-
-   27 Stmt: _KW_if _LPAREN Expr _RPAREN Stmt _KW_else . Stmt
+   28 Stmt: _KW_while _LPAREN Expr _RPAREN . Stmt
 
     _BANG        shift, and go to state 49
     _LPAREN      shift, and go to state 50
@@ -2099,7 +2041,98 @@ State 160
     Expr          go to state 78
 
 
+State 157
+
+   21 Stmt: Expr _EQ Expr _SEMI .
+
+    $default  reduce using rule 21 (Stmt)
+
+
+State 158
+
+   86 ListExpr: Expr _COMMA ListExpr .
+
+    $default  reduce using rule 86 (ListExpr)
+
+
+State 159
+
+   42 ComplexPart: _LPAREN ListExpr _RPAREN .
+
+    $default  reduce using rule 42 (ComplexPart)
+
+
+State 160
+
+   29 Stmt: _KW_for _LPAREN Type _IDENT_ _COLON . _IDENT_ _RPAREN Stmt
+
+    _IDENT_  shift, and go to state 163
+
+
 State 161
+
+   26 Stmt: _KW_if _LPAREN Expr _RPAREN Stmt .
+   27     | _KW_if _LPAREN Expr _RPAREN Stmt . _KW_else Stmt
+
+    _KW_else  shift, and go to state 164
+
+    _KW_else  [reduce using rule 26 (Stmt)]
+    $default  reduce using rule 26 (Stmt)
+
+
+State 162
+
+   28 Stmt: _KW_while _LPAREN Expr _RPAREN Stmt .
+
+    $default  reduce using rule 28 (Stmt)
+
+
+State 163
+
+   29 Stmt: _KW_for _LPAREN Type _IDENT_ _COLON _IDENT_ . _RPAREN Stmt
+
+    _RPAREN  shift, and go to state 165
+
+
+State 164
+
+   27 Stmt: _KW_if _LPAREN Expr _RPAREN Stmt _KW_else . Stmt
+
+    _BANG        shift, and go to state 49
+    _LPAREN      shift, and go to state 50
+    _MINUS       shift, and go to state 51
+    _SEMI        shift, and go to state 68
+    _KW_boolean  shift, and go to state 1
+    _KW_false    shift, and go to state 52
+    _KW_for      shift, and go to state 69
+    _KW_if       shift, and go to state 70
+    _KW_int      shift, and go to state 3
+    _KW_new      shift, and go to state 53
+    _KW_return   shift, and go to state 71
+    _KW_string   shift, and go to state 4
+    _KW_true     shift, and go to state 54
+    _KW_void     shift, and go to state 5
+    _KW_while    shift, and go to state 72
+    _LBRACE      shift, and go to state 40
+    _STRING_     shift, and go to state 55
+    _INTEGER_    shift, and go to state 56
+    _IDENT_      shift, and go to state 74
+
+    Block         go to state 75
+    Stmt          go to state 166
+    ComplexStart  go to state 58
+    ArrType       go to state 10
+    Type          go to state 77
+    Expr6         go to state 59
+    Expr5         go to state 60
+    Expr4         go to state 61
+    Expr3         go to state 62
+    Expr2         go to state 63
+    Expr1         go to state 64
+    Expr          go to state 78
+
+
+State 165
 
    29 Stmt: _KW_for _LPAREN Type _IDENT_ _COLON _IDENT_ _RPAREN . Stmt
 
@@ -2124,7 +2157,7 @@ State 161
     _IDENT_      shift, and go to state 74
 
     Block         go to state 75
-    Stmt          go to state 163
+    Stmt          go to state 167
     ComplexStart  go to state 58
     ArrType       go to state 10
     Type          go to state 77
@@ -2137,14 +2170,14 @@ State 161
     Expr          go to state 78
 
 
-State 162
+State 166
 
    27 Stmt: _KW_if _LPAREN Expr _RPAREN Stmt _KW_else Stmt .
 
     $default  reduce using rule 27 (Stmt)
 
 
-State 163
+State 167
 
    29 Stmt: _KW_for _LPAREN Type _IDENT_ _COLON _IDENT_ _RPAREN Stmt .
 

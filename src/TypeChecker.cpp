@@ -43,7 +43,6 @@ private:
                 defined = true;
             }
         }
-
         if (!defined)
             throwError("main function not defined");
     }

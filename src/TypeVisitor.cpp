@@ -14,6 +14,7 @@ public:
     std::vector<CVar *> current_call_arguments = std::vector<CVar *>();
 
     Ident new_object_type;
+    bool is_accessing_member = false;
 
     explicit Type_Visitor(std::vector<CClass *> defined_classes, std::vector<CVar *> defined_variables,
                           std::vector<CFun *> defined_global_functions)
@@ -209,10 +210,16 @@ public:
                     current_type = new CType(new_object_type, std::vector<int>());
                 else
                     throwError(e_complex->line_number, e_complex->char_number, "can't 'new' basic non-array type");
+                new_object_type = "";
             }
         } else {
             e_complex->listcomplexpart_->accept(this);
         }
+
+        if (current_method != nullptr)
+            throwError(e_complex->line_number, e_complex->char_number, "method member accessed without calling");
+        if (is_accessing_member)
+            throwError(e_complex->line_number, e_complex->char_number, "invalid syntax, can't end with '.'");
     }
 
     CType *find_var(Ident name, int line_number, int char_number) {
@@ -253,17 +260,25 @@ public:
             return;
         }
 
+        if (!atype->array_dims.empty()) {
+            if (c->ident_2 == "length") {
+                current_type = new CType("int", std::vector<int>());
+                return;
+            }
+            throwError(c->line_number, c->char_number, "only member of array type is 'length'");
+        }
+
         for (auto def: defined_classes) {
             if (atype->name == def->name) { // found class "a"
                 for (auto attribute: def->attributes) {
                     if (c->ident_2 == attribute->name) { // found attribute "b"
-                        current_type = attribute->type; // next token must be ArrElement or MemberAccess
+                        current_type = attribute->type;
                         return;
                     }
                 }
                 for (auto method: def->methods) {
                     if (c->ident_2 == method->name && !isBuiltInFunction(c->ident_2)) { // found method "b"
-                        current_method = method; // next token must be Method and contain proper args
+                        current_method = method;
                         return;
                     }
                 }
@@ -324,33 +339,141 @@ public:
     }
 
     void visitNewObject(NewObject *c) override { // new <class> / new int[14][2] / new <class>[14][2]
-        if (!isBasicType(c->ident_)) {
-            getClass(c->ident_, c->line_number, c->line_number); // make sure class exists
+        auto type = getArrayType(c->arrtype_);
+        if (!isBasicType(type->name)) {
+            getClass(type->name, c->line_number, c->line_number); // make sure class exists
         }
-        new_object_type = c->ident_;
+        new_object_type = type->name;
     }
 
     void visitArrElement(ArrElement *p) override {
+        if (current_method != nullptr)
+            throwError(p->line_number, p->char_number, "method member accessed without calling");
+
+        if (is_accessing_member)
+            throwError(p->line_number, p->char_number, "invalid member access");
+
+        auto array_type = current_type;
         p->listdimdef_->accept(this); // make sure sizes are ints
         if (!new_object_type.empty()) { // initializing array
             current_type = new CType(new_object_type, std::vector<int>(p->listdimdef_->size(), -1));
             new_object_type = "";
         } else { // accessing array
-            if (current_type->array_dims.empty())
+            std::cout << "AAAAAAAAAAAAAAAAAAa\n";
+            if (array_type->array_dims.empty())
                 throwError(p->line_number, p->char_number, "attempted array element access on non-array");
 
-            if (current_type->array_dims.size() < p->listdimdef_->size())
+            if (array_type->array_dims.size() < p->listdimdef_->size())
                 throwError(p->line_number, p->char_number, "array does not have enough dimensions");
 
             std::vector<int> dims;
-            dims.insert(dims.end(), current_type->array_dims.begin(), current_type->array_dims.end());
+            dims.insert(dims.end(), array_type->array_dims.begin(), array_type->array_dims.end());
             for (int i = 0; i < p->listdimdef_->size(); i++) {
                 dims.erase(dims.begin());
             }
 
-            current_type = new CType(current_type->name, dims);
+            current_type = new CType(array_type->name, dims);
         }
     }
 
-    // TODO pozostałe ComplexPart
+    void visitMethod(Method *p) override {
+        if (current_method == nullptr)
+            throwError(p->line_number, p->char_number, "invalid call");
+
+        if (!new_object_type.empty()) {
+            if (!isBasicType(new_object_type))
+                current_type = new CType(new_object_type, std::vector<int>());
+            else
+                throwError(p->line_number, p->char_number, "can't 'new' basic non-array type");
+            new_object_type = "";
+        } // raczej nigdy sie nie stanie
+
+        if (is_accessing_member) // raczej nigdy sie nie stanie
+            throwError(p->line_number, p->char_number, "invalid member access");
+
+        current_call_arguments = current_method->args;
+        if (current_call_arguments.size() != p->listexpr_->size())
+            throwError(p->line_number, p->char_number,
+                       "invalid argument count");
+
+        p->listexpr_->accept(this); // check arguments
+
+        current_type = current_method->return_type;
+        current_method = nullptr;
+    }
+
+    void visitVariable(Variable *p) override { // a.b also, we are in b
+        if (current_method != nullptr)
+            throwError(p->line_number, p->char_number, "method member accessed without calling");
+
+        if (!new_object_type.empty()) {
+            if (!isBasicType(new_object_type))
+                current_type = new CType(new_object_type, std::vector<int>());
+            else
+                throwError(p->line_number, p->char_number, "can't 'new' basic non-array type");
+            new_object_type = "";
+        }
+
+        if (!is_accessing_member)
+            throwError(p->line_number, p->char_number, "invalid member access");
+
+        is_accessing_member = false;
+
+        if (isBasicType(current_type->name)) {
+            if (current_type->array_dims.empty()) // not an array
+                throwError(p->line_number, p->char_number, "attempted basic type member access");
+
+            if (p->ident_ != "length")
+                throwError(p->line_number, p->char_number, "only member of array type is 'length'");
+
+            // special case - basic type array length
+            current_type = new CType("int", std::vector<int>());
+            return;
+        }
+
+        if (!current_type->array_dims.empty()) {
+            if (p->ident_ == "length") {
+                current_type = new CType("int", std::vector<int>());
+                return;
+            }
+            throwError(p->line_number, p->char_number, "only member of array type is 'length'");
+        }
+
+        for (auto def: defined_classes) {
+            if (current_type->name == def->name) { // found class "a"
+                for (auto attribute: def->attributes) {
+                    if (p->ident_ == attribute->name) { // found attribute "b"
+                        current_type = attribute->type;
+                        return;
+                    }
+                }
+                for (auto method: def->methods) {
+                    if (p->ident_ == method->name && !isBuiltInFunction(p->ident_)) { // found method "b"
+                        current_method = method;
+                        return;
+                    }
+                }
+
+                throwError(p->line_number, p->char_number,
+                           "class \"" + current_type->name + "\" has no member \"" + p->ident_ + "\"");
+            }
+        }
+
+        throwError(p->line_number, p->char_number, "INTERNAL: undefined class \"" + current_type->name + "\"");
+    }
+
+    void visitMemberAccess(MemberAccess *p) override {
+        if (current_method != nullptr)
+            throwError(p->line_number, p->char_number, "method member accessed without calling");
+
+        if (!new_object_type.empty()) {
+            if (!isBasicType(new_object_type))
+                current_type = new CType(new_object_type, std::vector<int>());
+            else
+                throwError(p->line_number, p->char_number, "can't 'new' basic non-array type");
+            new_object_type = "";
+        }
+
+        is_accessing_member = true;
+    }
 };

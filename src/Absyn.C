@@ -1053,13 +1053,13 @@ CFunction *CFunction::clone() const {
 
 
 /********************   NewObject    ********************/
-NewObject::NewObject(Ident p1) {
-    ident_ = p1;
+NewObject::NewObject(ArrType *p1) {
+    arrtype_ = p1;
 
 }
 
 NewObject::NewObject(const NewObject &other) {
-    ident_ = other.ident_;
+    arrtype_ = other.arrtype_->clone();
 
 }
 
@@ -1070,11 +1070,12 @@ NewObject &NewObject::operator=(const NewObject &other) {
 }
 
 void NewObject::swap(NewObject &other) {
-    std::swap(ident_, other.ident_);
+    std::swap(arrtype_, other.arrtype_);
 
 }
 
 NewObject::~NewObject() {
+    delete (arrtype_);
 
 }
 

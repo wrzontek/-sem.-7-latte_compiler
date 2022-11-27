@@ -11,7 +11,6 @@
 /********************   TypeDef Section    ********************/
 
 typedef int Integer;
-typedef int State;
 typedef char Char;
 typedef double Double;
 typedef std::string String;
@@ -1125,35 +1124,15 @@ public:
     void swap(CFunction &);
 };
 
-class NewArray : public ComplexStart {
-public:
-    ArrType *arrtype_;
-    ListDimDef *listdimdef_;
-
-    NewArray(const NewArray &);
-
-    NewArray &operator=(const NewArray &);
-
-    NewArray(ArrType *p1, ListDimDef *p2);
-
-    ~NewArray();
-
-    virtual void accept(Visitor *v);
-
-    virtual NewArray *clone() const;
-
-    void swap(NewArray &);
-};
-
 class NewObject : public ComplexStart {
 public:
-    Ident ident_;
+    ArrType *arrtype_;
 
     NewObject(const NewObject &);
 
     NewObject &operator=(const NewObject &);
 
-    NewObject(Ident p1);
+    NewObject(ArrType *p1);
 
     ~NewObject();
 
