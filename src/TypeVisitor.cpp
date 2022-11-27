@@ -7,15 +7,16 @@
 
 class Type_Visitor : public Skeleton {
 public:
-    std::vector<CClass *> &defined_classes;
-    std::vector<CVar *> &defined_variables;
-    std::vector<CFun *> &defined_functions;
+    std::vector<CClass *> defined_classes;
+    std::vector<CVar *> defined_variables;
+    std::vector<CFun *> defined_global_functions;
     CType *current_type = nullptr;
+    std::vector<CVar *> current_call_arguments = std::vector<CVar *>();
 
-    explicit Type_Visitor(std::vector<CClass *> &defined_classes, std::vector<CVar *> &defined_variables,
-                          std::vector<CFun *> &defined_functions)
+    explicit Type_Visitor(std::vector<CClass *> defined_classes, std::vector<CVar *> defined_variables,
+                          std::vector<CFun *> defined_global_functions)
             : defined_classes(defined_classes), defined_variables(defined_variables),
-              defined_functions(defined_functions) {}
+              defined_global_functions(defined_global_functions) {}
 
     CType *getType(Type *t) {
         t->accept(this);
@@ -30,16 +31,18 @@ public:
 
     void visitVoid(Void *t) override { current_type = new CType("void", std::vector<int>()); }
 
-    void visitClass(Class *t) override {
-        bool defined = false;
+    CClass *getClass(Ident name, int line_number, int char_number) {
         for (auto def: defined_classes) {
-            if (def->name == t->ident_) {
-                defined = true;
-            }
+            if (def->name == name)
+                return def;
         }
-        if (!defined) {
-            throwError(t->line_number, t->char_number, "undefined class");
-        }
+
+        throwError(line_number, char_number, "undefined class \"" + name + "\"");
+        return nullptr;
+    }
+
+    void visitClass(Class *t) override {
+        getClass(t->ident_, t->line_number, t->char_number);
 
         current_type = new CType(t->ident_, std::vector<int>());
     }
@@ -90,6 +93,22 @@ public:
             }
         }
         throwError(line_number, char_number, "undefined variable \"" + name + "\"");
+    }
+
+    void visitListExpr(ListExpr *list_expr) override {
+        if (!current_call_arguments.empty()) {
+            for (ListExpr::iterator i = list_expr->begin(); i != list_expr->end(); ++i) {
+                (*i)->accept(this);
+                if (*current_type != *(current_call_arguments[0]->type)) {
+                    throwError((*i)->line_number, (*i)->char_number, "invalid argument type");
+                }
+                current_call_arguments.erase(current_call_arguments.begin());
+            }
+        } else {
+            for (ListExpr::iterator i = list_expr->begin(); i != list_expr->end(); ++i) {
+                (*i)->accept(this);
+            }
+        }
     }
 
     void visitEVar(EVar *var) override { visitVar(var->ident_, var->line_number, var->char_number); }
@@ -198,7 +217,7 @@ public:
 
     CFun *find_fun(Ident name, int line_number, int char_number) {
         CFun *fun = nullptr;
-        for (auto def: defined_functions) {
+        for (auto def: defined_global_functions) {
             if (name == def->name) {
                 fun = def;
                 break;
@@ -223,10 +242,8 @@ public:
         }
 
         for (auto def: defined_classes) {
-            std::cout << "AAAAA " + def->name << std::endl;
             if (atype->name == def->name) { // found class "a"
                 for (auto attribute: def->attributes) {
-                    std::cout << "BBBB " + attribute->name << std::endl;
                     if (c->ident_2 == attribute->name) { // found attribute "b"
                         current_type = attribute->type; // next token must be ArrElement or MemberAccess
                         return;
@@ -238,10 +255,10 @@ public:
                         return;
                     }
                 }
-            }
 
-            throwError(c->line_number, c->char_number,
-                       "class \"" + atype->name + "\" has no member \"" + c->ident_2 + "\"");
+                throwError(c->line_number, c->char_number,
+                           "class \"" + atype->name + "\" has no member \"" + c->ident_2 + "\"");
+            }
         }
         throwError(c->line_number, c->char_number, "undefined class \"" + atype->name + "\"");
 
@@ -251,6 +268,14 @@ public:
     // a[1] --- int [22][33][44]
     // a[1][2][3] --- int [44]
     // a[1][2][3][4] = int
+
+    void visitListDimDef(ListDimDef *list_dim_def) override {
+        for (ListDimDef::iterator i = list_dim_def->begin(); i != list_dim_def->end(); ++i) {
+            (*i)->accept(this);
+            if (current_type->name != "int" || !current_type->array_dims.empty())
+                throwError((*i)->line_number, (*i)->char_number, "array index must be integer");
+        }
+    }
 
     void visitCArray(CArray *c) override { // a[1][2]
         CType *atype = find_var(c->ident_, c->line_number, c->char_number);
@@ -262,6 +287,8 @@ public:
             throwError(c->line_number, c->char_number,
                        "array does not have enough dimensions");
 
+        c->listdimdef_->accept(this); // make sure indexes are ints
+
         std::vector<int> dims;
         dims.insert(dims.end(), atype->array_dims.begin(), atype->array_dims.end());
         for (int i = 0; i < c->listdimdef_->size(); i++) {
@@ -271,11 +298,27 @@ public:
         current_type = new CType(atype->name, dims);
     }
 
-    void visitCFunction(CFunction *c) override { // function(123)
+    void visitCFunction(CFunction *c) override { // function(123, "arg1", a)
         CFun *fun = find_fun(c->ident_, c->line_number, c->char_number);
 
+        current_call_arguments = fun->args;
+        if (current_call_arguments.size() != c->listexpr_->size())
+            throwError(c->line_number, c->char_number,
+                       "invalid argument count");
+
+        c->listexpr_->accept(this); // check arguments
+
+        current_type = fun->return_type;
     }
 
-
+    void visitNewArray(NewArray *c) override { // new int[][]
+        std::cout << "AAAAAAAAAAAAAAAAAAA\n";
+        auto arr_type = getArrayType(c->arrtype_);
+        if (!isBasicType(arr_type->name)) {
+            getClass(arr_type->name, c->line_number, c->line_number); // make sure class exists
+        }
+        c->listdimdef_->accept(this); // make sure indexes are ints
+        current_type = new CType(arr_type->name, std::vector<int>(c->listdimdef_->size(), -1));
+    }
     // TODO pozostałe ComplexStart, ComplexPart
 };

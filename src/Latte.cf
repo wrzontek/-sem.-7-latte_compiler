@@ -73,8 +73,6 @@ CArray.       ComplexStart ::= Ident [ DimDef ] ;
 
 CFunction.    ComplexStart ::= Ident "(" [Expr] ")" ;
 
-NewArray.     ComplexStart ::= "new" ArrType [ DimDef ] ;
-
 NewObject.    ComplexStart ::= "new" Ident ;
 
 ------------------------------------------------

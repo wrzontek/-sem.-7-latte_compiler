@@ -80,21 +80,23 @@ public:
         program->accept(classDefOnlyNameVisitor);
         checkNoIllegalExtend();
 
-        auto defined_variables = std::vector<CVar *>();
-        auto typeVisitor = new Type_Visitor(defined_classes, defined_variables, defined_functions);
-
-        auto functionDefVisitor = new Function_Def_Visitor(defined_functions, defined_classes, typeVisitor);
+        auto functionDefVisitor = new Function_Def_Visitor(defined_functions, defined_classes);
         program->accept(functionDefVisitor); // check duplicates (function names and arg names)
         checkMain();
 
-        auto classDefVisitor = new Class_Def_Visitor(defined_functions, defined_classes, typeVisitor);
+        auto classDefVisitor = new Class_Def_Visitor(defined_functions, defined_classes);
         for (auto def: class_defs) {
             def->accept(classDefVisitor);
         }
 
+        auto classDefInitVisitor = new Class_Def_Init_Visitor(defined_functions, defined_classes);
+        for (auto def: class_defs) {
+            def->accept(classDefInitVisitor);
+        }
+
         delete (classDefOnlyNameVisitor);
-        delete (typeVisitor);
         delete (functionDefVisitor);
         delete (classDefVisitor);
+        delete (classDefInitVisitor);
     }
 };

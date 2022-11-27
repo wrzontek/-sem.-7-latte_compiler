@@ -1,16 +1,26 @@
 class A {
-    int attr;
-    B b;
+//    A a;
+//    B b;
+//
+//    int x = f(1, "a");
+//    int attr;
+//
+//    int []arr;
+//    int y = arr[x];
 
-    int x = b.attr;
+    int[] arr2 = new A[4];
 }
-
-class B {
-    int attr;
-    A a;
-
-    int x = a.attr;
-}
+//
+//class B {
+//    A a;
+//    int attr;
+//
+//    int x = a.attr;
+//}
+//
+//int f(int a, string b) { return 123; }
+//
+//string g(int a) { return "aaa"; }
 
 int main() {
 //    return (a);
