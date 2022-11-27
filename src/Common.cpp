@@ -4,8 +4,12 @@
 #include <vector>
 #include "Absyn.H"
 
-bool isBasicType(std::string type_name) {
+bool isBasicType(Ident type_name) {
     return type_name == "int" || type_name == "boolean" || type_name == "string";
+}
+
+bool isBuiltInFunction(Ident name) {
+    return name == "printInt" || name == "printString" || name == "error" || name == "readInt" || name == "readString";
 }
 
 void throwError(int line_number, int char_number, std::string content) {
@@ -29,6 +33,9 @@ struct CType {
 };
 
 inline bool operator==(const CType &lhs, const CType &rhs) {
+    std::cout << lhs.name << " " << lhs.array_dims.size() << std::endl;
+    std::cout << rhs.name << " " << rhs.array_dims.size() << std::endl;
+
     return lhs.name == rhs.name && lhs.array_dims == rhs.array_dims;
 }
 

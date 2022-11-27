@@ -4,6 +4,7 @@
 #include <set>
 #include <vector>
 #include "Common.cpp"
+#include "FunctionDefVisitor.cpp"
 
 class Class_Def_Visitor : public Skeleton {
 public:
@@ -12,11 +13,16 @@ public:
     std::vector<CFun *> &defined_functions;
     std::vector<CClass *> &defined_classes;
 
-    std::vector<CVar *> current_class_attributes;
-    std::vector<CFun *> current_class_methods;
+    CClass *current_class = nullptr;
 
     Ident current_arg_name;
     CType *current_type = nullptr;
+
+    void updateTypeVisitorInformation() {
+        typeVisitor->defined_classes = defined_classes;
+        typeVisitor->defined_variables = current_class->attributes;
+        typeVisitor->defined_functions = current_class->methods;
+    }
 
     explicit Class_Def_Visitor(std::vector<CFun *> &defined_functions, std::vector<CClass *> &defined_classes,
                                Type_Visitor *typeVisitor)
@@ -25,25 +31,23 @@ public:
 
     void visitFnDef(FnDef *fn_def) override {}; // dont visit global functions
 
-    // todo do metod można odgrzać FunctionDefVisitor'a
     void visitClassDef(ClassDef *class_def) override {
-        CClass *cclass = nullptr;
+        current_class = nullptr;
         for (auto def: defined_classes) {
             if (def->name == class_def->ident_) {
-                cclass = def;
+                current_class = def;
                 break;
             }
         }
-        if (cclass == nullptr) { exit(1); /*should never happen */}
+        if (current_class == nullptr) { exit(1); /*should never happen */}
 
-        cclass->visited = true;
-        current_class_attributes = std::vector<CVar *>();
-        current_class_methods = std::vector<CFun *>();
+        current_class->methods.insert(current_class->methods.end(),
+                                      defined_functions.begin(),
+                                      defined_functions.end());
 
         class_def->listclassmember_->accept(this);
 
-        cclass->attributes = current_class_attributes;
-        cclass->methods = current_class_methods;
+        current_class->visited = true;
     };
 
     void visitClassExtendDef(ClassExtendDef *class_def) override {};
@@ -56,7 +60,7 @@ public:
     }
 
     void checkAttrRedefinition(Ident name, int line_number, int char_number) {
-        for (auto attribute: current_class_attributes) {
+        for (auto attribute: current_class->attributes) {
             if (attribute->name == name) {
                 throwError(line_number, char_number, "redefinition of attribute");
             }
@@ -65,25 +69,30 @@ public:
 
     void visitNoInit(NoInit *no_init) override {
         checkAttrRedefinition(no_init->ident_, no_init->line_number, no_init->char_number);
-        current_class_attributes.push_back(new CVar(no_init->ident_, current_type));
+        current_class->attributes.push_back(new CVar(no_init->ident_, current_type));
     }
 
     void visitInit(Init *init) override {
         checkAttrRedefinition(init->ident_, init->line_number, init->char_number);
-        typeVisitor->defined_variables = current_class_attributes;
+        updateTypeVisitorInformation();
 
         if (*current_type != *(typeVisitor->getExprType(init->expr_))) {
             throwError(init->line_number, init->char_number,
                        "initialization expression of different type than declared");
         }
 
-        current_class_attributes.push_back(new CVar(init->ident_, current_type));
+        current_class->attributes.push_back(new CVar(init->ident_, current_type));
     }
 
     ////////////////////////////////
 
     void visitMethodMember(MethodMember *method_member) override {
-        // TODO
+        updateTypeVisitorInformation();
+
+        auto method_def_visitor = new Function_Def_Visitor(current_class->methods,
+                                                           defined_classes, typeVisitor);
+        method_member->accept(method_def_visitor);
+        current_class->methods = method_def_visitor->defined_functions;
     }
 
 };

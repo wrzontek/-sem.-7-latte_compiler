@@ -1,11 +1,15 @@
-class B {
-    int a;
+class A {
+    int attr;
+    B b;
+
+    int x = b.attr;
 }
 
-class A {
-    int[] b;
+class B {
+    int attr;
+    A a;
 
-    int a = b.length;
+    int x = a.attr;
 }
 
 int main() {

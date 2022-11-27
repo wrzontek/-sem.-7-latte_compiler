@@ -558,7 +558,7 @@ void PrintAbsyn::visitCArray(CArray *p) {
     _i_ = oldi;
 }
 
-void PrintAbsyn::visitCMethod(CMethod *p) {
+void PrintAbsyn::visitCFunction(CFunction *p) {
     int oldi = _i_;
     if (oldi > 0) render(_L_PAREN);
 
@@ -1576,9 +1576,9 @@ void ShowAbsyn::visitCArray(CArray *p) {
     bufAppend(')');
 }
 
-void ShowAbsyn::visitCMethod(CMethod *p) {
+void ShowAbsyn::visitCFunction(CFunction *p) {
     bufAppend('(');
-    bufAppend("CMethod");
+    bufAppend("CFunction");
     bufAppend(' ');
     visitIdent(p->ident_);
     bufAppend(' ');

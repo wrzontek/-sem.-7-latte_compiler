@@ -123,7 +123,7 @@ public:
 
     void visitCArray(CArray *p);
 
-    void visitCMethod(CMethod *p);
+    void visitCFunction(CFunction *p);
 
     void visitNewArray(NewArray *p);
 
@@ -398,7 +398,7 @@ public:
 
     void visitCArray(CArray *p);
 
-    void visitCMethod(CMethod *p);
+    void visitCFunction(CFunction *p);
 
     void visitNewArray(NewArray *p);
 

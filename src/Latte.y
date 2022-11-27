@@ -228,7 +228,7 @@ ListItem : Item { $$ = new ListItem(); $$->push_back($1); }
 ComplexStart : _LPAREN ComplexStart _RPAREN { $$ = new CBracketed($2); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _IDENT_ _DOT _IDENT_ { $$ = new CMember($1, $3); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _IDENT_ ListDimDef { std::reverse($2->begin(),$2->end()) ;$$ = new CArray($1, $2); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
-  | _IDENT_ _LPAREN ListExpr _RPAREN { std::reverse($3->begin(),$3->end()) ;$$ = new CMethod($1, $3); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
+  | _IDENT_ _LPAREN ListExpr _RPAREN { std::reverse($3->begin(),$3->end()) ;$$ = new CFunction($1, $3); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _KW_new ArrType ListDimDef { std::reverse($3->begin(),$3->end()) ;$$ = new NewArray($2, $3); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _KW_new _IDENT_ { $$ = new NewObject($2); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
 ;

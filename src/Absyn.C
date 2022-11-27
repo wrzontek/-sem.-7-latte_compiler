@@ -1013,42 +1013,42 @@ CArray *CArray::clone() const {
 }
 
 
-/********************   CMethod    ********************/
-CMethod::CMethod(Ident p1, ListExpr *p2) {
+/********************   CFunction    ********************/
+CFunction::CFunction(Ident p1, ListExpr *p2) {
     ident_ = p1;
     listexpr_ = p2;
 
 }
 
-CMethod::CMethod(const CMethod &other) {
+CFunction::CFunction(const CFunction &other) {
     ident_ = other.ident_;
     listexpr_ = other.listexpr_->clone();
 
 }
 
-CMethod &CMethod::operator=(const CMethod &other) {
-    CMethod tmp(other);
+CFunction &CFunction::operator=(const CFunction &other) {
+    CFunction tmp(other);
     swap(tmp);
     return *this;
 }
 
-void CMethod::swap(CMethod &other) {
+void CFunction::swap(CFunction &other) {
     std::swap(ident_, other.ident_);
     std::swap(listexpr_, other.listexpr_);
 
 }
 
-CMethod::~CMethod() {
+CFunction::~CFunction() {
     delete (listexpr_);
 
 }
 
-void CMethod::accept(Visitor *v) {
-    v->visitCMethod(this);
+void CFunction::accept(Visitor *v) {
+    v->visitCFunction(this);
 }
 
-CMethod *CMethod::clone() const {
-    return new CMethod(*this);
+CFunction *CFunction::clone() const {
+    return new CFunction(*this);
 }
 
 

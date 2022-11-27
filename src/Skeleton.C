@@ -230,8 +230,8 @@ void Skeleton::visitCArray(CArray *c_array) {
 
 }
 
-void Skeleton::visitCMethod(CMethod *c_method) {
-    /* Code For CMethod Goes Here */
+void Skeleton::visitCFunction(CFunction *c_method) {
+    /* Code For CFunction Goes Here */
 
     visitIdent(c_method->ident_);
     if (c_method->listexpr_) c_method->listexpr_->accept(this);

@@ -105,7 +105,7 @@ class CMember;
 
 class CArray;
 
-class CMethod;
+class CFunction;
 
 class NewArray;
 
@@ -309,7 +309,7 @@ public:
 
     virtual void visitCArray(CArray *p) = 0;
 
-    virtual void visitCMethod(CMethod *p) = 0;
+    virtual void visitCFunction(CFunction *p) = 0;
 
     virtual void visitNewArray(NewArray *p) = 0;
 
@@ -1108,24 +1108,24 @@ public:
     void swap(CArray &);
 };
 
-class CMethod : public ComplexStart {
+class CFunction : public ComplexStart {
 public:
     Ident ident_;
     ListExpr *listexpr_;
 
-    CMethod(const CMethod &);
+    CFunction(const CFunction &);
 
-    CMethod &operator=(const CMethod &);
+    CFunction &operator=(const CFunction &);
 
-    CMethod(Ident p1, ListExpr *p2);
+    CFunction(Ident p1, ListExpr *p2);
 
-    ~CMethod();
+    ~CFunction();
 
     virtual void accept(Visitor *v);
 
-    virtual CMethod *clone() const;
+    virtual CFunction *clone() const;
 
-    void swap(CMethod &);
+    void swap(CFunction &);
 };
 
 class NewArray : public ComplexStart {

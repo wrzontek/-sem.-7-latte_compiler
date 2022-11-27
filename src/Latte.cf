@@ -71,7 +71,7 @@ CMember.      ComplexStart ::= Ident "." Ident ;
 
 CArray.       ComplexStart ::= Ident [ DimDef ] ;
 
-CMethod.      ComplexStart ::= Ident "(" [Expr] ")" ;
+CFunction.    ComplexStart ::= Ident "(" [Expr] ")" ;
 
 NewArray.     ComplexStart ::= "new" ArrType [ DimDef ] ;
 

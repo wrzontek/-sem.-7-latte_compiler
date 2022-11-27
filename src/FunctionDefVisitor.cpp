@@ -17,56 +17,45 @@ public:
     Ident current_arg_name;
     CType *current_type = nullptr;
 
-    explicit Function_Def_Visitor(std::vector<CFun *> &defined_functions, std::vector<CClass *> &defined_classes, Type_Visitor *typeVisitor)
-            : defined_functions(defined_functions), defined_classes(defined_classes) ,typeVisitor(typeVisitor) {
-        std::vector<CVar*> printIntArgs;
-        printIntArgs.push_back(new CVar("arg", new CType("int", std::vector<int>())));
-        defined_functions.push_back(new CFun(
-                std::string("printInt"),
-                new CType("void", std::vector<int>()),
-                printIntArgs));
-
-        std::vector<CVar*> printStringArgs;
-        printStringArgs.push_back(new CVar("arg", new CType("string", std::vector<int>())));
-        defined_functions.push_back(new CFun(
-                "printString",
-                new CType("void", std::vector<int>()),
-                printStringArgs));
-
-        defined_functions.push_back(new CFun(
-                "error",
-                new CType("void", std::vector<int>()),
-                std::vector<CVar*>()));
-
-        defined_functions.push_back(new CFun(
-                "readString",
-                new CType("string", std::vector<int>()),
-                std::vector<CVar*>()));
-    }
+    explicit Function_Def_Visitor(std::vector<CFun *> &defined_functions, std::vector<CClass *> &defined_classes,
+                                  Type_Visitor *typeVisitor)
+            : defined_functions(defined_functions), defined_classes(defined_classes), typeVisitor(typeVisitor) {}
 
     void visitClassDef(ClassDef *class_def) override {};
 
     void visitClassExtendDef(ClassExtendDef *class_def) override {};
 
-    void visitFnDef(FnDef *fn_def) override {
-        Ident name = fn_def->ident_;
-        if (!fn_def->type_->canBeReturned()) {
-            throwError(fn_def->line_number, fn_def->char_number, "invalid return type"); // w sumie to chyba dowolny typ może być ale niech zostanie
+    void visitFunctionDefinition(Ident name, Type *return_type, ListArg *listarg, int line_number, int char_number,
+                                 bool is_method) {
+        if (!return_type->canBeReturned()) {
+            throwError(line_number, char_number,
+                       "invalid return type"); // w sumie to chyba dowolny typ może być ale niech zostanie
         }
 
-        CType *return_type = typeVisitor->getType(fn_def->type_);
+        CType *creturn_type = typeVisitor->getType(return_type);
 
         for (auto &def: defined_functions) {
             if (def->name == name) {
-                throwError(fn_def->line_number, fn_def->char_number, "redefinition of function");
+                throwError(line_number, char_number,
+                           "redefinition of " + std::string(is_method ? "method" : "function"));
             }
         }
 
         current_function_args = std::vector<CVar *>();
-        fn_def->listarg_->accept(this);
-        defined_functions.push_back(new CFun(name, return_type, current_function_args));
+        listarg->accept(this);
+        defined_functions.push_back(new CFun(name, creturn_type, current_function_args));
 
         current_function_args.clear();
+    }
+
+    void visitFnDef(FnDef *fn_def) override {
+        visitFunctionDefinition(fn_def->ident_, fn_def->type_, fn_def->listarg_, fn_def->line_number,
+                                fn_def->char_number, false);
+    };
+
+    void visitMethodMember(MethodMember *fn_def) override {
+        visitFunctionDefinition(fn_def->ident_, fn_def->type_, fn_def->listarg_, fn_def->line_number,
+                                fn_def->char_number, true);
     };
 
     void visitAr(Ar *arg) override {

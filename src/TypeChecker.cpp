@@ -49,7 +49,31 @@ private:
     }
 
 public:
-    explicit TypeChecker(Program *program) : program(program) {}
+    explicit TypeChecker(Program *program) : program(program) {
+        std::vector<CVar*> printIntArgs;
+        printIntArgs.push_back(new CVar("arg", new CType("int", std::vector<int>())));
+        defined_functions.push_back(new CFun(
+                std::string("printInt"),
+                new CType("void", std::vector<int>()),
+                printIntArgs));
+
+        std::vector<CVar*> printStringArgs;
+        printStringArgs.push_back(new CVar("arg", new CType("string", std::vector<int>())));
+        defined_functions.push_back(new CFun(
+                "printString",
+                new CType("void", std::vector<int>()),
+                printStringArgs));
+
+        defined_functions.push_back(new CFun(
+                "error",
+                new CType("void", std::vector<int>()),
+                std::vector<CVar*>()));
+
+        defined_functions.push_back(new CFun(
+                "readString",
+                new CType("string", std::vector<int>()),
+                std::vector<CVar*>()));
+    }
 
     void checkCorrectness() {
         auto classDefOnlyNameVisitor = new Class_Def_Name_Only_Visitor(defined_classes, class_defs, class_extend_defs);
@@ -57,7 +81,7 @@ public:
         checkNoIllegalExtend();
 
         auto defined_variables = std::vector<CVar *>();
-        auto typeVisitor = new Type_Visitor(defined_classes, defined_variables);
+        auto typeVisitor = new Type_Visitor(defined_classes, defined_variables, defined_functions);
 
         auto functionDefVisitor = new Function_Def_Visitor(defined_functions, defined_classes, typeVisitor);
         program->accept(functionDefVisitor); // check duplicates (function names and arg names)

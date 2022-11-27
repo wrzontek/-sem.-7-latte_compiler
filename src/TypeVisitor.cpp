@@ -9,10 +9,13 @@ class Type_Visitor : public Skeleton {
 public:
     std::vector<CClass *> &defined_classes;
     std::vector<CVar *> &defined_variables;
+    std::vector<CFun *> &defined_functions;
     CType *current_type = nullptr;
 
-    explicit Type_Visitor(std::vector<CClass *> &defined_classes, std::vector<CVar *> &defined_variables)
-            : defined_classes(defined_classes), defined_variables(defined_variables) {}
+    explicit Type_Visitor(std::vector<CClass *> &defined_classes, std::vector<CVar *> &defined_variables,
+                          std::vector<CFun *> &defined_functions)
+            : defined_classes(defined_classes), defined_variables(defined_variables),
+              defined_functions(defined_functions) {}
 
     CType *getType(Type *t) {
         t->accept(this);
@@ -181,17 +184,34 @@ public:
         if (e_complex->listcomplexpart_) e_complex->listcomplexpart_->accept(this);
     }
 
-    void visitCMember(CMember *c) override { // a.b
-        CType *a_type = nullptr;
+    CType *find_var(Ident name, int line_number, int char_number) {
+        CType *type = nullptr;
         for (auto def: defined_variables) {
-            if (c->ident_1 == def->name) { // found variable "a"
-                a_type = def->type;
+            if (name == def->name) {
+                type = def->type;
                 break;
             }
         }
-        if (a_type == nullptr) throwError(c->line_number, c->char_number, "undefined variable \"" + c->ident_1 + "\"");
-        if (isBasicType(a_type->name)) {
-            if (a_type->array_dims.empty()) // not an array
+        if (type == nullptr) throwError(line_number, char_number, "undefined variable \"" + name + "\"");
+        return type;
+    }
+
+    CFun *find_fun(Ident name, int line_number, int char_number) {
+        CFun *fun = nullptr;
+        for (auto def: defined_functions) {
+            if (name == def->name) {
+                fun = def;
+                break;
+            }
+        }
+        if (fun == nullptr) throwError(line_number, char_number, "undefined function \"" + name + "\"");
+        return fun;
+    }
+
+    void visitCMember(CMember *c) override { // a.b
+        CType *atype = find_var(c->ident_1, c->line_number, c->char_number);
+        if (isBasicType(atype->name)) {
+            if (atype->array_dims.empty()) // not an array
                 throwError(c->line_number, c->char_number, "attempted basic type member access");
 
             if (c->ident_2 != "length")
@@ -203,27 +223,59 @@ public:
         }
 
         for (auto def: defined_classes) {
-            if (a_type->name == def->name) { // found class "a"
+            std::cout << "AAAAA " + def->name << std::endl;
+            if (atype->name == def->name) { // found class "a"
                 for (auto attribute: def->attributes) {
+                    std::cout << "BBBB " + attribute->name << std::endl;
                     if (c->ident_2 == attribute->name) { // found attribute "b"
-                        current_type = attribute->type;
+                        current_type = attribute->type; // next token must be ArrElement or MemberAccess
                         return;
                     }
                 }
                 for (auto method: def->methods) {
-                    if (c->ident_2 == method->name) { // found method "b"
-                        current_method = method; // next token must be "Method" and contain proper args
+                    if (c->ident_2 == method->name && !isBuiltInFunction(c->ident_2)) { // found method "b"
+                        current_method = method; // next token must be Method and contain proper args
                         return;
                     }
                 }
             }
 
             throwError(c->line_number, c->char_number,
-                       "class \"" + a_type->name + "\" has no member \"" + c->ident_2 + "\"");
+                       "class \"" + atype->name + "\" has no member \"" + c->ident_2 + "\"");
         }
-        throwError(c->line_number, c->char_number, "undefined class \"" + a_type->name + "\"");
+        throwError(c->line_number, c->char_number, "undefined class \"" + atype->name + "\"");
 
     }
+
+    //int a[11][22][33][44]
+    // a[1] --- int [22][33][44]
+    // a[1][2][3] --- int [44]
+    // a[1][2][3][4] = int
+
+    void visitCArray(CArray *c) override { // a[1][2]
+        CType *atype = find_var(c->ident_, c->line_number, c->char_number);
+        if (atype->array_dims.empty())
+            throwError(c->line_number, c->char_number,
+                       "attempted array element access on non-array");
+
+        if (atype->array_dims.size() < c->listdimdef_->size())
+            throwError(c->line_number, c->char_number,
+                       "array does not have enough dimensions");
+
+        std::vector<int> dims;
+        dims.insert(dims.end(), atype->array_dims.begin(), atype->array_dims.end());
+        for (int i = 0; i < c->listdimdef_->size(); i++) {
+            dims.erase(dims.begin());
+        }
+
+        current_type = new CType(atype->name, dims);
+    }
+
+    void visitCFunction(CFunction *c) override { // function(123)
+        CFun *fun = find_fun(c->ident_, c->line_number, c->char_number);
+
+    }
+
 
     // TODO pozostałe ComplexStart, ComplexPart
 };
