@@ -73,7 +73,7 @@ CArray.       ComplexStart ::= Ident [ DimDef ] ;
 
 CFunction.    ComplexStart ::= Ident "(" [Expr] ")" ;
 
-NewObject.    ComplexStart ::= "new" ArrType ;
+NewObject.    ComplexStart ::= "new" ArrType ; -- todo teraz (new int[1]).length nie działa eh
 
 ------------------------------------------------
 

@@ -1,19 +1,29 @@
-class A {
-    A a;
-//    B b;
-//
+//class A {
+//    int []arr = (new int[1]);
+//    A a;
+////    B b;
+////
 //    int x = f(1, "a");
-//    int attr;
+////    int attr;
+//
+////    int length;
+//    int f(int a, string b) { return 123; }
+////
+////    int []arr;
+////    A []arr2;
+////
+//////    int y = arr[x];
+////
+////    int x = a.length;
+//}
 
-    int length;
 
-    int []arr;
-    A []arr2;
-    A f(int a) {  }
+int f() { return 1; }
 
-//    int y = arr[x];
+class C {
+    int f(int a) { return 2; }
 
-    int x = a.length;
+    int x = f(4);
 }
 
 //
@@ -24,7 +34,6 @@ class A {
 //    int x = a.attr;
 //}
 //
-//int f(int a, string b) { return 123; }
 //
 //string g(int a) { return "aaa"; }
 

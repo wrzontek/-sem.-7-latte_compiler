@@ -10,15 +10,15 @@ class Function_Def_Visitor : public Skeleton {
 public:
     Type_Visitor *typeVisitor;
 
-    std::vector<CFun *> &defined_global_functions;
+    std::vector<CFun *> &defined_functions; // global or class methods if used in class
     std::vector<CClass *> &defined_classes;
     std::vector<CVar *> current_function_args;
 
     Ident current_arg_name;
     CType *current_type = nullptr;
 
-    explicit Function_Def_Visitor(std::vector<CFun *> &defined_global_functions, std::vector<CClass *> &defined_classes)
-            : defined_global_functions(defined_global_functions), defined_classes(defined_classes) {}
+    explicit Function_Def_Visitor(std::vector<CFun *> &defined_functions, std::vector<CClass *> &defined_classes)
+            : defined_functions(defined_functions), defined_classes(defined_classes) {}
 
     void visitClassDef(ClassDef *class_def) override {};
 
@@ -31,21 +31,20 @@ public:
                        "invalid return type"); // w sumie to chyba dowolny typ może być ale niech zostanie
         }
 
-        typeVisitor = new Type_Visitor(defined_classes, std::vector<CVar *>(), defined_global_functions);
+        typeVisitor = new Type_Visitor(defined_classes, std::vector<CVar *>(), defined_functions);
         CType *creturn_type = typeVisitor->getType(return_type);
         delete (typeVisitor);
 
-        for (auto &def: defined_global_functions) {
+        for (auto &def: defined_functions) {
             if (def->name == name) {
                 throwError(line_number, char_number,
                            "redefinition of " + std::string(is_method ? "method" : "function"));
-                // todo method can have same name as function
             }
         }
 
         current_function_args = std::vector<CVar *>();
         listarg->accept(this);
-        defined_global_functions.push_back(new CFun(name, creturn_type, current_function_args));
+        defined_functions.push_back(new CFun(name, creturn_type, current_function_args));
 
         current_function_args.clear();
     }
@@ -73,7 +72,7 @@ public:
         }
 
         current_arg_name = arg->ident_;
-        typeVisitor = new Type_Visitor(defined_classes, std::vector<CVar *>(), defined_global_functions);
+        typeVisitor = new Type_Visitor(defined_classes, std::vector<CVar *>(), defined_functions);
         CType *arg_type = typeVisitor->getType(arg->type_);
         delete (typeVisitor);
 

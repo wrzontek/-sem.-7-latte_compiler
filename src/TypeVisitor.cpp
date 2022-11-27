@@ -235,18 +235,17 @@ public:
     }
 
     CFun *find_fun(Ident name, int line_number, int char_number) {
-        CFun *fun = nullptr;
         for (auto def: defined_global_functions) {
             if (name == def->name) {
-                fun = def;
-                break;
+                return def;
             }
         }
-        if (fun == nullptr) throwError(line_number, char_number, "undefined function \"" + name + "\"");
-        return fun;
+        throwError(line_number, char_number, "undefined function \"" + name + "\"");
+        return nullptr;
     }
 
     void visitCMember(CMember *c) override { // a.b
+        // TODO SPECIAL CASE: a == self, przekazać klasę w parametrach Type_Visitor czy coś
         CType *atype = find_var(c->ident_1, c->line_number, c->char_number);
         if (isBasicType(atype->name)) {
             if (atype->array_dims.empty()) // not an array
