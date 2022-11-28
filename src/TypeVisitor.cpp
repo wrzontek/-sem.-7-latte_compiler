@@ -54,6 +54,9 @@ public:
         t->arrtype_->accept(this);
         auto arrtype = current_type;
         auto dim_count = t->listarrdimtype_->size();
+        if (dim_count > 1) {
+            throwError(t->line_number, t->char_number, "multi dimensional arrays are not supported");
+        }
         current_type = new CType(arrtype->name, std::vector<int>(dim_count, -1));
         // -1 is special value = uninitialized size, but marks that dimension exists
     }
@@ -100,13 +103,17 @@ public:
 
     void visitListExpr(ListExpr *list_expr) override {
         if (!current_call_arguments.empty()) {
+            auto arguments_backup = current_call_arguments;
+            checking_args = true;
             for (ListExpr::iterator i = list_expr->begin(); i != list_expr->end(); ++i) {
                 (*i)->accept(this);
-                if (*current_type != *(current_call_arguments[0]->type)) {
+                if (*current_type != *(arguments_backup[0]->type)) {
+                    // todo dziedzic
                     throwError((*i)->line_number, (*i)->char_number, "invalid argument type");
                 }
-                current_call_arguments.erase(current_call_arguments.begin());
+                arguments_backup.erase(arguments_backup.begin());
             }
+            checking_args = false;
         } else {
             for (ListExpr::iterator i = list_expr->begin(); i != list_expr->end(); ++i) {
                 (*i)->accept(this);
@@ -205,6 +212,7 @@ public:
     /////////////////////////////////////////////////////////////
 
     CFun *current_method = nullptr;
+    bool checking_args = false;
 
     void visitEComplex(EComplex *e_complex) override {
         e_complex->complexstart_->accept(this);
@@ -221,7 +229,7 @@ public:
             e_complex->listcomplexpart_->accept(this);
         }
 
-        if (current_method != nullptr)
+        if (current_method != nullptr && !checking_args)
             throwError(e_complex->line_number, e_complex->char_number, "method member accessed without calling");
         if (is_accessing_member)
             throwError(e_complex->line_number, e_complex->char_number, "invalid syntax, can't end with '.'");
@@ -350,7 +358,7 @@ public:
     }
 
     void visitArrElement(ArrElement *p) override {
-        if (current_method != nullptr)
+        if (current_method != nullptr && !checking_args)
             throwError(p->line_number, p->char_number, "method member accessed without calling");
 
         if (is_accessing_member)
@@ -359,6 +367,9 @@ public:
         auto array_type = current_type;
         p->listdimdef_->accept(this); // make sure sizes are ints
         if (!new_object_type.empty()) { // initializing array
+            if (p->listdimdef_->size() > 1) {
+                throwError(p->line_number, p->char_number, "multi dimensional arrays are not supported");
+            }
             current_type = new CType(new_object_type, std::vector<int>(p->listdimdef_->size(), -1));
             new_object_type = "";
         } else { // accessing array
@@ -399,14 +410,15 @@ public:
             throwError(p->line_number, p->char_number,
                        "invalid argument count");
 
+        auto return_type = current_method->return_type;
+        current_method = nullptr;
         p->listexpr_->accept(this); // check arguments
 
-        current_type = current_method->return_type;
-        current_method = nullptr;
+        current_type = return_type;
     }
 
     void visitVariable(Variable *p) override { // a.b also, we are in b
-        if (current_method != nullptr)
+        if (current_method != nullptr && !checking_args)
             throwError(p->line_number, p->char_number, "method member accessed without calling");
 
         if (!new_object_type.empty()) {
@@ -466,7 +478,7 @@ public:
     }
 
     void visitMemberAccess(MemberAccess *p) override {
-        if (current_method != nullptr)
+        if (current_method != nullptr && !checking_args)
             throwError(p->line_number, p->char_number, "method member accessed without calling");
 
         if (!new_object_type.empty()) {

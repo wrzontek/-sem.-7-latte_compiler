@@ -187,6 +187,7 @@ public:
             }
         }
         defined_variables.push_back(new CVar(name, current_type));
+        variable_to_depth[name] = current_depth;
     }
 
     void visitNoInit(NoInit *no_init) override {
@@ -200,6 +201,7 @@ public:
 
         if (*current_type != *(typeVisitor->getExprType(init->expr_))) {
             delete (typeVisitor);
+            // todo może być dziedzicem
             throwError(init->line_number, init->char_number,
                        "initialization expression of different type than declared");
         }
@@ -212,6 +214,7 @@ public:
         auto type_1 = typeVisitor->getExprType(stmt->expr_1);
         auto type_2 = typeVisitor->getExprType(stmt->expr_2);
         if (*type_1 != *type_2) {
+            // todo dziedzic?
             delete (typeVisitor);
             throwError(stmt->line_number, stmt->char_number,
                        "assignment expression of different type than variable");
@@ -245,12 +248,6 @@ public:
     void visitSExp(SExp *stmt) override {
         auto typeVisitor = new Type_Visitor(defined_classes, defined_variables, defined_global_functions);
         auto type = typeVisitor->getExprType(stmt->expr_);
-        // TODO może tylko void może być?
-//        if (type->name != "int" || !type->array_dims.empty()) {
-//            delete (typeVisitor);
-//            throwError(stmt->line_number, stmt->char_number,
-//                       "can only increment integers");
-//        }
         delete (typeVisitor);
     }
 
@@ -266,6 +263,7 @@ public:
         auto typeVisitor = new Type_Visitor(defined_classes, defined_variables, defined_global_functions);
         auto type = typeVisitor->getExprType(stmt->expr_);
         if (*type != *current_function->return_type) {
+            // todo dziedzic
             delete (typeVisitor);
             throwError(stmt->line_number, stmt->char_number, "invalid return type");
         }
@@ -291,18 +289,31 @@ public:
     void visitForEach(ForEach *stmt) override {
         auto typeVisitor = new Type_Visitor(defined_classes, defined_variables, defined_global_functions);
         CVar *array = findVar(stmt->ident_2, stmt->line_number, stmt->char_number);
-        if (array->type->array_dims.empty()) {
+        if (!array->type->is_array()) {
             throwError(stmt->line_number, stmt->char_number, "cannot iterate over non-array");
         }
 
         auto iterator_type = typeVisitor->getType(stmt->type_);
-        if (!iterator_type->array_dims.empty() || iterator_type->name != array->type->name) {
+        if (iterator_type->is_array() || iterator_type->name != array->type->name) {
             throwError(stmt->line_number, stmt->char_number, "invalid iterator type");
         }
 
+        auto backup_variables = defined_variables;
+        auto backup_variable_depth_map = variable_to_depth;
+
+        current_type = iterator_type;
+
+        current_depth++;
+        defineOrRedefineVariable(stmt->ident_1, stmt->line_number, stmt->char_number);
+        current_depth--;
+
+        stmt->stmt_->accept(this);
+
+        defined_variables = backup_variables;
+        variable_to_depth = backup_variable_depth_map;
     }
 
 
-    // todo Cond, CondElse, While, ForEach
+    // todo Cond, CondElse
 
 };

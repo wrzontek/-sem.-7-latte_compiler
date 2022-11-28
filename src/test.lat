@@ -17,29 +17,41 @@
 ////    int x = a.length;
 //}
 
-int f(int a) {
-    {
-        string a;
-    }
-    return 1;
-}
-// call bez self - funkcja globalna, z self - metoda
-
-class D extends C {
-    int i = self.f(5);
-}
-
-class C extends A {
-    int f(int a) { return 2; }
-    int x = self.y;
-    A a;
-    boolean b = a == (A) null;
-}
-
+//int f(int a) {
+//    {
+//        string a;
+//    }
+//    return 1;
+//}
+//// call bez self - funkcja globalna, z self - metoda
+//
+//class D extends C {
+//    int i = self.f(5);
+//    int []arrr;
+//    int ele = arrr[7];
+//}
+//
+//class C extends A {
+//    int f(int a) { return 2; }
+//    int x = self.y;
+//    A a;
+//    boolean b = a == (A) null;
+//}
+//
 class A {
-    int y;
+    int f(int a) { return 1; }
+    int x = 4;
 }
 
+class B extends A {
+    int x = 16; // todo legalne
+    int f(int a) { return 2; } // na pewno legalne
+}
+
+class C {
+    B b;
+    A a = b;
+}
 //
 //class B {
 //    A a;
@@ -51,7 +63,14 @@ class A {
 //
 //string g(int a) { return "aaa"; }
 
+int f(int a) { return 1; }
+
+
 int main() {
+    A a;
+    int x = f(f(1)); // todo sprawdzić podobne dla metod
+    int y = a.f(a.f(1));
+    return 1;
 //    return (a);
 //    Class[] a;
 //    Inst[1];

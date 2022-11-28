@@ -30,6 +30,10 @@ struct CType {
 
     Ident name; // void, int, bool, string, <class>
     std::vector<int> array_dims; // empty if type is not array
+
+    bool is_array() {
+        return !array_dims.empty();
+    }
 };
 
 inline bool operator==(const CType &lhs, const CType &rhs) {

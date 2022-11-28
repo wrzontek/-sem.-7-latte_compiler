@@ -71,6 +71,11 @@ public:
                 std::vector<CVar *>()));
 
         defined_functions.push_back(new CFun(
+                "readInt",
+                new CType("int", std::vector<int>()),
+                std::vector<CVar *>()));
+
+        defined_functions.push_back(new CFun(
                 "readString",
                 new CType("string", std::vector<int>()),
                 std::vector<CVar *>()));
@@ -81,7 +86,7 @@ public:
         program->accept(classDefOnlyNameVisitor);
         checkNoIllegalExtend();
 
-        auto functionDefVisitor = new Function_Def_Visitor(defined_functions, defined_classes);
+        auto functionDefVisitor = new Function_Def_Visitor(defined_functions, defined_classes, nullptr, nullptr);
         program->accept(functionDefVisitor); // check duplicates (function names and arg names)
         checkMain();
 

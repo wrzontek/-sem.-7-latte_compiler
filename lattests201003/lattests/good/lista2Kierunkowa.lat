@@ -35,9 +35,6 @@ void listaTest(int dlugoscListy){
 
 
 Lista przejdzSieNaKoniecIWypisuj(Lista start, int dl){
-    dafgsdfg a = cos, b = coos;
-
-
 	Lista a = start, b = start;
 	printString("idziemy na koniec listy: ");
 	int i = 0;

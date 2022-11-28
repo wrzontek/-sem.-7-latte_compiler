@@ -1,5 +1,6 @@
 // Author: Tomasz Wysocki 277696
 int main() {
+    b(f(1));
     b(t(1) && f(2));
     b(t(3) && t(4));
     b(t(5) || t(6));
@@ -13,11 +14,13 @@ boolean f(int a) {
     printInt(a);
     return false;
 }
+
 boolean t(int a) {
     return !f(a);
 }
+
 void b(boolean a) {
-    if(a)
+    if (a)
         printString("true");
     else
         printString("false");

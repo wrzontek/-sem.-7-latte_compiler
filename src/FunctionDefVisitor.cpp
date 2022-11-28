@@ -13,12 +13,16 @@ public:
     std::vector<CFun *> &defined_functions; // global or class methods if used in class
     std::vector<CClass *> &defined_classes;
     std::vector<CVar *> current_function_args;
+    CClass *parent_class;
+    std::set <Ident> *already_redefined_methods;
 
     Ident current_arg_name;
     CType *current_type = nullptr;
 
-    explicit Function_Def_Visitor(std::vector<CFun *> &defined_functions, std::vector<CClass *> &defined_classes)
-            : defined_functions(defined_functions), defined_classes(defined_classes) {}
+    explicit Function_Def_Visitor(std::vector<CFun *> &defined_functions, std::vector<CClass *> &defined_classes,
+                                  CClass *parent_class, std::set <Ident> *already_redefined_methods)
+            : defined_functions(defined_functions), defined_classes(defined_classes), parent_class(parent_class),
+              already_redefined_methods(already_redefined_methods) {}
 
     void visitClassDef(ClassDef *class_def) override {};
 
@@ -35,10 +39,27 @@ public:
         CType *creturn_type = typeVisitor->getType(return_type);
         delete (typeVisitor);
 
-        for (auto &def: defined_functions) {
-            if (def->name == name) {
-                throwError(line_number, char_number,
-                           "redefinition of " + std::string(is_method ? "method" : "function"));
+
+        for (int i = 0; i < defined_functions.size(); i++) {
+            auto function = defined_functions.at(i);
+            if (function->name == name) {
+                if (parent_class == nullptr)
+                    throwError(line_number, char_number, "redefinition of function");
+
+                bool ok = false;
+                for (auto parent_method: parent_class->methods) {
+                    if (parent_method->name == name &&
+                        already_redefined_methods->find(name) == already_redefined_methods->end()) {
+                        already_redefined_methods->insert(name);
+                        defined_functions.erase(defined_functions.begin() + i);
+                        ok = true;
+                        break;
+                    }
+                }
+
+                if (ok) break;
+
+                throwError(line_number, char_number, "redefinition of method");
             }
         }
 
