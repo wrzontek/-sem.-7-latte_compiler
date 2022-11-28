@@ -1,0 +1,10 @@
+class A{
+    int a;
+}
+
+int f(A[] a) {return a[0].a;}
+
+int main() {
+    int a = (new int[5])[9];
+    return 0;
+}
