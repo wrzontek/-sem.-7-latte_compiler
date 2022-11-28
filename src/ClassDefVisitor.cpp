@@ -41,7 +41,7 @@ public:
         // adding "self" attribute of type <class>
         current_class->attributes.push_back(new CVar(
                 "self",
-                new CType(current_class->name, std::vector<int>())));
+                new CType(current_class->name, false)));
         class_def->listclassmember_->accept(this);
 
         defined_class_idents.insert(current_class->name);
@@ -68,7 +68,7 @@ public:
         // adding "self" attribute of type <class>
         current_class->attributes.push_back(new CVar(
                 "self",
-                new CType(current_class->name, std::vector<int>())));
+                new CType(current_class->name, false)));
 
         already_redefined_attributes.clear();
         already_redefined_methods.clear();
@@ -176,7 +176,7 @@ public:
         // adding "self" attribute of type <class>
         current_class->attributes.push_back(new CVar(
                 "self",
-                new CType(current_class->name, std::vector<int>())));
+                new CType(current_class->name, false)));
 
         class_def->listclassmember_->accept(this);
 
@@ -213,7 +213,7 @@ public:
         typeVisitor = new Type_Visitor(defined_classes, current_class->attributes, defined_functions);
         auto expr_type = typeVisitor->getExprType(init->expr_);
 
-        if (current_type->array_dims.size() != expr_type->array_dims.size() ||
+        if (current_type->is_array != expr_type->is_array ||
             (current_type->name != expr_type->name &&
              !isDescendantOf(current_type->name, expr_type->name, defined_classes))) {
             delete (typeVisitor);

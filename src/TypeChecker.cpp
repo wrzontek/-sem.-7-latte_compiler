@@ -39,7 +39,7 @@ private:
             if (def->name == "main") {
                 if (!def->args.empty())
                     throwError("main function mustn't take arguments");
-                if (def->return_type->name != "int" || !def->return_type->array_dims.empty())
+                if (def->return_type->name != "int" || !def->return_type->is_not_array())
                     throwError("main function must return int");
 
                 defined = true;
@@ -52,32 +52,32 @@ private:
 public:
     explicit TypeChecker(Program *program) : program(program) {
         std::vector < CVar * > printIntArgs;
-        printIntArgs.push_back(new CVar("arg", new CType("int", std::vector<int>())));
+        printIntArgs.push_back(new CVar("arg", new CType("int", false)));
         defined_functions.push_back(new CFun(
                 std::string("printInt"),
-                new CType("void", std::vector<int>()),
+                new CType("void", false),
                 printIntArgs));
 
         std::vector < CVar * > printStringArgs;
-        printStringArgs.push_back(new CVar("arg", new CType("string", std::vector<int>())));
+        printStringArgs.push_back(new CVar("arg", new CType("string", false)));
         defined_functions.push_back(new CFun(
                 "printString",
-                new CType("void", std::vector<int>()),
+                new CType("void", false),
                 printStringArgs));
 
         defined_functions.push_back(new CFun(
                 "error",
-                new CType("void", std::vector<int>()),
+                new CType("void", false),
                 std::vector<CVar *>()));
 
         defined_functions.push_back(new CFun(
                 "readInt",
-                new CType("int", std::vector<int>()),
+                new CType("int", false),
                 std::vector<CVar *>()));
 
         defined_functions.push_back(new CFun(
                 "readString",
-                new CType("string", std::vector<int>()),
+                new CType("string", false),
                 std::vector<CVar *>()));
     }
 

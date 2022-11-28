@@ -160,23 +160,9 @@ public:
 
     void visitFun(Fun *p);
 
-    void visitArrDimType(ArrDimType *p); /* abstract class */
-    void visitDimType(DimType *p);
-
-    void visitListArrDimType(ListArrDimType *p);
-
-    void iterListArrDimType(ListArrDimType::const_iterator i, ListArrDimType::const_iterator j);
-
     void visitListType(ListType *p);
 
     void iterListType(ListType::const_iterator i, ListType::const_iterator j);
-
-    void visitDimDef(DimDef *p); /* abstract class */
-    void visitArrDimDef(ArrDimDef *p);
-
-    void visitListDimDef(ListDimDef *p);
-
-    void iterListDimDef(ListDimDef::const_iterator i, ListDimDef::const_iterator j);
 
     void visitExpr(Expr *p); /* abstract class */
     void visitEVar(EVar *p);
@@ -433,23 +419,9 @@ public:
 
     void visitFun(Fun *p);
 
-    void visitArrDimType(ArrDimType *p); /* abstract class */
-    void visitDimType(DimType *p);
-
-    void visitListArrDimType(ListArrDimType *p);
-
-    void iterListArrDimType(ListArrDimType::const_iterator i, ListArrDimType::const_iterator j);
-
     void visitListType(ListType *p);
 
     void iterListType(ListType::const_iterator i, ListType::const_iterator j);
-
-    void visitDimDef(DimDef *p); /* abstract class */
-    void visitArrDimDef(ArrDimDef *p);
-
-    void visitListDimDef(ListDimDef *p);
-
-    void iterListDimDef(ListDimDef::const_iterator i, ListDimDef::const_iterator j);
 
     void visitExpr(Expr *p); /* abstract class */
     void visitEVar(EVar *p);

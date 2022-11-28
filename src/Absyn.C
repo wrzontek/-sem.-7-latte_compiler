@@ -975,15 +975,15 @@ CMember *CMember::clone() const {
 
 
 /********************   CArray    ********************/
-CArray::CArray(Ident p1, ListDimDef *p2) {
+CArray::CArray(Ident p1, Expr *p2) {
     ident_ = p1;
-    listdimdef_ = p2;
+    expr_ = p2;
 
 }
 
 CArray::CArray(const CArray &other) {
     ident_ = other.ident_;
-    listdimdef_ = other.listdimdef_->clone();
+    expr_ = other.expr_->clone();
 
 }
 
@@ -995,12 +995,12 @@ CArray &CArray::operator=(const CArray &other) {
 
 void CArray::swap(CArray &other) {
     std::swap(ident_, other.ident_);
-    std::swap(listdimdef_, other.listdimdef_);
+    std::swap(expr_, other.expr_);
 
 }
 
 CArray::~CArray() {
-    delete (listdimdef_);
+    delete (expr_);
 
 }
 
@@ -1124,13 +1124,13 @@ Variable *Variable::clone() const {
 
 
 /********************   ArrElement    ********************/
-ArrElement::ArrElement(ListDimDef *p1) {
-    listdimdef_ = p1;
+ArrElement::ArrElement(Expr *p1) {
+    expr_ = p1;
 
 }
 
 ArrElement::ArrElement(const ArrElement &other) {
-    listdimdef_ = other.listdimdef_->clone();
+    expr_ = other.expr_->clone();
 
 }
 
@@ -1141,12 +1141,12 @@ ArrElement &ArrElement::operator=(const ArrElement &other) {
 }
 
 void ArrElement::swap(ArrElement &other) {
-    std::swap(listdimdef_, other.listdimdef_);
+    std::swap(expr_, other.expr_);
 
 }
 
 ArrElement::~ArrElement() {
-    delete (listdimdef_);
+    delete (expr_);
 
 }
 
@@ -1487,15 +1487,13 @@ Void *Void::clone() const {
 
 
 /********************   Arr    ********************/
-Arr::Arr(ArrType *p1, ListArrDimType *p2) {
+Arr::Arr(ArrType *p1) {
     arrtype_ = p1;
-    listarrdimtype_ = p2;
 
 }
 
 Arr::Arr(const Arr &other) {
     arrtype_ = other.arrtype_->clone();
-    listarrdimtype_ = other.listarrdimtype_->clone();
 
 }
 
@@ -1507,13 +1505,11 @@ Arr &Arr::operator=(const Arr &other) {
 
 void Arr::swap(Arr &other) {
     std::swap(arrtype_, other.arrtype_);
-    std::swap(listarrdimtype_, other.listarrdimtype_);
 
 }
 
 Arr::~Arr() {
     delete (arrtype_);
-    delete (listarrdimtype_);
 
 }
 
@@ -1598,74 +1594,6 @@ void Fun::accept(Visitor *v) {
 
 Fun *Fun::clone() const {
     return new Fun(*this);
-}
-
-
-/********************   DimType    ********************/
-DimType::DimType() {
-
-}
-
-DimType::DimType(const DimType &other) {
-
-}
-
-DimType &DimType::operator=(const DimType &other) {
-    DimType tmp(other);
-    swap(tmp);
-    return *this;
-}
-
-void DimType::swap(DimType &other) {
-
-}
-
-DimType::~DimType() {
-
-}
-
-void DimType::accept(Visitor *v) {
-    v->visitDimType(this);
-}
-
-DimType *DimType::clone() const {
-    return new DimType(*this);
-}
-
-
-/********************   ArrDimDef    ********************/
-ArrDimDef::ArrDimDef(Expr *p1) {
-    expr_ = p1;
-
-}
-
-ArrDimDef::ArrDimDef(const ArrDimDef &other) {
-    expr_ = other.expr_->clone();
-
-}
-
-ArrDimDef &ArrDimDef::operator=(const ArrDimDef &other) {
-    ArrDimDef tmp(other);
-    swap(tmp);
-    return *this;
-}
-
-void ArrDimDef::swap(ArrDimDef &other) {
-    std::swap(expr_, other.expr_);
-
-}
-
-ArrDimDef::~ArrDimDef() {
-    delete (expr_);
-
-}
-
-void ArrDimDef::accept(Visitor *v) {
-    v->visitArrDimDef(this);
-}
-
-ArrDimDef *ArrDimDef::clone() const {
-    return new ArrDimDef(*this);
 }
 
 
@@ -2694,28 +2622,6 @@ ListItem *consListItem(Item *x, ListItem *xs) {
 }
 
 
-/********************   ListArrDimType    ********************/
-
-ListArrDimType::~ListArrDimType() {
-    for (auto i = this->begin(); i != this->end(); ++i) {
-        delete (*i);
-    }
-}
-
-void ListArrDimType::accept(Visitor *v) {
-    v->visitListArrDimType(this);
-}
-
-ListArrDimType *ListArrDimType::clone() const {
-    return new ListArrDimType(*this);
-}
-
-ListArrDimType *consListArrDimType(ArrDimType *x, ListArrDimType *xs) {
-    xs->insert(xs->begin(), x);
-    return xs;
-}
-
-
 /********************   ListType    ********************/
 
 ListType::~ListType() {
@@ -2733,28 +2639,6 @@ ListType *ListType::clone() const {
 }
 
 ListType *consListType(Type *x, ListType *xs) {
-    xs->insert(xs->begin(), x);
-    return xs;
-}
-
-
-/********************   ListDimDef    ********************/
-
-ListDimDef::~ListDimDef() {
-    for (auto i = this->begin(); i != this->end(); ++i) {
-        delete (*i);
-    }
-}
-
-void ListDimDef::accept(Visitor *v) {
-    v->visitListDimDef(this);
-}
-
-ListDimDef *ListDimDef::clone() const {
-    return new ListDimDef(*this);
-}
-
-ListDimDef *consListDimDef(DimDef *x, ListDimDef *xs) {
     xs->insert(xs->begin(), x);
     return xs;
 }

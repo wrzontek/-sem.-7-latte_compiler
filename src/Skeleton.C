@@ -20,8 +20,6 @@ void Skeleton::visitComplexStart(ComplexStart *t) {} //abstract class
 void Skeleton::visitComplexPart(ComplexPart *t) {} //abstract class
 void Skeleton::visitArrType(ArrType *t) {} //abstract class
 void Skeleton::visitType(Type *t) {} //abstract class
-void Skeleton::visitArrDimType(ArrDimType *t) {} //abstract class
-void Skeleton::visitDimDef(DimDef *t) {} //abstract class
 void Skeleton::visitExpr(Expr *t) {} //abstract class
 void Skeleton::visitAddOp(AddOp *t) {} //abstract class
 void Skeleton::visitMulOp(MulOp *t) {} //abstract class
@@ -226,7 +224,7 @@ void Skeleton::visitCArray(CArray *c_array) {
     /* Code For CArray Goes Here */
 
     visitIdent(c_array->ident_);
-    if (c_array->listdimdef_) c_array->listdimdef_->accept(this);
+    if (c_array->expr_) c_array->expr_->accept(this);
 
 }
 
@@ -255,7 +253,7 @@ void Skeleton::visitVariable(Variable *variable) {
 void Skeleton::visitArrElement(ArrElement *arr_element) {
     /* Code For ArrElement Goes Here */
 
-    if (arr_element->listdimdef_) arr_element->listdimdef_->accept(this);
+    if (arr_element->expr_) arr_element->expr_->accept(this);
 
 }
 
@@ -325,7 +323,6 @@ void Skeleton::visitArr(Arr *arr) {
     /* Code For Arr Goes Here */
 
     if (arr->arrtype_) arr->arrtype_->accept(this);
-    if (arr->listarrdimtype_) arr->listarrdimtype_->accept(this);
 
 }
 
@@ -341,19 +338,6 @@ void Skeleton::visitFun(Fun *fun) {
 
     if (fun->type_) fun->type_->accept(this);
     if (fun->listtype_) fun->listtype_->accept(this);
-
-}
-
-void Skeleton::visitDimType(DimType *dim_type) {
-    /* Code For DimType Goes Here */
-
-
-}
-
-void Skeleton::visitArrDimDef(ArrDimDef *arr_dim_def) {
-    /* Code For ArrDimDef Goes Here */
-
-    if (arr_dim_def->expr_) arr_dim_def->expr_->accept(this);
 
 }
 
@@ -566,20 +550,8 @@ void Skeleton::visitListItem(ListItem *list_item) {
     }
 }
 
-void Skeleton::visitListArrDimType(ListArrDimType *list_arr_dim_type) {
-    for (ListArrDimType::iterator i = list_arr_dim_type->begin(); i != list_arr_dim_type->end(); ++i) {
-        (*i)->accept(this);
-    }
-}
-
 void Skeleton::visitListType(ListType *list_type) {
     for (ListType::iterator i = list_type->begin(); i != list_type->end(); ++i) {
-        (*i)->accept(this);
-    }
-}
-
-void Skeleton::visitListDimDef(ListDimDef *list_dim_def) {
-    for (ListDimDef::iterator i = list_dim_def->begin(); i != list_dim_def->end(); ++i) {
         (*i)->accept(this);
     }
 }

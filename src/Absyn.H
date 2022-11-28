@@ -41,10 +41,6 @@ class ArrType;
 
 class Type;
 
-class ArrDimType;
-
-class DimDef;
-
 class Expr;
 
 class AddOp;
@@ -137,11 +133,7 @@ class Arr;
 
 class Class;
 
-class DimType;
-
 class Fun;
-
-class ArrDimDef;
 
 class EVar;
 
@@ -205,11 +197,7 @@ class ListStmt;
 
 class ListItem;
 
-class ListArrDimType;
-
 class ListType;
-
-class ListDimDef;
 
 class ListComplexPart;
 
@@ -242,10 +230,6 @@ public:
     virtual void visitArrType(ArrType *p) = 0;
 
     virtual void visitType(Type *p) = 0;
-
-    virtual void visitArrDimType(ArrDimType *p) = 0;
-
-    virtual void visitDimDef(DimDef *p) = 0;
 
     virtual void visitExpr(Expr *p) = 0;
 
@@ -339,11 +323,7 @@ public:
 
     virtual void visitClass(Class *p) = 0;
 
-    virtual void visitDimType(DimType *p) = 0;
-
     virtual void visitFun(Fun *p) = 0;
-
-    virtual void visitArrDimDef(ArrDimDef *p) = 0;
 
     virtual void visitEVar(EVar *p) = 0;
 
@@ -407,11 +387,7 @@ public:
 
     virtual void visitListItem(ListItem *p) = 0;
 
-    virtual void visitListArrDimType(ListArrDimType *p) = 0;
-
     virtual void visitListType(ListType *p) = 0;
-
-    virtual void visitListDimDef(ListDimDef *p) = 0;
 
     virtual void visitListComplexPart(ListComplexPart *p) = 0;
 
@@ -477,8 +453,6 @@ class Block : public Visitable {
 public:
     virtual Block *clone() const = 0;
 
-
-    bool must_return = false;
     int line_number;
     int char_number;
 };
@@ -525,27 +499,11 @@ public:
 
 class Type : public Visitable {
 public:
-    virtual Type *clone() const { return nullptr; };
+    virtual Type *clone() const = 0;
 
     virtual bool canBeArg() { return true; }
 
     virtual bool canBeReturned() { return true; }
-
-    int line_number;
-    int char_number;
-};
-
-class ArrDimType : public Visitable {
-public:
-    virtual ArrDimType *clone() const = 0;
-
-    int line_number;
-    int char_number;
-};
-
-class DimDef : public Visitable {
-public:
-    virtual DimDef *clone() const = 0;
 
     int line_number;
     int char_number;
@@ -1090,13 +1048,13 @@ public:
 class CArray : public ComplexStart {
 public:
     Ident ident_;
-    ListDimDef *listdimdef_;
+    Expr *expr_;
 
     CArray(const CArray &);
 
     CArray &operator=(const CArray &);
 
-    CArray(Ident p1, ListDimDef *p2);
+    CArray(Ident p1, Expr *p2);
 
     ~CArray();
 
@@ -1167,13 +1125,13 @@ public:
 
 class ArrElement : public ComplexPart {
 public:
-    ListDimDef *listdimdef_;
+    Expr *expr_;
 
     ArrElement(const ArrElement &);
 
     ArrElement &operator=(const ArrElement &);
 
-    ArrElement(ListDimDef *p1);
+    ArrElement(Expr *p1);
 
     ~ArrElement();
 
@@ -1373,13 +1331,12 @@ public:
 class Arr : public Type {
 public:
     ArrType *arrtype_;
-    ListArrDimType *listarrdimtype_;
 
     Arr(const Arr &);
 
     Arr &operator=(const Arr &);
 
-    Arr(ArrType *p1, ListArrDimType *p2);
+    Arr(ArrType *p1);
 
     ~Arr();
 
@@ -1427,43 +1384,6 @@ public:
     virtual Fun *clone() const;
 
     void swap(Fun &);
-};
-
-class DimType : public ArrDimType {
-public:
-
-    DimType(const DimType &);
-
-    DimType &operator=(const DimType &);
-
-    DimType();
-
-    ~DimType();
-
-    virtual void accept(Visitor *v);
-
-    virtual DimType *clone() const;
-
-    void swap(DimType &);
-};
-
-class ArrDimDef : public DimDef {
-public:
-    Expr *expr_;
-
-    ArrDimDef(const ArrDimDef &);
-
-    ArrDimDef &operator=(const ArrDimDef &);
-
-    ArrDimDef(Expr *p1);
-
-    ~ArrDimDef();
-
-    virtual void accept(Visitor *v);
-
-    virtual ArrDimDef *clone() const;
-
-    void swap(ArrDimDef &);
 };
 
 class EVar : public Expr {
@@ -2074,17 +1994,6 @@ public:
 
 ListItem *consListItem(Item *x, ListItem *xs);
 
-class ListArrDimType : public Visitable, public std::vector<ArrDimType *> {
-public:
-    virtual void accept(Visitor *v);
-
-    virtual ListArrDimType *clone() const;
-
-    virtual ~ListArrDimType();
-};
-
-ListArrDimType *consListArrDimType(ArrDimType *x, ListArrDimType *xs);
-
 class ListType : public Visitable, public std::vector<Type *> {
 public:
     virtual void accept(Visitor *v);
@@ -2095,17 +2004,6 @@ public:
 };
 
 ListType *consListType(Type *x, ListType *xs);
-
-class ListDimDef : public Visitable, public std::vector<DimDef *> {
-public:
-    virtual void accept(Visitor *v);
-
-    virtual ListDimDef *clone() const;
-
-    virtual ~ListDimDef();
-};
-
-ListDimDef *consListDimDef(DimDef *x, ListDimDef *xs);
 
 class ListComplexPart : public Visitable, public std::vector<ComplexPart *> {
 public:

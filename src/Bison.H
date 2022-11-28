@@ -47,8 +47,7 @@ extern int latte_debug;
 /* Token type.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
-  enum yytokentype
-  {
+enum yytokentype {
     _ERROR_ = 258,
     _BANG = 259,
     _BANGEQ = 260,
@@ -73,71 +72,65 @@ extern int latte_debug;
     _GT = 279,
     _GTEQ = 280,
     _LBRACK = 281,
-    _EMPTYBRACK = 282,
-    _RBRACK = 283,
-    _KW_boolean = 284,
-    _KW_class = 285,
-    _KW_else = 286,
-    _KW_extends = 287,
-    _KW_false = 288,
-    _KW_for = 289,
-    _KW_if = 290,
-    _KW_int = 291,
-    _KW_new = 292,
-    _KW_null = 293,
-    _KW_return = 294,
-    _KW_string = 295,
-    _KW_true = 296,
-    _KW_void = 297,
-    _KW_while = 298,
-    _LBRACE = 299,
-    _DBAR = 300,
-    _RBRACE = 301,
-    _STRING_ = 302,
-    _INTEGER_ = 303,
-    _IDENT_ = 304
-  };
+    _RBRACK = 282,
+    _KW_boolean = 283,
+    _KW_class = 284,
+    _KW_else = 285,
+    _KW_extends = 286,
+    _KW_false = 287,
+    _KW_for = 288,
+    _KW_if = 289,
+    _KW_int = 290,
+    _KW_new = 291,
+    _KW_null = 292,
+    _KW_return = 293,
+    _KW_string = 294,
+    _KW_true = 295,
+    _KW_void = 296,
+    _KW_while = 297,
+    _LBRACE = 298,
+    _DBAR = 299,
+    _RBRACE = 300,
+    _STRING_ = 301,
+    _INTEGER_ = 302,
+    _IDENT_ = 303
+};
 #endif
 
 /* Value type.  */
-#if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-union YYSTYPE
-{
+#if !defined YYSTYPE && !defined YYSTYPE_IS_DECLARED
+union YYSTYPE {
 #line 50 "Latte.y"
 
-  int    _int;
-  char   _char;
-  double _double;
-  char*  _string;
-  Program* program_;
-  TopDef* topdef_;
-  ListClassMember* listclassmember_;
-  ListTopDef* listtopdef_;
-  Arg* arg_;
-  ListArg* listarg_;
-  ClassMember* classmember_;
-  Block* block_;
-  ListStmt* liststmt_;
-  Stmt* stmt_;
-  Item* item_;
-  ListItem* listitem_;
-  ComplexStart* complexstart_;
-  ComplexPart* complexpart_;
-  ArrType* arrtype_;
-  Type* type_;
-  ArrDimType* arrdimtype_;
-  ListArrDimType* listarrdimtype_;
-  ListType* listtype_;
-  DimDef* dimdef_;
-  ListDimDef* listdimdef_;
-  Expr* expr_;
-  ListComplexPart* listcomplexpart_;
-  ListExpr* listexpr_;
-  AddOp* addop_;
-  MulOp* mulop_;
-  RelOp* relop_;
+    int _int;
+    char _char;
+    double _double;
+    char *_string;
+    Program *program_;
+    TopDef *topdef_;
+    ListClassMember *listclassmember_;
+    ListTopDef *listtopdef_;
+    Arg *arg_;
+    ListArg *listarg_;
+    ClassMember *classmember_;
+    Block *block_;
+    ListStmt *liststmt_;
+    Stmt *stmt_;
+    Item *item_;
+    ListItem *listitem_;
+    ComplexStart *complexstart_;
+    ComplexPart *complexpart_;
+    ArrType *arrtype_;
+    Type *type_;
+    ListType *listtype_;
+    Expr *expr_;
+    ListComplexPart *listcomplexpart_;
+    ListExpr *listexpr_;
+    AddOp *addop_;
+    MulOp *mulop_;
+    RelOp *relop_;
 
-#line 141 "Bison.H"
+#line 136 "Bison.H"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -146,21 +139,19 @@ typedef union YYSTYPE YYSTYPE;
 #endif
 
 /* Location type.  */
-#if ! defined YYLTYPE && ! defined YYLTYPE_IS_DECLARED
+#if !defined YYLTYPE && !defined YYLTYPE_IS_DECLARED
 typedef struct YYLTYPE YYLTYPE;
-struct YYLTYPE
-{
-  int first_line;
-  int first_column;
-  int last_line;
-  int last_column;
+struct YYLTYPE {
+    int first_line;
+    int first_column;
+    int last_line;
+    int last_column;
 };
 # define YYLTYPE_IS_DECLARED 1
 # define YYLTYPE_IS_TRIVIAL 1
 #endif
 
 
-
-int latte_parse (yyscan_t scanner, YYSTYPE *result);
+int latte_parse(yyscan_t scanner, YYSTYPE *result);
 
 #endif /* !YY_LATTE_BISON_H_INCLUDED  */

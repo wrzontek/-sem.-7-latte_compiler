@@ -26,13 +26,13 @@ void throwError(std::string content) {
 }
 
 struct CType {
-    explicit CType(Ident name, std::vector<int> array_dims) : name(name), array_dims(array_dims) {}
+    explicit CType(Ident name, bool is_array) : name(name), is_array(is_array) {}
 
     Ident name; // void, int, bool, string, <class>
-    std::vector<int> array_dims; // empty if type is not array
+    bool is_array;
 
-    bool is_array() {
-        return !array_dims.empty();
+    bool is_not_array() {
+        return !is_array;
     }
 };
 
@@ -40,7 +40,7 @@ inline bool operator==(const CType &lhs, const CType &rhs) {
 //    std::cout << lhs.name << " " << lhs.array_dims.size() << std::endl;
 //    std::cout << rhs.name << " " << rhs.array_dims.size() << std::endl;
 
-    return lhs.name == rhs.name && lhs.array_dims == rhs.array_dims;
+    return lhs.name == rhs.name && lhs.is_array == rhs.is_array;
 }
 
 inline bool operator!=(const CType &lhs, const CType &rhs) { return !(lhs == rhs); }

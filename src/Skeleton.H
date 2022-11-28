@@ -31,10 +31,6 @@ public:
 
     void visitType(Type *p);
 
-    void visitArrDimType(ArrDimType *p);
-
-    void visitDimDef(DimDef *p);
-
     void visitExpr(Expr *p);
 
     void visitAddOp(AddOp *p);
@@ -127,11 +123,7 @@ public:
 
     void visitClass(Class *p);
 
-    void visitDimType(DimType *p);
-
     void visitFun(Fun *p);
-
-    void visitArrDimDef(ArrDimDef *p);
 
     void visitEVar(EVar *p);
 
@@ -195,11 +187,7 @@ public:
 
     void visitListItem(ListItem *p);
 
-    void visitListArrDimType(ListArrDimType *p);
-
     void visitListType(ListType *p);
-
-    void visitListDimDef(ListDimDef *p);
 
     void visitListComplexPart(ListComplexPart *p);
 

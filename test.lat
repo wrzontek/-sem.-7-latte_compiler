@@ -1,0 +1,10 @@
+int main() {
+    int []arr;
+//    (arr).length;
+//    (arr)[0];
+    (arr[0]);
+//    (new int[1]).length;
+//    (new int[1])[0];
+
+    return 0;
+}

@@ -551,8 +551,10 @@ void PrintAbsyn::visitCArray(CArray *p) {
     if (oldi > 0) render(_L_PAREN);
 
     visitIdent(p->ident_);
+    render('[');
     _i_ = 0;
-    visitListDimDef(p->listdimdef_);
+    p->expr_->accept(this);
+    render(']');
 
     if (oldi > 0) render(_R_PAREN);
     _i_ = oldi;
@@ -600,8 +602,10 @@ void PrintAbsyn::visitArrElement(ArrElement *p) {
     int oldi = _i_;
     if (oldi > 0) render(_L_PAREN);
 
+    render('[');
     _i_ = 0;
-    visitListDimDef(p->listdimdef_);
+    p->expr_->accept(this);
+    render(']');
 
     if (oldi > 0) render(_R_PAREN);
     _i_ = oldi;
@@ -720,8 +724,8 @@ void PrintAbsyn::visitArr(Arr *p) {
 
     _i_ = 0;
     p->arrtype_->accept(this);
-    _i_ = 0;
-    visitListArrDimType(p->listarrdimtype_);
+    render('[');
+    render(']');
 
     if (oldi > 0) render(_R_PAREN);
     _i_ = oldi;
@@ -752,32 +756,6 @@ void PrintAbsyn::visitFun(Fun *p) {
     _i_ = oldi;
 }
 
-void PrintAbsyn::visitArrDimType(ArrDimType *p) {} //abstract class
-
-void PrintAbsyn::visitDimType(DimType *p) {
-    int oldi = _i_;
-    if (oldi > 0) render(_L_PAREN);
-
-    render("[]");
-
-    if (oldi > 0) render(_R_PAREN);
-    _i_ = oldi;
-}
-
-void PrintAbsyn::visitListArrDimType(ListArrDimType *listarrdimtype) {
-    iterListArrDimType(listarrdimtype->begin(), listarrdimtype->end());
-}
-
-void PrintAbsyn::iterListArrDimType(ListArrDimType::const_iterator i, ListArrDimType::const_iterator j) {
-    if (i == j) return;
-    if (i == j - 1) { /* last */
-        (*i)->accept(this);
-    } else { /* cons */
-        (*i)->accept(this);
-        iterListArrDimType(i + 1, j);
-    }
-}
-
 void PrintAbsyn::visitListType(ListType *listtype) {
     iterListType(listtype->begin(), listtype->end());
 }
@@ -790,35 +768,6 @@ void PrintAbsyn::iterListType(ListType::const_iterator i, ListType::const_iterat
         (*i)->accept(this);
         render(',');
         iterListType(i + 1, j);
-    }
-}
-
-void PrintAbsyn::visitDimDef(DimDef *p) {} //abstract class
-
-void PrintAbsyn::visitArrDimDef(ArrDimDef *p) {
-    int oldi = _i_;
-    if (oldi > 0) render(_L_PAREN);
-
-    render('[');
-    _i_ = 0;
-    p->expr_->accept(this);
-    render(']');
-
-    if (oldi > 0) render(_R_PAREN);
-    _i_ = oldi;
-}
-
-void PrintAbsyn::visitListDimDef(ListDimDef *listdimdef) {
-    iterListDimDef(listdimdef->begin(), listdimdef->end());
-}
-
-void PrintAbsyn::iterListDimDef(ListDimDef::const_iterator i, ListDimDef::const_iterator j) {
-    if (i == j) return;
-    if (i == j - 1) { /* last */
-        (*i)->accept(this);
-    } else { /* cons */
-        (*i)->accept(this);
-        iterListDimDef(i + 1, j);
     }
 }
 
@@ -1558,8 +1507,9 @@ void ShowAbsyn::visitCArray(CArray *p) {
     visitIdent(p->ident_);
     bufAppend(' ');
     bufAppend('[');
-    if (p->listdimdef_) p->listdimdef_->accept(this);
+    if (p->expr_) p->expr_->accept(this);
     bufAppend(']');
+    bufAppend(' ');
     bufAppend(')');
 }
 
@@ -1601,8 +1551,9 @@ void ShowAbsyn::visitArrElement(ArrElement *p) {
     bufAppend("ArrElement");
     bufAppend(' ');
     bufAppend('[');
-    if (p->listdimdef_) p->listdimdef_->accept(this);
+    if (p->expr_) p->expr_->accept(this);
     bufAppend(']');
+    bufAppend(' ');
     bufAppend(')');
 }
 
@@ -1669,9 +1620,6 @@ void ShowAbsyn::visitArr(Arr *p) {
     if (p->arrtype_) p->arrtype_->accept(this);
     bufAppend(']');
     bufAppend(' ');
-    bufAppend('[');
-    if (p->listarrdimtype_) p->listarrdimtype_->accept(this);
-    bufAppend(']');
     bufAppend(')');
 }
 
@@ -1698,43 +1646,10 @@ void ShowAbsyn::visitFun(Fun *p) {
     bufAppend(')');
 }
 
-void ShowAbsyn::visitArrDimType(ArrDimType *p) {} //abstract class
-
-void ShowAbsyn::visitDimType(DimType *p) {
-    bufAppend("DimType");
-}
-
-void ShowAbsyn::visitListArrDimType(ListArrDimType *listarrdimtype) {
-    for (ListArrDimType::const_iterator i = listarrdimtype->begin(); i != listarrdimtype->end(); ++i) {
-        (*i)->accept(this);
-        if (i != listarrdimtype->end() - 1) bufAppend(", ");
-    }
-}
-
 void ShowAbsyn::visitListType(ListType *listtype) {
     for (ListType::const_iterator i = listtype->begin(); i != listtype->end(); ++i) {
         (*i)->accept(this);
         if (i != listtype->end() - 1) bufAppend(", ");
-    }
-}
-
-void ShowAbsyn::visitDimDef(DimDef *p) {} //abstract class
-
-void ShowAbsyn::visitArrDimDef(ArrDimDef *p) {
-    bufAppend('(');
-    bufAppend("ArrDimDef");
-    bufAppend(' ');
-    bufAppend('[');
-    if (p->expr_) p->expr_->accept(this);
-    bufAppend(']');
-    bufAppend(' ');
-    bufAppend(')');
-}
-
-void ShowAbsyn::visitListDimDef(ListDimDef *listdimdef) {
-    for (ListDimDef::const_iterator i = listdimdef->begin(); i != listdimdef->end(); ++i) {
-        (*i)->accept(this);
-        if (i != listdimdef->end() - 1) bufAppend(", ");
     }
 }
 
