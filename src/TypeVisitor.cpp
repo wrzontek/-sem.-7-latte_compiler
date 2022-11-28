@@ -104,16 +104,16 @@ public:
     void visitListExpr(ListExpr *list_expr) override {
         if (!current_call_arguments.empty()) {
             auto arguments_backup = current_call_arguments;
-            checking_args = true;
             for (ListExpr::iterator i = list_expr->begin(); i != list_expr->end(); ++i) {
                 (*i)->accept(this);
-                if (*current_type != *(arguments_backup[0]->type)) {
-                    // todo dziedzic
+
+                if (current_type->array_dims.size() != arguments_backup[0]->type->array_dims.size() ||
+                    (current_type->name != arguments_backup[0]->type->name &&
+                     !isDescendantOf(arguments_backup[0]->type->name, current_type->name, defined_classes))) {
                     throwError((*i)->line_number, (*i)->char_number, "invalid argument type");
                 }
                 arguments_backup.erase(arguments_backup.begin());
             }
-            checking_args = false;
         } else {
             for (ListExpr::iterator i = list_expr->begin(); i != list_expr->end(); ++i) {
                 (*i)->accept(this);
@@ -189,7 +189,7 @@ public:
 
     void visitEAdd(EAdd *e) override {
         visitBinaryOperation(e->expr_1, e->expr_2, e->line_number, e->char_number,
-                             std::vector < Ident > {"int", "string"}, false);
+                             e->addop_->allowed_types(), false);
     }
 
     void visitERel(ERel *e) override {
@@ -212,7 +212,6 @@ public:
     /////////////////////////////////////////////////////////////
 
     CFun *current_method = nullptr;
-    bool checking_args = false;
 
     void visitEComplex(EComplex *e_complex) override {
         e_complex->complexstart_->accept(this);
@@ -222,14 +221,14 @@ public:
                 if (!isBasicType(new_object_type))
                     current_type = new CType(new_object_type, std::vector<int>());
                 else
-                    throwError(e_complex->line_number, e_complex->char_number, "can't 'new' basic non-array type");
+                    throwError(e_complex->line_number, e_complex->char_number, "1can't 'new' basic non-array type");
                 new_object_type = "";
             }
         } else {
             e_complex->listcomplexpart_->accept(this);
         }
 
-        if (current_method != nullptr && !checking_args)
+        if (current_method != nullptr)
             throwError(e_complex->line_number, e_complex->char_number, "method member accessed without calling");
         if (is_accessing_member)
             throwError(e_complex->line_number, e_complex->char_number, "invalid syntax, can't end with '.'");
@@ -358,14 +357,17 @@ public:
     }
 
     void visitArrElement(ArrElement *p) override {
-        if (current_method != nullptr && !checking_args)
+        if (current_method != nullptr)
             throwError(p->line_number, p->char_number, "method member accessed without calling");
 
         if (is_accessing_member)
             throwError(p->line_number, p->char_number, "invalid member access");
 
         auto array_type = current_type;
+        auto new_object_type_backup = new_object_type;
+        new_object_type = "";
         p->listdimdef_->accept(this); // make sure sizes are ints
+        new_object_type = new_object_type_backup;
         if (!new_object_type.empty()) { // initializing array
             if (p->listdimdef_->size() > 1) {
                 throwError(p->line_number, p->char_number, "multi dimensional arrays are not supported");
@@ -373,7 +375,6 @@ public:
             current_type = new CType(new_object_type, std::vector<int>(p->listdimdef_->size(), -1));
             new_object_type = "";
         } else { // accessing array
-            std::cout << "AAAAAAAAAAAAAAAAAAa\n";
             if (array_type->array_dims.empty())
                 throwError(p->line_number, p->char_number, "attempted array element access on non-array");
 
@@ -398,7 +399,7 @@ public:
             if (!isBasicType(new_object_type))
                 current_type = new CType(new_object_type, std::vector<int>());
             else
-                throwError(p->line_number, p->char_number, "can't 'new' basic non-array type");
+                throwError(p->line_number, p->char_number, "2can't 'new' basic non-array type");
             new_object_type = "";
         } // raczej nigdy sie nie stanie
 
@@ -418,14 +419,14 @@ public:
     }
 
     void visitVariable(Variable *p) override { // a.b also, we are in b
-        if (current_method != nullptr && !checking_args)
+        if (current_method != nullptr)
             throwError(p->line_number, p->char_number, "method member accessed without calling");
 
         if (!new_object_type.empty()) {
             if (!isBasicType(new_object_type))
                 current_type = new CType(new_object_type, std::vector<int>());
             else
-                throwError(p->line_number, p->char_number, "can't 'new' basic non-array type");
+                throwError(p->line_number, p->char_number, "3can't 'new' basic non-array type");
             new_object_type = "";
         }
 
@@ -478,14 +479,14 @@ public:
     }
 
     void visitMemberAccess(MemberAccess *p) override {
-        if (current_method != nullptr && !checking_args)
+        if (current_method != nullptr)
             throwError(p->line_number, p->char_number, "method member accessed without calling");
 
         if (!new_object_type.empty()) {
             if (!isBasicType(new_object_type))
                 current_type = new CType(new_object_type, std::vector<int>());
             else
-                throwError(p->line_number, p->char_number, "can't 'new' basic non-array type");
+                throwError(p->line_number, p->char_number, "4can't 'new' basic non-array type");
             new_object_type = "";
         }
 

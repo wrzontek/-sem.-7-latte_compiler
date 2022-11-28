@@ -9,8 +9,8 @@
 
 class Function_Body_Visitor : public Skeleton {
 public:
-    std::vector<CClass *> &defined_classes; // todo tego nie zmienia
-    std::vector<CFun *> &defined_global_functions; // tego nie zmienia
+    std::vector<CClass *> &defined_classes;
+    std::vector<CFun *> &defined_global_functions;
 
     std::vector<CVar *> defined_variables;
     std::map<Ident, int> variable_to_depth;
@@ -20,9 +20,7 @@ public:
     CClass *current_class;
     CType *current_type;
 
-    int paths;
-    int returning_paths;
-    bool current_path_already_returned;
+    bool always_returning;
 
     explicit Function_Body_Visitor(std::vector<CFun *> &defined_global_functions,
                                    std::vector<CClass *> &defined_classes)
@@ -43,7 +41,7 @@ public:
                 break;
             }
         }
-        if (current_function == nullptr) exit(1); // should never happen
+        if (current_function == nullptr) myExit(16); // should never happen
     }
 
     void findMethod(Ident name) {
@@ -53,7 +51,7 @@ public:
                 break;
             }
         }
-        if (current_function == nullptr) exit(1); // should never happen
+        if (current_function == nullptr) myExit(17); // should never happen
     }
 
     void findClass(Ident name) {
@@ -63,7 +61,7 @@ public:
                 break;
             }
         }
-        if (current_class == nullptr) exit(1); // should never happen
+        if (current_class == nullptr) myExit(18); // should never happen
     }
 
     void visitClassDef(ClassDef *class_def) override {
@@ -82,7 +80,7 @@ public:
 
     void visitMethodMember(MethodMember *method) override {
         current_function = nullptr;
-        findFun(method->ident_);
+        findMethod(method->ident_);
 
         current_depth = -1; // to make first block depth 0
         defined_variables.clear();
@@ -102,13 +100,10 @@ public:
         for (auto var: defined_variables) {
             variable_to_depth[var->name] = 0;
         }
-
-        paths = 1;
-        returning_paths = 0;
-        current_path_already_returned = false;
+        always_returning = false;
 
         method->block_->accept(this);
-        if (current_function->return_type->name != "void" && paths != returning_paths) {
+        if (current_function->return_type->name != "void" && !always_returning) {
             throwError(method->line_number, method->char_number,
                        "method \"" + current_function->name + "\" can end without returning a value");
         }
@@ -127,12 +122,10 @@ public:
             variable_to_depth[var->name] = 0;
         }
 
-        paths = 1;
-        returning_paths = 0;
-        current_path_already_returned = false;
+        always_returning = false;
 
         fn_def->block_->accept(this);
-        if (current_function->return_type->name != "void" && paths != returning_paths) {
+        if (current_function->return_type->name != "void" && !always_returning) {
             throwError(fn_def->line_number, fn_def->char_number,
                        "function \"" + current_function->name + "\" can end without returning a value");
         }
@@ -160,7 +153,6 @@ public:
     void visitListStmt(ListStmt *list_stmt) override {
         for (ListStmt::iterator stmt = list_stmt->begin(); stmt != list_stmt->end(); ++stmt) {
             (*stmt)->accept(this);
-            if (paths == returning_paths) current_path_already_returned = true;
         }
     }
 
@@ -198,10 +190,13 @@ public:
         defineOrRedefineVariable(init->ident_, init->line_number, init->char_number);
 
         auto typeVisitor = new Type_Visitor(defined_classes, defined_variables, defined_global_functions);
+        auto expr_type = typeVisitor->getExprType(init->expr_);
 
-        if (*current_type != *(typeVisitor->getExprType(init->expr_))) {
+        if (current_type->array_dims.size() != expr_type->array_dims.size() ||
+            (current_type->name != expr_type->name &&
+             !isDescendantOf(current_type->name, expr_type->name, defined_classes))) {
             delete (typeVisitor);
-            // todo może być dziedzicem
+
             throwError(init->line_number, init->char_number,
                        "initialization expression of different type than declared");
         }
@@ -213,8 +208,9 @@ public:
 
         auto type_1 = typeVisitor->getExprType(stmt->expr_1);
         auto type_2 = typeVisitor->getExprType(stmt->expr_2);
-        if (*type_1 != *type_2) {
-            // todo dziedzic?
+
+        if (type_1->array_dims.size() != type_2->array_dims.size() ||
+            (type_1->name != type_2->name && !isDescendantOf(type_1->name, type_2->name, defined_classes))) {
             delete (typeVisitor);
             throwError(stmt->line_number, stmt->char_number,
                        "assignment expression of different type than variable");
@@ -255,22 +251,24 @@ public:
         if (current_function->return_type->name != "void")
             throwError(stmt->line_number, stmt->char_number, "invalid return type");
 
-        current_path_already_returned = true;
-        returning_paths++;
+        always_returning = true;
     }
 
     void visitRet(Ret *stmt) override {
         auto typeVisitor = new Type_Visitor(defined_classes, defined_variables, defined_global_functions);
         auto type = typeVisitor->getExprType(stmt->expr_);
-        if (*type != *current_function->return_type) {
-            // todo dziedzic
+
+        if (type->array_dims.size() != current_function->return_type->array_dims.size() ||
+            (type->name != current_function->return_type->name &&
+             !isDescendantOf(current_function->return_type->name, type->name, defined_classes))) {
             delete (typeVisitor);
+
             throwError(stmt->line_number, stmt->char_number, "invalid return type");
         }
+
         delete (typeVisitor);
 
-        current_path_already_returned = true;
-        returning_paths++;
+        always_returning = true;
     }
 
     void visitWhile(While *stmt) override {
@@ -282,7 +280,12 @@ public:
         }
         delete (typeVisitor);
 
+        bool always_returning_backup = always_returning;
         stmt->stmt_->accept(this);
+        bool if_true_always_returning = always_returning;
+
+        always_returning = always_returning_backup ||
+                           (if_true_always_returning && stmt->expr_->isAlwaysTrue());
     }
 
 
@@ -313,7 +316,42 @@ public:
         variable_to_depth = backup_variable_depth_map;
     }
 
+    void visitCond(Cond *stmt) override {
+        auto typeVisitor = new Type_Visitor(defined_classes, defined_variables, defined_global_functions);
+        auto type = typeVisitor->getExprType(stmt->expr_);
+        if (type->name != "boolean" || !type->array_dims.empty()) {
+            delete (typeVisitor);
+            throwError(stmt->line_number, stmt->char_number, "condition must be boolean");
+        }
+        delete (typeVisitor);
 
-    // todo Cond, CondElse
+        bool always_returning_backup = always_returning;
+        stmt->stmt_->accept(this);
+        bool if_true_always_returning = always_returning;
 
+        always_returning = always_returning_backup ||
+                           (if_true_always_returning && stmt->expr_->isAlwaysTrue());
+    }
+
+    void visitCondElse(CondElse *stmt) override {
+        auto typeVisitor = new Type_Visitor(defined_classes, defined_variables, defined_global_functions);
+        auto type = typeVisitor->getExprType(stmt->expr_);
+        if (type->name != "boolean" || !type->array_dims.empty()) {
+            delete (typeVisitor);
+            throwError(stmt->line_number, stmt->char_number, "condition must be boolean");
+        }
+        delete (typeVisitor);
+
+        bool always_returning_backup = always_returning;
+        stmt->stmt_1->accept(this);
+        bool if_true_always_returning = always_returning;
+
+        stmt->stmt_2->accept(this);
+        bool if_false_always_returning = always_returning;
+
+        always_returning = always_returning_backup ||
+                           (if_true_always_returning && if_false_always_returning) ||
+                           (if_true_always_returning && stmt->expr_->isAlwaysTrue()) ||
+                           (if_false_always_returning && stmt->expr_->isAlwaysFalse());
+    }
 };

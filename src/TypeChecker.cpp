@@ -22,13 +22,13 @@ private:
 
     void checkNoIllegalExtend() {
         for (auto def: defined_classes) {
-            if (!def->parent.empty()) {
+            if (!def->parent_name.empty()) {
                 bool parent_defined = false;
                 for (auto def2: defined_classes) {
-                    if (def->parent == def2->name) parent_defined = true;
+                    if (def->parent_name == def2->name) parent_defined = true;
                 }
                 if (!parent_defined)
-                    throwError("class " + def->name + " extends undefined class " + def->parent);
+                    throwError("class " + def->name + " extends undefined class " + def->parent_name);
             }
         }
     }

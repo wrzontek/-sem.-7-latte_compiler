@@ -555,6 +555,10 @@ class Expr : public Visitable {
 public:
     virtual Expr *clone() const = 0;
 
+    virtual bool isAlwaysTrue() { return false; }
+
+    virtual bool isAlwaysFalse() { return false; }
+
     int line_number;
     int char_number;
 };
@@ -562,6 +566,8 @@ public:
 class AddOp : public Visitable {
 public:
     virtual AddOp *clone() const = 0;
+
+    virtual std::vector <Ident> allowed_types() const = 0;
 
     int line_number;
     int char_number;
@@ -1559,6 +1565,10 @@ public:
 class ELitTrue : public Expr {
 public:
 
+    bool isAlwaysTrue() override {
+        return true;
+    }
+
     ELitTrue(const ELitTrue &);
 
     ELitTrue &operator=(const ELitTrue &);
@@ -1577,6 +1587,10 @@ public:
 class ELitFalse : public Expr {
 public:
 
+    bool isAlwaysFalse() override {
+        return true;
+    }
+
     ELitFalse(const ELitFalse &);
 
     ELitFalse &operator=(const ELitFalse &);
@@ -1588,6 +1602,7 @@ public:
     virtual void accept(Visitor *v);
 
     virtual ELitFalse *clone() const;
+
 
     void swap(ELitFalse &);
 };
@@ -1755,6 +1770,13 @@ public:
 class Plus : public AddOp {
 public:
 
+    virtual std::vector <Ident> allowed_types() const {
+        auto v = std::vector<Ident>();
+        v.push_back("int");
+        v.push_back("string");
+        return v;
+    };
+
     Plus(const Plus &);
 
     Plus &operator=(const Plus &);
@@ -1772,6 +1794,12 @@ public:
 
 class Minus : public AddOp {
 public:
+
+    virtual std::vector <Ident> allowed_types() const {
+        auto v = std::vector<Ident>();
+        v.push_back("int");
+        return v;
+    };
 
     Minus(const Minus &);
 
@@ -1996,6 +2024,8 @@ public:
     virtual void accept(Visitor *v);
 
     virtual ListClassMember *clone() const;
+
+    virtual ~ListClassMember();
 };
 
 ListClassMember *consListClassMember(ClassMember *x, ListClassMember *xs);
@@ -2005,6 +2035,8 @@ public:
     virtual void accept(Visitor *v);
 
     virtual ListTopDef *clone() const;
+
+    virtual ~ListTopDef();
 };
 
 ListTopDef *consListTopDef(TopDef *x, ListTopDef *xs);
@@ -2014,6 +2046,8 @@ public:
     virtual void accept(Visitor *v);
 
     virtual ListArg *clone() const;
+
+    virtual ~ListArg();
 };
 
 ListArg *consListArg(Arg *x, ListArg *xs);
@@ -2023,6 +2057,8 @@ public:
     virtual void accept(Visitor *v);
 
     virtual ListStmt *clone() const;
+
+    virtual ~ListStmt();
 };
 
 ListStmt *consListStmt(Stmt *x, ListStmt *xs);
@@ -2032,6 +2068,8 @@ public:
     virtual void accept(Visitor *v);
 
     virtual ListItem *clone() const;
+
+    virtual ~ListItem();
 };
 
 ListItem *consListItem(Item *x, ListItem *xs);
@@ -2041,6 +2079,8 @@ public:
     virtual void accept(Visitor *v);
 
     virtual ListArrDimType *clone() const;
+
+    virtual ~ListArrDimType();
 };
 
 ListArrDimType *consListArrDimType(ArrDimType *x, ListArrDimType *xs);
@@ -2050,6 +2090,8 @@ public:
     virtual void accept(Visitor *v);
 
     virtual ListType *clone() const;
+
+    virtual ~ListType();
 };
 
 ListType *consListType(Type *x, ListType *xs);
@@ -2059,6 +2101,8 @@ public:
     virtual void accept(Visitor *v);
 
     virtual ListDimDef *clone() const;
+
+    virtual ~ListDimDef();
 };
 
 ListDimDef *consListDimDef(DimDef *x, ListDimDef *xs);
@@ -2068,6 +2112,8 @@ public:
     virtual void accept(Visitor *v);
 
     virtual ListComplexPart *clone() const;
+
+    virtual ~ListComplexPart();
 };
 
 ListComplexPart *consListComplexPart(ComplexPart *x, ListComplexPart *xs);
@@ -2077,6 +2123,8 @@ public:
     virtual void accept(Visitor *v);
 
     virtual ListExpr *clone() const;
+
+    virtual ~ListExpr();
 };
 
 ListExpr *consListExpr(Expr *x, ListExpr *xs);

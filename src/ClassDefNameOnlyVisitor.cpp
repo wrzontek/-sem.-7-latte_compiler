@@ -16,8 +16,8 @@ public:
                                          std::vector<ClassExtendDef *> &class_extend_defs)
             : defined_classes(defined_classes), class_defs(class_defs), class_extend_defs(class_extend_defs) {}
 
-    void classVisit(Ident name, Ident parent, int line_number, int char_number) {
-        if (name == parent) {
+    void classVisit(Ident name, Ident parent_name, int line_number, int char_number) {
+        if (name == parent_name) {
             throwError(line_number, char_number, "class tries to extend itself");
         }
 
@@ -27,7 +27,7 @@ public:
             }
         }
 
-        defined_classes.push_back(new CClass(name, parent, std::vector<CVar *>(), std::vector<CFun *>()));
+        defined_classes.push_back(new CClass(name, parent_name, nullptr, std::vector<CVar *>(), std::vector<CFun *>()));
     }
 
     void visitClassDef(ClassDef *class_def) override {

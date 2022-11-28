@@ -19,7 +19,6 @@ public:
 
     CClass *current_class = nullptr;
     CType *current_type = nullptr;
-    CClass *parent_class = nullptr;
 
     explicit Class_Def_Visitor(std::vector<CFun *> &defined_functions, std::vector<CClass *> &defined_classes,
                                std::set <Ident> &defined_class_idents)
@@ -31,14 +30,13 @@ public:
 
     void visitClassDef(ClassDef *class_def) override {
         current_class = nullptr;
-        parent_class = nullptr;
         for (auto def: defined_classes) {
             if (def->name == class_def->ident_) {
                 current_class = def;
                 break;
             }
         }
-        if (current_class == nullptr) { exit(1); /*should never happen */}
+        if (current_class == nullptr) { myExit(11); /*should never happen */}
 
         // adding "self" attribute of type <class>
         current_class->attributes.push_back(new CVar(
@@ -57,16 +55,15 @@ public:
                 break;
             }
         }
-        if (current_class == nullptr) { exit(1); /*should never happen */}
+        if (current_class == nullptr) { myExit(12); /*should never happen */}
 
-        parent_class = nullptr;
         for (auto def: defined_classes) {
             if (def->name == class_def->ident_2) {
-                parent_class = def;
+                current_class->parent = def;
                 break;
             }
         }
-        if (parent_class == nullptr) { exit(1); /*should never happen */}
+        if (current_class->parent == nullptr) { myExit(13); /*should never happen */}
 
         // adding "self" attribute of type <class>
         current_class->attributes.push_back(new CVar(
@@ -76,8 +73,8 @@ public:
         already_redefined_attributes.clear();
         already_redefined_methods.clear();
 
-        for (auto met: parent_class->methods) { current_class->methods.push_back(met); }
-        for (auto attr: parent_class->attributes) {
+        for (auto met: current_class->parent->methods) { current_class->methods.push_back(met); }
+        for (auto attr: current_class->parent->attributes) {
             if (attr->name != "self") current_class->attributes.push_back(attr);
         }
 
@@ -104,11 +101,11 @@ public:
         for (int i = 0; i < current_class->attributes.size(); i++) {
             auto attribute = current_class->attributes.at(i);
             if (attribute->name == name) {
-                if (parent_class == nullptr)
+                if (current_class->parent == nullptr)
                     throwError(line_number, char_number, "redefinition of attribute");
 
                 bool ok = false;
-                for (auto parent_attribute: parent_class->attributes) {
+                for (auto parent_attribute: current_class->parent->attributes) {
                     if (parent_attribute->name == name &&
                         already_redefined_attributes.find(name) == already_redefined_attributes.end()) {
                         already_redefined_attributes.insert(name);
@@ -138,7 +135,8 @@ public:
     ////////////////////////////////
 
     void visitMethodMember(MethodMember *method_member) override {
-        auto method_def_visitor = new Function_Def_Visitor(current_class->methods, defined_classes, parent_class,
+        auto method_def_visitor = new Function_Def_Visitor(current_class->methods, defined_classes,
+                                                           current_class->parent,
                                                            &already_redefined_methods);
         method_member->accept(method_def_visitor);
         current_class->methods = method_def_visitor->defined_functions;
@@ -156,7 +154,6 @@ public:
 
     CClass *current_class = nullptr;
     CType *current_type = nullptr;
-    CClass *parent_class = nullptr;
 
     explicit Class_Def_Init_Visitor(std::vector<CFun *> &defined_functions,
                                     std::vector<CClass *> &defined_classes,
@@ -168,7 +165,6 @@ public:
     void visitFnDef(FnDef *fn_def) override {}; // dont visit global functions
 
     void visitClassDef(ClassDef *class_def) override {
-        parent_class = nullptr;
         current_class = nullptr;
         for (auto def: defined_classes) {
             if (def->name == class_def->ident_) {
@@ -176,7 +172,7 @@ public:
                 break;
             }
         }
-        if (current_class == nullptr) { exit(1); /*should never happen */}
+        if (current_class == nullptr) { myExit(14); /*should never happen */}
         // adding "self" attribute of type <class>
         current_class->attributes.push_back(new CVar(
                 "self",
@@ -195,26 +191,7 @@ public:
                 break;
             }
         }
-        if (current_class == nullptr) { exit(1); /*should never happen */}
-
-        parent_class = nullptr;
-        for (auto def: defined_classes) {
-            if (def->name == class_def->ident_2) {
-                parent_class = def;
-                break;
-            }
-        }
-        if (parent_class == nullptr) { exit(1); /*should never happen */}
-
-        // adding "self" attribute of type <class>
-        current_class->attributes.push_back(new CVar(
-                "self",
-                new CType(current_class->name, std::vector<int>())));
-
-        for (auto met: parent_class->methods) { current_class->methods.push_back(met); }
-        for (auto attr: parent_class->attributes) {
-            if (attr->name != "self") current_class->attributes.push_back(attr);
-        }
+        if (current_class == nullptr) { myExit(15); /*should never happen */}
 
         class_def->listclassmember_->accept(this);
 
@@ -234,17 +211,19 @@ public:
 
     void visitInit(Init *init) override {
         typeVisitor = new Type_Visitor(defined_classes, current_class->attributes, defined_functions);
+        auto expr_type = typeVisitor->getExprType(init->expr_);
 
-        if (*current_type != *(typeVisitor->getExprType(init->expr_))) {
-            // todo może być dziedzicem
+        if (current_type->array_dims.size() != expr_type->array_dims.size() ||
+            (current_type->name != expr_type->name &&
+             !isDescendantOf(current_type->name, expr_type->name, defined_classes))) {
             delete (typeVisitor);
-
 
             throwError(init->line_number, init->char_number,
                        "initialization expression of different type than declared");
         }
         delete (typeVisitor);
     }
+
 };
 
 

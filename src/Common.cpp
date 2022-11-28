@@ -63,14 +63,42 @@ struct CFun {
 };
 
 struct CClass {
-    explicit CClass(Ident name, Ident parent, std::vector<CVar *> attributes, std::vector<CFun *> methods)
+    explicit CClass(Ident name, Ident parent_name, CClass *parent, std::vector<CVar *> attributes,
+                    std::vector<CFun *> methods)
             : name(name),
+              parent_name(parent_name),
               parent(parent),
               attributes(attributes),
               methods(methods) {}
 
     Ident name;
-    Ident parent;
+    Ident parent_name;
+    CClass *parent;
     std::vector<CVar *> attributes;
     std::vector<CFun *> methods;
 };
+
+void myExit(int a) {
+//    std::cerr << "EXIT: " + std::to_string(a) << std::endl;
+    exit(1);
+}
+
+bool isDescendantOf(Ident target_class, Ident potential_descendant, std::vector<CClass *> const &classes) {
+    if (!isBasicType(potential_descendant)) {
+        CClass *cclass = nullptr;
+        for (auto def: classes) {
+            if (def->name == potential_descendant) {
+                cclass = def;
+                break;
+            }
+        }
+        if (cclass == nullptr) myExit(10);
+
+        while (cclass->parent != nullptr) {
+            if (cclass->parent->name == target_class)
+                return true;
+            cclass = cclass->parent;
+        }
+    }
+    return false;
+}

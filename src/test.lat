@@ -1,57 +1,26 @@
 //class A {
-//    int []arr = (new int[1]);
-//    A a;
-////    B b;
-////
-//    int x = f(1, "a");
-////    int attr;
+//    int f(int a) { return 1; }
+//    int x = 4;
+//}
 //
-////    int length;
-//    int f(int a, string b) { return 123; }
-////
-////    int []arr;
-////    A []arr2;
-////
-//////    int y = arr[x];
-////
-////    int x = a.length;
+//class B extends A {
+//    int x = 16; //  legalne
+//    int f(int a) { return 2; } // na pewno legalne
+//}
+//
+//class D extends B {}
+//
+//class C {
+//    B b;
+//    D d;
+//    A a = b;
+//    A a1 = d;
 //}
 
-//int f(int a) {
-//    {
-//        string a;
-//    }
-//    return 1;
+//B g() {
+//    D d;
+//    return d;
 //}
-//// call bez self - funkcja globalna, z self - metoda
-//
-//class D extends C {
-//    int i = self.f(5);
-//    int []arrr;
-//    int ele = arrr[7];
-//}
-//
-//class C extends A {
-//    int f(int a) { return 2; }
-//    int x = self.y;
-//    A a;
-//    boolean b = a == (A) null;
-//}
-//
-class A {
-    int f(int a) { return 1; }
-    int x = 4;
-}
-
-class B extends A {
-    int x = 16; // todo legalne
-    int f(int a) { return 2; } // na pewno legalne
-}
-
-class C {
-    B b;
-    A a = b;
-}
 //
 //class B {
 //    A a;
@@ -65,12 +34,18 @@ class C {
 
 int f(int a) { return 1; }
 
+class A {
+    int []a;
+    int [] res = new int [a . length];
+    int f(int a, int b) {return 2; }
+}
 
 int main() {
-    A a;
-    int x = f(f(1)); // todo sprawdzić podobne dla metod
-    int y = a.f(a.f(1));
-    return 1;
+//    int []a;
+//    int [] res = new int [a . length];
+    A a = new A;
+    int x = a.f(f(1), f(2));
+    return a.f(f(a.f(a.f(f(1), f(2)), a.f(f(1), f(2)))), 5);
 //    return (a);
 //    Class[] a;
 //    Inst[1];

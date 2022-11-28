@@ -2586,6 +2586,12 @@ NE *NE::clone() const {
 
 /********************   ListClassMember    ********************/
 
+ListClassMember::~ListClassMember() {
+    for (auto i = this->begin(); i != this->end(); ++i) {
+        delete (*i);
+    }
+}
+
 void ListClassMember::accept(Visitor *v) {
     v->visitListClassMember(this);
 }
@@ -2601,6 +2607,12 @@ ListClassMember *consListClassMember(ClassMember *x, ListClassMember *xs) {
 
 
 /********************   ListTopDef    ********************/
+
+ListTopDef::~ListTopDef() {
+    for (auto i = this->begin(); i != this->end(); ++i) {
+        delete (*i);
+    }
+}
 
 void ListTopDef::accept(Visitor *v) {
     v->visitListTopDef(this);
@@ -2618,6 +2630,12 @@ ListTopDef *consListTopDef(TopDef *x, ListTopDef *xs) {
 
 /********************   ListArg    ********************/
 
+ListArg::~ListArg() {
+    for (auto i = this->begin(); i != this->end(); ++i) {
+        delete (*i);
+    }
+}
+
 void ListArg::accept(Visitor *v) {
     v->visitListArg(this);
 }
@@ -2633,6 +2651,12 @@ ListArg *consListArg(Arg *x, ListArg *xs) {
 
 
 /********************   ListStmt    ********************/
+
+ListStmt::~ListStmt() {
+    for (auto i = this->begin(); i != this->end(); ++i) {
+        delete (*i);
+    }
+}
 
 void ListStmt::accept(Visitor *v) {
     v->visitListStmt(this);
@@ -2650,6 +2674,12 @@ ListStmt *consListStmt(Stmt *x, ListStmt *xs) {
 
 /********************   ListItem    ********************/
 
+ListItem::~ListItem() {
+    for (auto i = this->begin(); i != this->end(); ++i) {
+        delete (*i);
+    }
+}
+
 void ListItem::accept(Visitor *v) {
     v->visitListItem(this);
 }
@@ -2665,6 +2695,12 @@ ListItem *consListItem(Item *x, ListItem *xs) {
 
 
 /********************   ListArrDimType    ********************/
+
+ListArrDimType::~ListArrDimType() {
+    for (auto i = this->begin(); i != this->end(); ++i) {
+        delete (*i);
+    }
+}
 
 void ListArrDimType::accept(Visitor *v) {
     v->visitListArrDimType(this);
@@ -2682,6 +2718,12 @@ ListArrDimType *consListArrDimType(ArrDimType *x, ListArrDimType *xs) {
 
 /********************   ListType    ********************/
 
+ListType::~ListType() {
+    for (auto i = this->begin(); i != this->end(); ++i) {
+        delete (*i);
+    }
+}
+
 void ListType::accept(Visitor *v) {
     v->visitListType(this);
 }
@@ -2697,6 +2739,12 @@ ListType *consListType(Type *x, ListType *xs) {
 
 
 /********************   ListDimDef    ********************/
+
+ListDimDef::~ListDimDef() {
+    for (auto i = this->begin(); i != this->end(); ++i) {
+        delete (*i);
+    }
+}
 
 void ListDimDef::accept(Visitor *v) {
     v->visitListDimDef(this);
@@ -2714,6 +2762,12 @@ ListDimDef *consListDimDef(DimDef *x, ListDimDef *xs) {
 
 /********************   ListComplexPart    ********************/
 
+ListComplexPart::~ListComplexPart() {
+    for (auto i = this->begin(); i != this->end(); ++i) {
+        delete (*i);
+    }
+}
+
 void ListComplexPart::accept(Visitor *v) {
     v->visitListComplexPart(this);
 }
@@ -2729,6 +2783,12 @@ ListComplexPart *consListComplexPart(ComplexPart *x, ListComplexPart *xs) {
 
 
 /********************   ListExpr    ********************/
+
+ListExpr::~ListExpr() {
+    for (auto i = this->begin(); i != this->end(); ++i) {
+        delete (*i);
+    }
+}
 
 void ListExpr::accept(Visitor *v) {
     v->visitListExpr(this);
