@@ -1,0 +1,9 @@
+#bin/bash
+
+if [ "$#" -ne 1 ]; then
+    echo "Illegal number of arguments - please use 1 argument"
+fi
+
+./src/Main -s $1
+
+

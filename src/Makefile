@@ -7,7 +7,7 @@ FLEX=flex
 FLEX_OPTS=-Platte_
 
 BISON=bison
-BISON_OPTS=-t -platte_ -v
+BISON_OPTS=-t -platte_
 
 OBJS=Absyn.o Buffer.o Lexer.o Parser.o Printer.o
 
