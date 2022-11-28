@@ -12,12 +12,16 @@ public:
 
     std::vector<CFun *> &defined_functions; // global + class methods
     std::vector<CClass *> &defined_classes;
+    std::set <Ident> &defined_class_idents;
+
 
     CClass *current_class = nullptr;
     CType *current_type = nullptr;
 
-    explicit Class_Def_Visitor(std::vector<CFun *> &defined_functions, std::vector<CClass *> &defined_classes)
-            : defined_functions(defined_functions), defined_classes(defined_classes) {
+    explicit Class_Def_Visitor(std::vector<CFun *> &defined_functions, std::vector<CClass *> &defined_classes,
+                               std::set <Ident> &defined_class_idents)
+            : defined_functions(defined_functions), defined_classes(defined_classes),
+              defined_class_idents(defined_class_idents) {
     }
 
     void visitFnDef(FnDef *fn_def) override {}; // dont visit global functions
@@ -32,9 +36,13 @@ public:
         }
         if (current_class == nullptr) { exit(1); /*should never happen */}
 
+        // adding "self" attribute of type <class>
+        current_class->attributes.push_back(new CVar(
+                "self",
+                new CType(current_class->name, std::vector<int>())));
         class_def->listclassmember_->accept(this);
 
-        current_class->visited = true;
+        defined_class_idents.insert(current_class->name);
     };
 
     void visitClassExtendDef(ClassExtendDef *class_def) override {
@@ -47,10 +55,29 @@ public:
         }
         if (current_class == nullptr) { exit(1); /*should never happen */}
 
+        CClass *parent_class = nullptr;
+        for (auto def: defined_classes) {
+            if (def->name == class_def->ident_2) {
+                parent_class = def;
+                break;
+            }
+        }
+        if (parent_class == nullptr) { exit(1); /*should never happen */}
+
+        // adding "self" attribute of type <class>
+        current_class->attributes.push_back(new CVar(
+                "self",
+                new CType(current_class->name, std::vector<int>())));
+
+        for (auto met: parent_class->methods) { current_class->methods.push_back(met); }
+        for (auto attr: parent_class->attributes) {
+            if (attr->name != "self") current_class->attributes.push_back(attr);
+        }
+
         class_def->listclassmember_->accept(this);
 
-        current_class->visited = true;
-    }; // TODO
+        defined_class_idents.insert(current_class->name);
+    };
 
     ////////////////////////////////
 
@@ -59,6 +86,10 @@ public:
 
         current_type = typeVisitor->getType(attr_member->type_);
         delete (typeVisitor);
+        if (current_type->name == "void")
+            throwError(attr_member->line_number, attr_member->char_number,
+                       "cannot declare void type attribute"); // todo same with declarations in bodies
+
         attr_member->listitem_->accept(this);
     }
 
@@ -97,13 +128,16 @@ public:
 
     std::vector<CFun *> &defined_functions;
     std::vector<CClass *> &defined_classes;
+    std::set <Ident> &defined_class_idents;
 
     CClass *current_class = nullptr;
     CType *current_type = nullptr;
 
     explicit Class_Def_Init_Visitor(std::vector<CFun *> &defined_functions,
-                                    std::vector<CClass *> &defined_classes)
-            : defined_functions(defined_functions), defined_classes(defined_classes) {
+                                    std::vector<CClass *> &defined_classes,
+                                    std::set <Ident> &defined_class_idents)
+            : defined_functions(defined_functions), defined_classes(defined_classes),
+              defined_class_idents(defined_class_idents) {
     }
 
     void visitFnDef(FnDef *fn_def) override {}; // dont visit global functions
@@ -117,11 +151,49 @@ public:
             }
         }
         if (current_class == nullptr) { exit(1); /*should never happen */}
+        // adding "self" attribute of type <class>
+        current_class->attributes.push_back(new CVar(
+                "self",
+                new CType(current_class->name, std::vector<int>())));
 
         class_def->listclassmember_->accept(this);
+
+        defined_class_idents.insert(current_class->name);
     };
 
-    void visitClassExtendDef(ClassExtendDef *class_def) override {}; // TODO
+    void visitClassExtendDef(ClassExtendDef *class_def) override {
+        current_class = nullptr;
+        for (auto def: defined_classes) {
+            if (def->name == class_def->ident_1) {
+                current_class = def;
+                break;
+            }
+        }
+        if (current_class == nullptr) { exit(1); /*should never happen */}
+
+        CClass *parent_class = nullptr;
+        for (auto def: defined_classes) {
+            if (def->name == class_def->ident_2) {
+                parent_class = def;
+                break;
+            }
+        }
+        if (parent_class == nullptr) { exit(1); /*should never happen */}
+
+        // adding "self" attribute of type <class>
+        current_class->attributes.push_back(new CVar(
+                "self",
+                new CType(current_class->name, std::vector<int>())));
+
+        for (auto met: parent_class->methods) { current_class->methods.push_back(met); }
+        for (auto attr: parent_class->attributes) {
+            if (attr->name != "self") current_class->attributes.push_back(attr);
+        }
+
+        class_def->listclassmember_->accept(this);
+
+        defined_class_idents.insert(current_class->name);
+    };
 
     void visitMethodMember(MethodMember *method_member) override {}; // don't visit
 

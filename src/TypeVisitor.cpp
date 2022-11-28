@@ -7,12 +7,12 @@
 
 class Type_Visitor : public Skeleton {
 public:
-    std::vector<CClass *> defined_classes;
+    std::vector<CClass *> defined_classes; // todo te defined rzeczy mógłby dostawać referencje bo i tak ich nie zmienia
     std::vector<CVar *> defined_variables;
     std::vector<CFun *> defined_global_functions;
+
     CType *current_type = nullptr;
     std::vector<CVar *> current_call_arguments = std::vector<CVar *>();
-
     Ident new_object_type;
     bool is_accessing_member = false;
 
@@ -157,12 +157,17 @@ public:
                 break;
             }
         }
+        if (!is_valid_type && !isBasicType(e1_type)) { // e1_type is an object of a class
+            for (auto valid_type: valid_types)
+                if (valid_type == "<CLASS>") is_valid_type = true;
+        }
+
         if (!is_valid_type)
             throwError(line_number, char_number, "binary operation on invalid types");
 
         e2->accept(this);
         if (current_type->name != e1_type)
-            throwError(line_number, char_number, "binary operation on invalid types");
+            throwError(line_number, char_number, "binary operation on non-matching types");
 
         current_type = new CType(
                 is_rel ? "boolean" : e1_type,
@@ -245,7 +250,6 @@ public:
     }
 
     void visitCMember(CMember *c) override { // a.b
-        // TODO SPECIAL CASE: a == self, przekazać klasę w parametrach Type_Visitor czy coś
         CType *atype = find_var(c->ident_1, c->line_number, c->char_number);
         if (isBasicType(atype->name)) {
             if (atype->array_dims.empty()) // not an array

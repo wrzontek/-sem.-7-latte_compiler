@@ -33,8 +33,8 @@ struct CType {
 };
 
 inline bool operator==(const CType &lhs, const CType &rhs) {
-    std::cout << lhs.name << " " << lhs.array_dims.size() << std::endl;
-    std::cout << rhs.name << " " << rhs.array_dims.size() << std::endl;
+//    std::cout << lhs.name << " " << lhs.array_dims.size() << std::endl;
+//    std::cout << rhs.name << " " << rhs.array_dims.size() << std::endl;
 
     return lhs.name == rhs.name && lhs.array_dims == rhs.array_dims;
 }
@@ -64,8 +64,6 @@ struct CClass {
               parent(parent),
               attributes(attributes),
               methods(methods) {}
-
-    bool visited = false; // for ordering visits, parents then children
 
     Ident name;
     Ident parent;

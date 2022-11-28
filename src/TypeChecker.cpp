@@ -7,12 +7,14 @@
 #include "ClassDefNameOnlyVisitor.cpp"
 #include "ClassDefVisitor.cpp"
 #include "TypeVisitor.cpp"
+#include "FunctionBodyVisitor.cpp"
 
 class TypeChecker {
 private:
     Program *program;
     std::vector<CFun *> defined_functions;
     std::vector<CClass *> defined_classes;
+    std::set<Ident> defined_class_idents;
 
     // for ordering the visits, first the parents then the children
     std::vector<ClassDef *> class_defs;
@@ -83,19 +85,48 @@ public:
         program->accept(functionDefVisitor); // check duplicates (function names and arg names)
         checkMain();
 
-        auto classDefVisitor = new Class_Def_Visitor(defined_functions, defined_classes);
+        auto classDefVisitor = new Class_Def_Visitor(defined_functions, defined_classes, defined_class_idents);
         for (auto def: class_defs) {
             def->accept(classDefVisitor);
         }
+        int visited_class_extends_defs = 0;
+        while (visited_class_extends_defs < class_extend_defs.size()) { // A extends B
+            for (int i = 0; i < class_extend_defs.size(); i++) {
+                auto def = class_extend_defs.at(i);
+                if (defined_class_idents.find(def->ident_1)  == defined_class_idents.end()
+                    && defined_class_idents.find(def->ident_2) != defined_class_idents.end())
+                { // A isn't defined yet but B is
+                    def->accept(classDefVisitor);
+                    visited_class_extends_defs++;
+                }
+            }
+        }
 
-        auto classDefInitVisitor = new Class_Def_Init_Visitor(defined_functions, defined_classes);
+        defined_class_idents.clear();
+        auto classDefInitVisitor = new Class_Def_Init_Visitor(defined_functions, defined_classes, defined_class_idents);
         for (auto def: class_defs) {
             def->accept(classDefInitVisitor);
         }
+        visited_class_extends_defs = 0;
+        while (visited_class_extends_defs < class_extend_defs.size()) { // A extends B
+            for (int i = 0; i < class_extend_defs.size(); i++) {
+                auto def = class_extend_defs.at(i);
+                if (defined_class_idents.find(def->ident_1)  == defined_class_idents.end()
+                    && defined_class_idents.find(def->ident_2) != defined_class_idents.end())
+                { // A isn't defined yet but B is
+                    def->accept(classDefInitVisitor);
+                    visited_class_extends_defs++;
+                }
+            }
+        }
+
+        auto function_body_visitor = new Function_Body_Visitor(defined_functions, defined_classes);
+        program->accept(function_body_visitor);
 
         delete (classDefOnlyNameVisitor);
         delete (functionDefVisitor);
         delete (classDefVisitor);
         delete (classDefInitVisitor);
+        delete (function_body_visitor);
     }
 };

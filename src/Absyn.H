@@ -477,6 +477,8 @@ class Block : public Visitable {
 public:
     virtual Block *clone() const = 0;
 
+
+    bool must_return = false;
     int line_number;
     int char_number;
 };
@@ -525,14 +527,9 @@ class Type : public Visitable {
 public:
     virtual Type *clone() const { return nullptr; };
 
-    //TODO odpowiednie ustawić w dzieciach
     virtual bool canBeArg() { return true; }
 
     virtual bool canBeReturned() { return true; }
-
-    virtual bool canBeCalled() { return true; }
-
-    virtual bool canAccessMember() { return true; }
 
     int line_number;
     int char_number;
@@ -1948,6 +1945,7 @@ public:
         auto v = std::vector<Ident>();
         v.push_back("int");
         v.push_back("boolean");
+        v.push_back("<CLASS>");
         return v;
     };
 
@@ -1973,6 +1971,7 @@ public:
         auto v = std::vector<Ident>();
         v.push_back("int");
         v.push_back("boolean");
+        v.push_back("<CLASS>");
         return v;
     };
 

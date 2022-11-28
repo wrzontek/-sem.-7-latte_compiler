@@ -17,13 +17,27 @@
 ////    int x = a.length;
 //}
 
+int f(int a) {
+    {
+        string a;
+    }
+    return 1;
+}
+// call bez self - funkcja globalna, z self - metoda
 
-int f() { return 1; }
+class D extends C {
+    int i = self.f(5);
+}
 
-class C {
+class C extends A {
     int f(int a) { return 2; }
+    int x = self.y;
+    A a;
+    boolean b = a == (A) null;
+}
 
-    int x = f(4);
+class A {
+    int y;
 }
 
 //
