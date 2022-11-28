@@ -13,8 +13,6 @@ public:
 
     CType *current_type = nullptr;
     std::vector<CVar *> current_call_arguments = std::vector<CVar *>();
-    Ident new_object_type;
-    bool is_accessing_member = false;
 
     explicit Type_Visitor(std::vector<CClass *> defined_classes, std::vector<CVar *> defined_variables,
                           std::vector<CFun *> defined_global_functions)
@@ -210,23 +208,10 @@ public:
 
     void visitEComplex(EComplex *e_complex) override {
         e_complex->complexstart_->accept(this);
-
-        if (e_complex->listcomplexpart_->empty()) {
-            if (!new_object_type.empty()) {
-                if (!isBasicType(new_object_type))
-                    current_type = new CType(new_object_type, false);
-                else
-                    throwError(e_complex->line_number, e_complex->char_number, "can't 'new' basic non-array type");
-                new_object_type = "";
-            }
-        } else {
-            e_complex->listcomplexpart_->accept(this);
-        }
+        e_complex->listcomplexpart_->accept(this);
 
         if (current_method != nullptr)
             throwError(e_complex->line_number, e_complex->char_number, "method member accessed without calling");
-        if (is_accessing_member)
-            throwError(e_complex->line_number, e_complex->char_number, "invalid syntax, can't end with '.'");
     }
 
     CType *find_var(Ident name, int line_number, int char_number) {
@@ -251,14 +236,14 @@ public:
         return nullptr;
     }
 
-    void visitCMember(CMember *c) override { // a.b
-        CType *atype = find_var(c->ident_1, c->line_number, c->char_number);
+    void memberCommon(Ident name, Ident member_name, int line_number, int char_number) {
+        CType *atype = find_var(name, line_number, char_number);
         if (isBasicType(atype->name)) {
             if (atype->is_not_array()) // not an array
-                throwError(c->line_number, c->char_number, "attempted basic type member access");
+                throwError(line_number, char_number, "attempted basic type member access");
 
-            if (c->ident_2 != "length")
-                throwError(c->line_number, c->char_number, "only member of array type is 'length'");
+            if (member_name != "length")
+                throwError(line_number, char_number, "only member of array type is 'length'");
 
             // special case - basic type array length
             current_type = new CType("int", false);
@@ -266,48 +251,63 @@ public:
         }
 
         if (!atype->is_not_array()) {
-            if (c->ident_2 == "length") {
+            if (member_name == "length") {
                 current_type = new CType("int", false);
                 return;
             }
-            throwError(c->line_number, c->char_number, "only member of array type is 'length'");
+            throwError(line_number, char_number, "only member of array type is 'length'");
         }
 
         for (auto def: defined_classes) {
             if (atype->name == def->name) { // found class "a"
                 for (auto attribute: def->attributes) {
-                    if (c->ident_2 == attribute->name) { // found attribute "b"
+                    if (member_name == attribute->name) { // found attribute "b"
                         current_type = attribute->type;
                         return;
                     }
                 }
                 for (auto method: def->methods) {
-                    if (c->ident_2 == method->name && !isBuiltInFunction(c->ident_2)) { // found method "b"
+                    if (member_name == method->name && !isBuiltInFunction(member_name)) { // found method "b"
                         current_method = method;
                         return;
                     }
                 }
 
-                throwError(c->line_number, c->char_number,
-                           "class \"" + atype->name + "\" has no member \"" + c->ident_2 + "\"");
+                throwError(line_number, char_number,
+                           "class \"" + atype->name + "\" has no member \"" + member_name + "\"");
             }
         }
-        throwError(c->line_number, c->char_number, "undefined class \"" + atype->name + "\"");
+        throwError(line_number, char_number, "undefined class \"" + atype->name + "\"");
 
     }
 
+    void visitCMember(CMember *c) override { // a.b
+        memberCommon(c->ident_1, c->ident_2, c->line_number, c->char_number);
+    }
 
-    void visitCArray(CArray *c) override { // a[1]
-        CType *atype = find_var(c->ident_, c->line_number, c->char_number);
+    void visitCMemberB(CMemberB *c) override { // (a).b
+        memberCommon(c->ident_1, c->ident_2, c->line_number, c->char_number);
+    }
+
+    void arrayCommon(Ident name, Expr *expr, int line_number, int char_number, int e_line_number, int e_char_number) {
+        CType *atype = find_var(name, line_number, char_number);
         if (atype->is_not_array())
-            throwError(c->line_number, c->char_number,
+            throwError(line_number, char_number,
                        "attempted array element access on non-array");
 
-        c->expr_->accept(this);
+        expr->accept(this);
         if (current_type->name != "int" || !current_type->is_not_array())
-            throwError(c->expr_->line_number, c->expr_->char_number, "array size must be integer");
+            throwError(e_line_number, e_char_number, "array size must be integer");
 
         current_type = new CType(atype->name, false);
+    }
+
+    void visitCArray(CArray *c) override { // a[1]
+        arrayCommon(c->ident_, c->expr_, c->line_number, c->char_number, c->expr_->line_number, c->expr_->char_number);
+    }
+
+    void visitCArrayB(CArrayB *c) override { // (a)[1]
+        arrayCommon(c->ident_, c->expr_, c->line_number, c->char_number, c->expr_->line_number, c->expr_->char_number);
     }
 
     void visitCFunction(CFunction *c) override { // function(123, "arg1", a)
@@ -323,55 +323,49 @@ public:
         current_type = fun->return_type;
     }
 
-    void visitNewObject(NewObject *c) override { // new <class> / new int[14][2] / new <class>[14][2]
+    void visitNewObject(NewObject *c) override { // new <class> / new int
+        if (!isBasicType(c->ident_)) {
+            getClass(c->ident_, c->line_number, c->line_number); // make sure class exists
+        } else {
+            throwError(c->line_number, c->char_number, "can't 'new' basic non-array type");
+        }
+
+        current_type = new CType(c->ident_, false);
+    }
+
+    void visitNewArray(NewArray *c) override { // (new <class>[1]) / (new int[1])
         auto type = getArrayType(c->arrtype_);
         if (!isBasicType(type->name)) {
             getClass(type->name, c->line_number, c->line_number); // make sure class exists
         }
-        new_object_type = type->name;
+
+        c->expr_->accept(this);
+        if (current_type->name != "int" || !current_type->is_not_array())
+            throwError(c->expr_->line_number, c->expr_->char_number, "array size must be integer");
+
+        current_type = new CType(type->name, true);
     }
 
     void visitArrElement(ArrElement *p) override {
         if (current_method != nullptr)
             throwError(p->line_number, p->char_number, "method member accessed without calling");
 
-        if (is_accessing_member)
-            throwError(p->line_number, p->char_number, "invalid member access");
-
         auto array_type = current_type;
-        auto new_object_type_backup = new_object_type;
-        new_object_type = "";
 
         p->expr_->accept(this);
         if (current_type->name != "int" || !current_type->is_not_array())
             throwError(p->expr_->line_number, p->expr_->char_number, "array size must be integer");
 
-        new_object_type = new_object_type_backup;
-        if (!new_object_type.empty()) { // initializing array
-            current_type = new CType(new_object_type, true);
-            new_object_type = "";
-        } else { // accessing array
-            if (array_type->is_not_array())
-                throwError(p->line_number, p->char_number, "attempted array element access on non-array");
+        // accessing array
+        if (array_type->is_not_array())
+            throwError(p->line_number, p->char_number, "attempted array element access on non-array");
 
-            current_type = new CType(array_type->name, false);
-        }
+        current_type = new CType(array_type->name, false);
     }
 
     void visitMethod(Method *p) override {
         if (current_method == nullptr)
             throwError(p->line_number, p->char_number, "invalid call");
-
-        if (!new_object_type.empty()) {
-            if (!isBasicType(new_object_type))
-                current_type = new CType(new_object_type, false);
-            else
-                throwError(p->line_number, p->char_number, "can't 'new' basic non-array type");
-            new_object_type = "";
-        } // raczej nigdy sie nie stanie
-
-        if (is_accessing_member) // raczej nigdy sie nie stanie
-            throwError(p->line_number, p->char_number, "invalid member access");
 
         current_call_arguments = current_method->args;
         if (current_call_arguments.size() != p->listexpr_->size())
@@ -388,19 +382,6 @@ public:
     void visitVariable(Variable *p) override { // a.b also, we are in b
         if (current_method != nullptr)
             throwError(p->line_number, p->char_number, "method member accessed without calling");
-
-        if (!new_object_type.empty()) {
-            if (!isBasicType(new_object_type))
-                current_type = new CType(new_object_type, false);
-            else
-                throwError(p->line_number, p->char_number, "can't 'new' basic non-array type");
-            new_object_type = "";
-        }
-
-        if (!is_accessing_member)
-            throwError(p->line_number, p->char_number, "invalid member access");
-
-        is_accessing_member = false;
 
         if (isBasicType(current_type->name)) {
             if (current_type->is_not_array()) // not an array
@@ -443,20 +424,5 @@ public:
         }
 
         throwError(p->line_number, p->char_number, "INTERNAL: undefined class \"" + current_type->name + "\"");
-    }
-
-    void visitMemberAccess(MemberAccess *p) override {
-        if (current_method != nullptr)
-            throwError(p->line_number, p->char_number, "method member accessed without calling");
-
-        if (!new_object_type.empty()) {
-            if (!isBasicType(new_object_type))
-                current_type = new CType(new_object_type, false);
-            else
-                throwError(p->line_number, p->char_number, "can't 'new' basic non-array type");
-            new_object_type = "";
-        }
-
-        is_accessing_member = true;
     }
 };

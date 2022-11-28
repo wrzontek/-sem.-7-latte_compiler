@@ -68,7 +68,6 @@ extern yyscan_t latte__initialize_lexer(FILE * inp);
   ComplexPart* complexpart_;
   ArrType* arrtype_;
   Type* type_;
-  ListType* listtype_;
   Expr* expr_;
   ListComplexPart* listcomplexpart_;
   ListExpr* listexpr_;
@@ -152,7 +151,6 @@ extern int yylex(YYSTYPE *lvalp, YYLTYPE *llocp, yyscan_t scanner);
 %type <complexpart_> ComplexPart
 %type <arrtype_> ArrType
 %type <type_> Type
-%type <listtype_> ListType
 %type <expr_> Expr6
 %type <listcomplexpart_> ListComplexPart
 %type <expr_> Expr5
@@ -218,14 +216,16 @@ ListItem : Item { $$ = new ListItem(); $$->push_back($1); }
 ;
 ComplexStart : _LPAREN ComplexStart _RPAREN { $$ = new CBracketed($2); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _IDENT_ _DOT _IDENT_ { $$ = new CMember($1, $3); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
+  | _LPAREN _IDENT_ _RPAREN _DOT _IDENT_ { $$ = new CMemberB($2, $5); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _IDENT_ _LBRACK Expr _RBRACK { $$ = new CArray($1, $3); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
+  | _LPAREN _IDENT_ _RPAREN _LBRACK Expr _RBRACK { $$ = new CArrayB($2, $5); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _IDENT_ _LPAREN ListExpr _RPAREN { std::reverse($3->begin(),$3->end()) ;$$ = new CFunction($1, $3); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
-  | _KW_new ArrType { $$ = new NewObject($2); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
+  | _KW_new _IDENT_ { $$ = new NewObject($2); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
+  | _KW_new ArrType _LBRACK Expr _RBRACK { $$ = new NewArray($2, $4); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
 ;
-ComplexPart : _IDENT_ { $$ = new Variable($1); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
+ComplexPart : _DOT _IDENT_ { $$ = new Variable($2); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _LBRACK Expr _RBRACK { $$ = new ArrElement($2); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _LPAREN ListExpr _RPAREN { std::reverse($2->begin(),$2->end()) ;$$ = new Method($2); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
-  | _DOT { $$ = new MemberAccess(); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
 ;
 ArrType : _KW_int { $$ = new IntArrType(); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _KW_string { $$ = new StrArrType(); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
@@ -238,10 +238,6 @@ Type : _KW_int { $$ = new Int(); $$->line_number = @$.first_line; $$->char_numbe
   | _KW_void { $$ = new Void(); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | ArrType _LBRACK _RBRACK { $$ = new Arr($1); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _IDENT_ { $$ = new Class($1); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
-;
-ListType : /* empty */ { $$ = new ListType(); }
-  | Type { $$ = new ListType(); $$->push_back($1); }
-  | Type _COMMA ListType { $3->push_back($1); $$ = $3; }
 ;
 Expr6 : _IDENT_ { $$ = new EVar($1); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _LPAREN _IDENT_ _RPAREN { $$ = new EBracketVar($2); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }

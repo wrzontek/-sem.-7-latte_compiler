@@ -974,6 +974,44 @@ CMember *CMember::clone() const {
 }
 
 
+/********************   CMemberB    ********************/
+CMemberB::CMemberB(Ident p1, Ident p2) {
+    ident_1 = p1;
+    ident_2 = p2;
+
+}
+
+CMemberB::CMemberB(const CMemberB &other) {
+    ident_1 = other.ident_1;
+    ident_2 = other.ident_2;
+
+}
+
+CMemberB &CMemberB::operator=(const CMemberB &other) {
+    CMemberB tmp(other);
+    swap(tmp);
+    return *this;
+}
+
+void CMemberB::swap(CMemberB &other) {
+    std::swap(ident_1, other.ident_1);
+    std::swap(ident_2, other.ident_2);
+
+}
+
+CMemberB::~CMemberB() {
+
+}
+
+void CMemberB::accept(Visitor *v) {
+    v->visitCMemberB(this);
+}
+
+CMemberB *CMemberB::clone() const {
+    return new CMemberB(*this);
+}
+
+
 /********************   CArray    ********************/
 CArray::CArray(Ident p1, Expr *p2) {
     ident_ = p1;
@@ -1010,6 +1048,45 @@ void CArray::accept(Visitor *v) {
 
 CArray *CArray::clone() const {
     return new CArray(*this);
+}
+
+
+/********************   CArrayB    ********************/
+CArrayB::CArrayB(Ident p1, Expr *p2) {
+    ident_ = p1;
+    expr_ = p2;
+
+}
+
+CArrayB::CArrayB(const CArrayB &other) {
+    ident_ = other.ident_;
+    expr_ = other.expr_->clone();
+
+}
+
+CArrayB &CArrayB::operator=(const CArrayB &other) {
+    CArrayB tmp(other);
+    swap(tmp);
+    return *this;
+}
+
+void CArrayB::swap(CArrayB &other) {
+    std::swap(ident_, other.ident_);
+    std::swap(expr_, other.expr_);
+
+}
+
+CArrayB::~CArrayB() {
+    delete (expr_);
+
+}
+
+void CArrayB::accept(Visitor *v) {
+    v->visitCArrayB(this);
+}
+
+CArrayB *CArrayB::clone() const {
+    return new CArrayB(*this);
 }
 
 
@@ -1053,13 +1130,13 @@ CFunction *CFunction::clone() const {
 
 
 /********************   NewObject    ********************/
-NewObject::NewObject(ArrType *p1) {
-    arrtype_ = p1;
+NewObject::NewObject(Ident p1) {
+    ident_ = p1;
 
 }
 
 NewObject::NewObject(const NewObject &other) {
-    arrtype_ = other.arrtype_->clone();
+    ident_ = other.ident_;
 
 }
 
@@ -1070,12 +1147,11 @@ NewObject &NewObject::operator=(const NewObject &other) {
 }
 
 void NewObject::swap(NewObject &other) {
-    std::swap(arrtype_, other.arrtype_);
+    std::swap(ident_, other.ident_);
 
 }
 
 NewObject::~NewObject() {
-    delete (arrtype_);
 
 }
 
@@ -1085,6 +1161,46 @@ void NewObject::accept(Visitor *v) {
 
 NewObject *NewObject::clone() const {
     return new NewObject(*this);
+}
+
+
+/********************   NewArray    ********************/
+NewArray::NewArray(ArrType *p1, Expr *p2) {
+    arrtype_ = p1;
+    expr_ = p2;
+
+}
+
+NewArray::NewArray(const NewArray &other) {
+    arrtype_ = other.arrtype_->clone();
+    expr_ = other.expr_->clone();
+
+}
+
+NewArray &NewArray::operator=(const NewArray &other) {
+    NewArray tmp(other);
+    swap(tmp);
+    return *this;
+}
+
+void NewArray::swap(NewArray &other) {
+    std::swap(arrtype_, other.arrtype_);
+    std::swap(expr_, other.expr_);
+
+}
+
+NewArray::~NewArray() {
+    delete (arrtype_);
+    delete (expr_);
+
+}
+
+void NewArray::accept(Visitor *v) {
+    v->visitNewArray(this);
+}
+
+NewArray *NewArray::clone() const {
+    return new NewArray(*this);
 }
 
 
@@ -1192,38 +1308,6 @@ void Method::accept(Visitor *v) {
 
 Method *Method::clone() const {
     return new Method(*this);
-}
-
-
-/********************   MemberAccess    ********************/
-MemberAccess::MemberAccess() {
-
-}
-
-MemberAccess::MemberAccess(const MemberAccess &other) {
-
-}
-
-MemberAccess &MemberAccess::operator=(const MemberAccess &other) {
-    MemberAccess tmp(other);
-    swap(tmp);
-    return *this;
-}
-
-void MemberAccess::swap(MemberAccess &other) {
-
-}
-
-MemberAccess::~MemberAccess() {
-
-}
-
-void MemberAccess::accept(Visitor *v) {
-    v->visitMemberAccess(this);
-}
-
-MemberAccess *MemberAccess::clone() const {
-    return new MemberAccess(*this);
 }
 
 
@@ -1554,46 +1638,6 @@ void Class::accept(Visitor *v) {
 
 Class *Class::clone() const {
     return new Class(*this);
-}
-
-
-/********************   Fun    ********************/
-Fun::Fun(Type *p1, ListType *p2) {
-    type_ = p1;
-    listtype_ = p2;
-
-}
-
-Fun::Fun(const Fun &other) {
-    type_ = other.type_->clone();
-    listtype_ = other.listtype_->clone();
-
-}
-
-Fun &Fun::operator=(const Fun &other) {
-    Fun tmp(other);
-    swap(tmp);
-    return *this;
-}
-
-void Fun::swap(Fun &other) {
-    std::swap(type_, other.type_);
-    std::swap(listtype_, other.listtype_);
-
-}
-
-Fun::~Fun() {
-    delete (type_);
-    delete (listtype_);
-
-}
-
-void Fun::accept(Visitor *v) {
-    v->visitFun(this);
-}
-
-Fun *Fun::clone() const {
-    return new Fun(*this);
 }
 
 
@@ -2617,28 +2661,6 @@ ListItem *ListItem::clone() const {
 }
 
 ListItem *consListItem(Item *x, ListItem *xs) {
-    xs->insert(xs->begin(), x);
-    return xs;
-}
-
-
-/********************   ListType    ********************/
-
-ListType::~ListType() {
-    for (auto i = this->begin(); i != this->end(); ++i) {
-        delete (*i);
-    }
-}
-
-void ListType::accept(Visitor *v) {
-    v->visitListType(this);
-}
-
-ListType *ListType::clone() const {
-    return new ListType(*this);
-}
-
-ListType *consListType(Type *x, ListType *xs) {
     xs->insert(xs->begin(), x);
     return xs;
 }

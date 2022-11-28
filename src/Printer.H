@@ -121,11 +121,17 @@ public:
 
     void visitCMember(CMember *p);
 
+    void visitCMemberB(CMemberB *p);
+
     void visitCArray(CArray *p);
+
+    void visitCArrayB(CArrayB *p);
 
     void visitCFunction(CFunction *p);
 
     void visitNewObject(NewObject *p);
+
+    void visitNewArray(NewArray *p);
 
     void visitComplexPart(ComplexPart *p); /* abstract class */
     void visitVariable(Variable *p);
@@ -133,8 +139,6 @@ public:
     void visitArrElement(ArrElement *p);
 
     void visitMethod(Method *p);
-
-    void visitMemberAccess(MemberAccess *p);
 
     void visitArrType(ArrType *p); /* abstract class */
     void visitIntArrType(IntArrType *p);
@@ -157,12 +161,6 @@ public:
     void visitArr(Arr *p);
 
     void visitClass(Class *p);
-
-    void visitFun(Fun *p);
-
-    void visitListType(ListType *p);
-
-    void iterListType(ListType::const_iterator i, ListType::const_iterator j);
 
     void visitExpr(Expr *p); /* abstract class */
     void visitEVar(EVar *p);
@@ -380,11 +378,17 @@ public:
 
     void visitCMember(CMember *p);
 
+    void visitCMemberB(CMemberB *p);
+
     void visitCArray(CArray *p);
+
+    void visitCArrayB(CArrayB *p);
 
     void visitCFunction(CFunction *p);
 
     void visitNewObject(NewObject *p);
+
+    void visitNewArray(NewArray *p);
 
     void visitComplexPart(ComplexPart *p); /* abstract class */
     void visitVariable(Variable *p);
@@ -392,8 +396,6 @@ public:
     void visitArrElement(ArrElement *p);
 
     void visitMethod(Method *p);
-
-    void visitMemberAccess(MemberAccess *p);
 
     void visitArrType(ArrType *p); /* abstract class */
     void visitIntArrType(IntArrType *p);
@@ -416,12 +418,6 @@ public:
     void visitArr(Arr *p);
 
     void visitClass(Class *p);
-
-    void visitFun(Fun *p);
-
-    void visitListType(ListType *p);
-
-    void iterListType(ListType::const_iterator i, ListType::const_iterator j);
 
     void visitExpr(Expr *p); /* abstract class */
     void visitEVar(EVar *p);

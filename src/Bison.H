@@ -122,7 +122,6 @@ union YYSTYPE {
     ComplexPart *complexpart_;
     ArrType *arrtype_;
     Type *type_;
-    ListType *listtype_;
     Expr *expr_;
     ListComplexPart *listcomplexpart_;
     ListExpr *listexpr_;
@@ -130,7 +129,7 @@ union YYSTYPE {
     MulOp *mulop_;
     RelOp *relop_;
 
-#line 136 "Bison.H"
+#line 135 "Bison.H"
 
 };
 typedef union YYSTYPE YYSTYPE;

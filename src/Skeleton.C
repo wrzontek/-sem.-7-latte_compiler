@@ -220,11 +220,27 @@ void Skeleton::visitCMember(CMember *c_member) {
 
 }
 
+void Skeleton::visitCMemberB(CMemberB *c_member_b) {
+    /* Code For CMemberB Goes Here */
+
+    visitIdent(c_member_b->ident_1);
+    visitIdent(c_member_b->ident_2);
+
+}
+
 void Skeleton::visitCArray(CArray *c_array) {
     /* Code For CArray Goes Here */
 
     visitIdent(c_array->ident_);
     if (c_array->expr_) c_array->expr_->accept(this);
+
+}
+
+void Skeleton::visitCArrayB(CArrayB *c_array_b) {
+    /* Code For CArrayB Goes Here */
+
+    visitIdent(c_array_b->ident_);
+    if (c_array_b->expr_) c_array_b->expr_->accept(this);
 
 }
 
@@ -239,7 +255,15 @@ void Skeleton::visitCFunction(CFunction *c_function) {
 void Skeleton::visitNewObject(NewObject *new_object) {
     /* Code For NewObject Goes Here */
 
-    if (new_object->arrtype_) new_object->arrtype_->accept(this);
+    visitIdent(new_object->ident_);
+
+}
+
+void Skeleton::visitNewArray(NewArray *new_array) {
+    /* Code For NewArray Goes Here */
+
+    if (new_array->arrtype_) new_array->arrtype_->accept(this);
+    if (new_array->expr_) new_array->expr_->accept(this);
 
 }
 
@@ -261,12 +285,6 @@ void Skeleton::visitMethod(Method *method) {
     /* Code For Method Goes Here */
 
     if (method->listexpr_) method->listexpr_->accept(this);
-
-}
-
-void Skeleton::visitMemberAccess(MemberAccess *member_access) {
-    /* Code For MemberAccess Goes Here */
-
 
 }
 
@@ -330,14 +348,6 @@ void Skeleton::visitClass(Class *class_) {
     /* Code For Class Goes Here */
 
     visitIdent(class_->ident_);
-
-}
-
-void Skeleton::visitFun(Fun *fun) {
-    /* Code For Fun Goes Here */
-
-    if (fun->type_) fun->type_->accept(this);
-    if (fun->listtype_) fun->listtype_->accept(this);
 
 }
 
@@ -546,12 +556,6 @@ void Skeleton::visitListStmt(ListStmt *list_stmt) {
 
 void Skeleton::visitListItem(ListItem *list_item) {
     for (ListItem::iterator i = list_item->begin(); i != list_item->end(); ++i) {
-        (*i)->accept(this);
-    }
-}
-
-void Skeleton::visitListType(ListType *list_type) {
-    for (ListType::iterator i = list_type->begin(); i != list_type->end(); ++i) {
         (*i)->accept(this);
     }
 }

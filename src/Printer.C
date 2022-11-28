@@ -546,11 +546,41 @@ void PrintAbsyn::visitCMember(CMember *p) {
     _i_ = oldi;
 }
 
+void PrintAbsyn::visitCMemberB(CMemberB *p) {
+    int oldi = _i_;
+    if (oldi > 0) render(_L_PAREN);
+
+    render('(');
+    visitIdent(p->ident_1);
+    render(')');
+    render('.');
+    visitIdent(p->ident_2);
+
+    if (oldi > 0) render(_R_PAREN);
+    _i_ = oldi;
+}
+
 void PrintAbsyn::visitCArray(CArray *p) {
     int oldi = _i_;
     if (oldi > 0) render(_L_PAREN);
 
     visitIdent(p->ident_);
+    render('[');
+    _i_ = 0;
+    p->expr_->accept(this);
+    render(']');
+
+    if (oldi > 0) render(_R_PAREN);
+    _i_ = oldi;
+}
+
+void PrintAbsyn::visitCArrayB(CArrayB *p) {
+    int oldi = _i_;
+    if (oldi > 0) render(_L_PAREN);
+
+    render('(');
+    visitIdent(p->ident_);
+    render(')');
     render('[');
     _i_ = 0;
     p->expr_->accept(this);
@@ -579,8 +609,23 @@ void PrintAbsyn::visitNewObject(NewObject *p) {
     if (oldi > 0) render(_L_PAREN);
 
     render("new");
+    visitIdent(p->ident_);
+
+    if (oldi > 0) render(_R_PAREN);
+    _i_ = oldi;
+}
+
+void PrintAbsyn::visitNewArray(NewArray *p) {
+    int oldi = _i_;
+    if (oldi > 0) render(_L_PAREN);
+
+    render("new");
     _i_ = 0;
     p->arrtype_->accept(this);
+    render('[');
+    _i_ = 0;
+    p->expr_->accept(this);
+    render(']');
 
     if (oldi > 0) render(_R_PAREN);
     _i_ = oldi;
@@ -592,6 +637,7 @@ void PrintAbsyn::visitVariable(Variable *p) {
     int oldi = _i_;
     if (oldi > 0) render(_L_PAREN);
 
+    render('.');
     visitIdent(p->ident_);
 
     if (oldi > 0) render(_R_PAREN);
@@ -619,16 +665,6 @@ void PrintAbsyn::visitMethod(Method *p) {
     _i_ = 0;
     visitListExpr(p->listexpr_);
     render(')');
-
-    if (oldi > 0) render(_R_PAREN);
-    _i_ = oldi;
-}
-
-void PrintAbsyn::visitMemberAccess(MemberAccess *p) {
-    int oldi = _i_;
-    if (oldi > 0) render(_L_PAREN);
-
-    render('.');
 
     if (oldi > 0) render(_R_PAREN);
     _i_ = oldi;
@@ -739,36 +775,6 @@ void PrintAbsyn::visitClass(Class *p) {
 
     if (oldi > 0) render(_R_PAREN);
     _i_ = oldi;
-}
-
-void PrintAbsyn::visitFun(Fun *p) {
-    int oldi = _i_;
-    if (oldi > 0) render(_L_PAREN);
-
-    _i_ = 0;
-    p->type_->accept(this);
-    render('(');
-    _i_ = 0;
-    visitListType(p->listtype_);
-    render(')');
-
-    if (oldi > 0) render(_R_PAREN);
-    _i_ = oldi;
-}
-
-void PrintAbsyn::visitListType(ListType *listtype) {
-    iterListType(listtype->begin(), listtype->end());
-}
-
-void PrintAbsyn::iterListType(ListType::const_iterator i, ListType::const_iterator j) {
-    if (i == j) return;
-    if (i == j - 1) { /* last */
-        (*i)->accept(this);
-    } else { /* cons */
-        (*i)->accept(this);
-        render(',');
-        iterListType(i + 1, j);
-    }
 }
 
 void PrintAbsyn::visitExpr(Expr *p) {} //abstract class
@@ -1500,9 +1506,32 @@ void ShowAbsyn::visitCMember(CMember *p) {
     bufAppend(')');
 }
 
+void ShowAbsyn::visitCMemberB(CMemberB *p) {
+    bufAppend('(');
+    bufAppend("CMemberB");
+    bufAppend(' ');
+    visitIdent(p->ident_1);
+    bufAppend(' ');
+    visitIdent(p->ident_2);
+    bufAppend(')');
+}
+
 void ShowAbsyn::visitCArray(CArray *p) {
     bufAppend('(');
     bufAppend("CArray");
+    bufAppend(' ');
+    visitIdent(p->ident_);
+    bufAppend(' ');
+    bufAppend('[');
+    if (p->expr_) p->expr_->accept(this);
+    bufAppend(']');
+    bufAppend(' ');
+    bufAppend(')');
+}
+
+void ShowAbsyn::visitCArrayB(CArrayB *p) {
+    bufAppend('(');
+    bufAppend("CArrayB");
     bufAppend(' ');
     visitIdent(p->ident_);
     bufAppend(' ');
@@ -1530,9 +1559,22 @@ void ShowAbsyn::visitNewObject(NewObject *p) {
     bufAppend('(');
     bufAppend("NewObject");
     bufAppend(' ');
+    visitIdent(p->ident_);
+    bufAppend(')');
+}
+
+void ShowAbsyn::visitNewArray(NewArray *p) {
+    bufAppend('(');
+    bufAppend("NewArray");
+    bufAppend(' ');
     bufAppend('[');
     if (p->arrtype_) p->arrtype_->accept(this);
     bufAppend(']');
+    bufAppend(' ');
+    bufAppend('[');
+    if (p->expr_) p->expr_->accept(this);
+    bufAppend(']');
+    bufAppend(' ');
     bufAppend(')');
 }
 
@@ -1566,10 +1608,6 @@ void ShowAbsyn::visitMethod(Method *p) {
     bufAppend(']');
     bufAppend(' ');
     bufAppend(')');
-}
-
-void ShowAbsyn::visitMemberAccess(MemberAccess *p) {
-    bufAppend("MemberAccess");
 }
 
 void ShowAbsyn::visitArrType(ArrType *p) {} //abstract class
@@ -1629,28 +1667,6 @@ void ShowAbsyn::visitClass(Class *p) {
     bufAppend(' ');
     visitIdent(p->ident_);
     bufAppend(')');
-}
-
-void ShowAbsyn::visitFun(Fun *p) {
-    bufAppend('(');
-    bufAppend("Fun");
-    bufAppend(' ');
-    bufAppend('[');
-    if (p->type_) p->type_->accept(this);
-    bufAppend(']');
-    bufAppend(' ');
-    bufAppend('[');
-    if (p->listtype_) p->listtype_->accept(this);
-    bufAppend(']');
-    bufAppend(' ');
-    bufAppend(')');
-}
-
-void ShowAbsyn::visitListType(ListType *listtype) {
-    for (ListType::const_iterator i = listtype->begin(); i != listtype->end(); ++i) {
-        (*i)->accept(this);
-        if (i != listtype->end() - 1) bufAppend(", ");
-    }
 }
 
 void ShowAbsyn::visitExpr(Expr *p) {} //abstract class

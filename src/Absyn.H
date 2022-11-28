@@ -99,19 +99,23 @@ class CBracketed;
 
 class CMember;
 
+class CMemberB;
+
 class CArray;
+
+class CArrayB;
 
 class CFunction;
 
 class NewObject;
+
+class NewArray;
 
 class Variable;
 
 class ArrElement;
 
 class Method;
-
-class MemberAccess;
 
 class IntArrType;
 
@@ -132,8 +136,6 @@ class Void;
 class Arr;
 
 class Class;
-
-class Fun;
 
 class EVar;
 
@@ -196,8 +198,6 @@ class ListArg;
 class ListStmt;
 
 class ListItem;
-
-class ListType;
 
 class ListComplexPart;
 
@@ -289,19 +289,23 @@ public:
 
     virtual void visitCMember(CMember *p) = 0;
 
+    virtual void visitCMemberB(CMemberB *p) = 0;
+
     virtual void visitCArray(CArray *p) = 0;
+
+    virtual void visitCArrayB(CArrayB *p) = 0;
 
     virtual void visitCFunction(CFunction *p) = 0;
 
     virtual void visitNewObject(NewObject *p) = 0;
+
+    virtual void visitNewArray(NewArray *p) = 0;
 
     virtual void visitVariable(Variable *p) = 0;
 
     virtual void visitArrElement(ArrElement *p) = 0;
 
     virtual void visitMethod(Method *p) = 0;
-
-    virtual void visitMemberAccess(MemberAccess *p) = 0;
 
     virtual void visitIntArrType(IntArrType *p) = 0;
 
@@ -322,8 +326,6 @@ public:
     virtual void visitArr(Arr *p) = 0;
 
     virtual void visitClass(Class *p) = 0;
-
-    virtual void visitFun(Fun *p) = 0;
 
     virtual void visitEVar(EVar *p) = 0;
 
@@ -386,8 +388,6 @@ public:
     virtual void visitListStmt(ListStmt *p) = 0;
 
     virtual void visitListItem(ListItem *p) = 0;
-
-    virtual void visitListType(ListType *p) = 0;
 
     virtual void visitListComplexPart(ListComplexPart *p) = 0;
 
@@ -1045,6 +1045,26 @@ public:
     void swap(CMember &);
 };
 
+class CMemberB : public ComplexStart {
+public:
+    Ident ident_1;
+    Ident ident_2;
+
+    CMemberB(const CMemberB &);
+
+    CMemberB &operator=(const CMemberB &);
+
+    CMemberB(Ident p1, Ident p2);
+
+    ~CMemberB();
+
+    virtual void accept(Visitor *v);
+
+    virtual CMemberB *clone() const;
+
+    void swap(CMemberB &);
+};
+
 class CArray : public ComplexStart {
 public:
     Ident ident_;
@@ -1063,6 +1083,26 @@ public:
     virtual CArray *clone() const;
 
     void swap(CArray &);
+};
+
+class CArrayB : public ComplexStart {
+public:
+    Ident ident_;
+    Expr *expr_;
+
+    CArrayB(const CArrayB &);
+
+    CArrayB &operator=(const CArrayB &);
+
+    CArrayB(Ident p1, Expr *p2);
+
+    ~CArrayB();
+
+    virtual void accept(Visitor *v);
+
+    virtual CArrayB *clone() const;
+
+    void swap(CArrayB &);
 };
 
 class CFunction : public ComplexStart {
@@ -1087,13 +1127,13 @@ public:
 
 class NewObject : public ComplexStart {
 public:
-    ArrType *arrtype_;
+    Ident ident_;
 
     NewObject(const NewObject &);
 
     NewObject &operator=(const NewObject &);
 
-    NewObject(ArrType *p1);
+    NewObject(Ident p1);
 
     ~NewObject();
 
@@ -1102,6 +1142,26 @@ public:
     virtual NewObject *clone() const;
 
     void swap(NewObject &);
+};
+
+class NewArray : public ComplexStart {
+public:
+    ArrType *arrtype_;
+    Expr *expr_;
+
+    NewArray(const NewArray &);
+
+    NewArray &operator=(const NewArray &);
+
+    NewArray(ArrType *p1, Expr *p2);
+
+    ~NewArray();
+
+    virtual void accept(Visitor *v);
+
+    virtual NewArray *clone() const;
+
+    void swap(NewArray &);
 };
 
 class Variable : public ComplexPart {
@@ -1159,24 +1219,6 @@ public:
     virtual Method *clone() const;
 
     void swap(Method &);
-};
-
-class MemberAccess : public ComplexPart {
-public:
-
-    MemberAccess(const MemberAccess &);
-
-    MemberAccess &operator=(const MemberAccess &);
-
-    MemberAccess();
-
-    ~MemberAccess();
-
-    virtual void accept(Visitor *v);
-
-    virtual MemberAccess *clone() const;
-
-    void swap(MemberAccess &);
 };
 
 class IntArrType : public ArrType {
@@ -1366,26 +1408,6 @@ public:
     void swap(Class &);
 };
 
-class Fun : public Type {
-public:
-    Type *type_;
-    ListType *listtype_;
-
-    Fun(const Fun &);
-
-    Fun &operator=(const Fun &);
-
-    Fun(Type *p1, ListType *p2);
-
-    ~Fun();
-
-    virtual void accept(Visitor *v);
-
-    virtual Fun *clone() const;
-
-    void swap(Fun &);
-};
-
 class EVar : public Expr {
 public:
     Ident ident_;
@@ -1522,7 +1544,6 @@ public:
     virtual void accept(Visitor *v);
 
     virtual ELitFalse *clone() const;
-
 
     void swap(ELitFalse &);
 };
@@ -1993,17 +2014,6 @@ public:
 };
 
 ListItem *consListItem(Item *x, ListItem *xs);
-
-class ListType : public Visitable, public std::vector<Type *> {
-public:
-    virtual void accept(Visitor *v);
-
-    virtual ListType *clone() const;
-
-    virtual ~ListType();
-};
-
-ListType *consListType(Type *x, ListType *xs);
 
 class ListComplexPart : public Visitable, public std::vector<ComplexPart *> {
 public:

@@ -89,19 +89,23 @@ public:
 
     void visitCMember(CMember *p);
 
+    void visitCMemberB(CMemberB *p);
+
     void visitCArray(CArray *p);
+
+    void visitCArrayB(CArrayB *p);
 
     void visitCFunction(CFunction *p);
 
     void visitNewObject(NewObject *p);
+
+    void visitNewArray(NewArray *p);
 
     void visitVariable(Variable *p);
 
     void visitArrElement(ArrElement *p);
 
     void visitMethod(Method *p);
-
-    void visitMemberAccess(MemberAccess *p);
 
     void visitIntArrType(IntArrType *p);
 
@@ -122,8 +126,6 @@ public:
     void visitArr(Arr *p);
 
     void visitClass(Class *p);
-
-    void visitFun(Fun *p);
 
     void visitEVar(EVar *p);
 
@@ -186,8 +188,6 @@ public:
     void visitListStmt(ListStmt *p);
 
     void visitListItem(ListItem *p);
-
-    void visitListType(ListType *p);
 
     void visitListComplexPart(ListComplexPart *p);
 

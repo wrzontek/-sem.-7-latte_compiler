@@ -64,26 +64,29 @@ SExp.      Stmt ::= Expr  ";" ;
 
 -------------------------------------------------
 
--- TODO można się pobawić z nawiasowaniem ComplexStart i ComplexPart jakby się nudziło
 CBracketed.   ComplexStart ::= "(" ComplexStart ")" ;
 
 CMember.      ComplexStart ::= Ident "." Ident ;
 
+CMemberB.     ComplexStart ::= "(" Ident ")" "." Ident ;
+
 CArray.       ComplexStart ::= Ident "[" Expr "]" ;
+
+CArrayB.      ComplexStart ::= "(" Ident ")" "[" Expr "]" ;
 
 CFunction.    ComplexStart ::= Ident "(" [Expr] ")" ;
 
-NewObject.    ComplexStart ::= "new" ArrType ; -- todo teraz (new int[1]).length nie działa eh
+NewObject.    ComplexStart ::= "new" Ident ;
+
+NewArray.     ComplexStart ::= "new" ArrType  "[" Expr "]"  ;
 
 ------------------------------------------------
 
-Variable.      ComplexPart ::= Ident ;
+Variable.      ComplexPart ::=  "." Ident ;
 
 ArrElement.    ComplexPart ::= "[" Expr "]" ;
 
 Method.        ComplexPart ::= "(" [Expr] ")" ;
-
-MemberAccess.  ComplexPart ::= "." ;
 
 -- ArrTypes ------------------------------------------------
 
@@ -109,10 +112,6 @@ Arr.       Type ::= ArrType "[" "]" ;
 
 Class.     Type ::= Ident ;
 
-
-internal   Fun. Type ::= Type "(" [Type] ")" ;
-
-separator  Type "," ;
 
 -- Expressions ---------------------------------------------
 
