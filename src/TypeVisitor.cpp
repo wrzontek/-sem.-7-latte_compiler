@@ -14,6 +14,10 @@ public:
     CType *current_type = nullptr;
     std::vector<CVar *> current_call_arguments = std::vector<CVar *>();
 
+    int error_function_calls = 0;
+    Ident redefined_var_name = "";
+    CType *redefined_var_type = nullptr;
+
     explicit Type_Visitor(std::vector<CClass *> &defined_classes, std::vector<CVar *> &defined_variables,
                           std::vector<CFun *> &defined_global_functions)
             : defined_classes(defined_classes), defined_variables(defined_variables),
@@ -66,8 +70,23 @@ public:
         return current_type;
     }
 
+    CType *getExprType(Expr *e, Ident redefined_var_name_arg, CType *redefined_var_type_arg) {
+        redefined_var_name = redefined_var_name_arg;
+        redefined_var_type = redefined_var_type_arg;
+        e->accept(this);
+        redefined_var_name = "";
+        redefined_var_type = nullptr;
+        return current_type;
+    }
+
     void visitVar(Ident name, int line_number, int char_number) {
         for (auto def: defined_variables) {
+            if (def->name == redefined_var_name) {
+                if (redefined_var_type == nullptr)
+                    throwError(line_number, char_number, "undefined variable \"" + name + "\"");
+                current_type = redefined_var_type;
+                return;
+            }
             if (def->name == name) {
                 current_type = def->type;
                 return;
@@ -298,6 +317,8 @@ public:
 
     void visitCFunction(CFunction *c) override { // function(123, "arg1", a)
         CFun *fun = find_fun(c->ident_, c->line_number, c->char_number);
+        if (fun->name == "error")
+            error_function_calls++;
 
         current_call_arguments = fun->args;
         if (current_call_arguments.size() != c->listexpr_->size())

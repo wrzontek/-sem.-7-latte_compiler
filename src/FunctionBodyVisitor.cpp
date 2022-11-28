@@ -171,11 +171,14 @@ public:
         stmt->listitem_->accept(this);
     }
 
-    void defineOrRedefineVariable(Ident name, int line_number, int char_number) {
+    CType *defineOrRedefineVariable(Ident name, int line_number, int char_number) {
+        // nullptr if first definition, type of overwritten variable if redefining
+        CType *overwritten_type = nullptr;
         for (int i = 0; i < defined_variables.size(); i++) {
             auto existing_name = defined_variables.at(i)->name;
             if (existing_name == name) {
                 if (variable_to_depth[existing_name] < current_depth) {
+                    overwritten_type = defined_variables.at(i)->type;
                     defined_variables.erase(defined_variables.begin() + i);
                     break;
                 } else {
@@ -185,6 +188,8 @@ public:
         }
         defined_variables.push_back(new CVar(name, current_type));
         variable_to_depth[name] = current_depth;
+
+        return overwritten_type;
     }
 
     void visitNoInit(NoInit *no_init) override {
@@ -192,10 +197,10 @@ public:
     }
 
     void visitInit(Init *init) override {
-        defineOrRedefineVariable(init->ident_, init->line_number, init->char_number);
+        CType *redefined_var_type = defineOrRedefineVariable(init->ident_, init->line_number, init->char_number);
 
         auto typeVisitor = new Type_Visitor(defined_classes, defined_variables, defined_global_functions);
-        auto expr_type = typeVisitor->getExprType(init->expr_);
+        auto expr_type = typeVisitor->getExprType(init->expr_, init->ident_, redefined_var_type);
 
         if (current_type->is_array != expr_type->is_array ||
             (current_type->name != expr_type->name &&
@@ -248,7 +253,12 @@ public:
 
     void visitSExp(SExp *stmt) override {
         auto typeVisitor = new Type_Visitor(defined_classes, defined_variables, defined_global_functions);
+        int error_calls_before = typeVisitor->error_function_calls;
+
         auto type = typeVisitor->getExprType(stmt->expr_);
+        if (typeVisitor->error_function_calls > error_calls_before)
+            always_returning = true;
+
         delete (typeVisitor);
     }
 

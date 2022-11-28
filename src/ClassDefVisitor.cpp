@@ -211,7 +211,7 @@ public:
 
     void visitInit(Init *init) override {
         typeVisitor = new Type_Visitor(defined_classes, current_class->attributes, defined_functions);
-        auto expr_type = typeVisitor->getExprType(init->expr_);
+        auto expr_type = typeVisitor->getExprType(init->expr_, init->ident_, nullptr);
 
         if (current_type->is_array != expr_type->is_array ||
             (current_type->name != expr_type->name &&

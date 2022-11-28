@@ -1944,6 +1944,7 @@ public:
         auto v = std::vector<Ident>();
         v.push_back("int");
         v.push_back("boolean");
+        v.push_back("string");
         v.push_back("<CLASS>");
         return v;
     };
@@ -1974,6 +1975,7 @@ public:
         auto v = std::vector<Ident>();
         v.push_back("int");
         v.push_back("boolean");
+        v.push_back("string");
         v.push_back("<CLASS>");
         return v;
     };
