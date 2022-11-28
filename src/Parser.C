@@ -261,8 +261,10 @@ int latte_parse(yyscan_t scanner, YYSTYPE *result);
 #line 79 "Latte.y"
 
 void yyerror(YYLTYPE *loc, yyscan_t scanner, YYSTYPE *result, const char *msg) {
+    fprintf(stderr, "ERROR\n");
     fprintf(stderr, "error: %d,%d: %s at %s\n",
             loc->first_line, loc->first_column, msg, latte_get_text(scanner));
+    exit(1);
 }
 
 int yyparse(yyscan_t scanner, YYSTYPE *result);
