@@ -27,7 +27,7 @@ public:
 
     void visitComplexPart(ComplexPart *p);
 
-    void visitArrType(ArrType *p);
+    void visitTypeName(TypeName *p);
 
     void visitType(Type *p);
 
@@ -107,14 +107,6 @@ public:
 
     void visitMethod(Method *p);
 
-    void visitIntArrType(IntArrType *p);
-
-    void visitStrArrType(StrArrType *p);
-
-    void visitBoolArrType(BoolArrType *p);
-
-    void visitClassArrType(ClassArrType *p);
-
     void visitInt(Int *p);
 
     void visitStr(Str *p);
@@ -123,9 +115,11 @@ public:
 
     void visitVoid(Void *p);
 
+    void visitClass(Class *p);
+
     void visitArr(Arr *p);
 
-    void visitClass(Class *p);
+    void visitNotArr(NotArr *p);
 
     void visitEVar(EVar *p);
 

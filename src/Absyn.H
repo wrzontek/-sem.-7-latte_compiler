@@ -37,7 +37,7 @@ class ComplexStart;
 
 class ComplexPart;
 
-class ArrType;
+class TypeName;
 
 class Type;
 
@@ -117,14 +117,6 @@ class ArrElement;
 
 class Method;
 
-class IntArrType;
-
-class StrArrType;
-
-class BoolArrType;
-
-class ClassArrType;
-
 class Int;
 
 class Str;
@@ -133,9 +125,11 @@ class Bool;
 
 class Void;
 
+class Class;
+
 class Arr;
 
-class Class;
+class NotArr;
 
 class EVar;
 
@@ -227,7 +221,7 @@ public:
 
     virtual void visitComplexPart(ComplexPart *p) = 0;
 
-    virtual void visitArrType(ArrType *p) = 0;
+    virtual void visitTypeName(TypeName *p) = 0;
 
     virtual void visitType(Type *p) = 0;
 
@@ -307,14 +301,6 @@ public:
 
     virtual void visitMethod(Method *p) = 0;
 
-    virtual void visitIntArrType(IntArrType *p) = 0;
-
-    virtual void visitStrArrType(StrArrType *p) = 0;
-
-    virtual void visitBoolArrType(BoolArrType *p) = 0;
-
-    virtual void visitClassArrType(ClassArrType *p) = 0;
-
     virtual void visitInt(Int *p) = 0;
 
     virtual void visitStr(Str *p) = 0;
@@ -323,9 +309,11 @@ public:
 
     virtual void visitVoid(Void *p) = 0;
 
+    virtual void visitClass(Class *p) = 0;
+
     virtual void visitArr(Arr *p) = 0;
 
-    virtual void visitClass(Class *p) = 0;
+    virtual void visitNotArr(NotArr *p) = 0;
 
     virtual void visitEVar(EVar *p) = 0;
 
@@ -489,9 +477,13 @@ public:
     int char_number;
 };
 
-class ArrType : public Visitable {
+class TypeName : public Visitable {
 public:
-    virtual ArrType *clone() const = 0;
+    virtual bool isVoid() {
+        return false;
+    };
+
+    virtual TypeName *clone() const = 0;
 
     int line_number;
     int char_number;
@@ -501,9 +493,9 @@ class Type : public Visitable {
 public:
     virtual Type *clone() const = 0;
 
-    virtual bool canBeArg() { return true; }
+    virtual bool canBeArg() = 0;
 
-    virtual bool canBeReturned() { return true; }
+    virtual bool canBeReturned() = 0;
 
     int line_number;
     int char_number;
@@ -933,7 +925,7 @@ public:
 
 class ForEach : public Stmt {
 public:
-    Type *type_;
+    TypeName *typename_;
     Ident ident_1;
     Ident ident_2;
     Stmt *stmt_;
@@ -942,7 +934,7 @@ public:
 
     ForEach &operator=(const ForEach &);
 
-    ForEach(Type *p1, Ident p2, Ident p3, Stmt *p4);
+    ForEach(TypeName *p1, Ident p2, Ident p3, Stmt *p4);
 
     ~ForEach();
 
@@ -1072,14 +1064,14 @@ public:
 
 class CArray : public ComplexStart {
 public:
-    Ident ident_;
+    TypeName *typename_;
     Expr *expr_;
 
     CArray(const CArray &);
 
     CArray &operator=(const CArray &);
 
-    CArray(Ident p1, Expr *p2);
+    CArray(TypeName *p1, Expr *p2);
 
     ~CArray();
 
@@ -1151,14 +1143,14 @@ public:
 
 class NewArray : public ComplexStart {
 public:
-    ArrType *arrtype_;
+    TypeName *typename_;
     Expr *expr_;
 
     NewArray(const NewArray &);
 
     NewArray &operator=(const NewArray &);
 
-    NewArray(ArrType *p1, Expr *p2);
+    NewArray(TypeName *p1, Expr *p2);
 
     ~NewArray();
 
@@ -1226,80 +1218,7 @@ public:
     void swap(Method &);
 };
 
-class IntArrType : public ArrType {
-public:
-
-    IntArrType(const IntArrType &);
-
-    IntArrType &operator=(const IntArrType &);
-
-    IntArrType();
-
-    ~IntArrType();
-
-    virtual void accept(Visitor *v);
-
-    virtual IntArrType *clone() const;
-
-    void swap(IntArrType &);
-};
-
-class StrArrType : public ArrType {
-public:
-
-    StrArrType(const StrArrType &);
-
-    StrArrType &operator=(const StrArrType &);
-
-    StrArrType();
-
-    ~StrArrType();
-
-    virtual void accept(Visitor *v);
-
-    virtual StrArrType *clone() const;
-
-    void swap(StrArrType &);
-};
-
-class BoolArrType : public ArrType {
-public:
-
-    BoolArrType(const BoolArrType &);
-
-    BoolArrType &operator=(const BoolArrType &);
-
-    BoolArrType();
-
-    ~BoolArrType();
-
-    virtual void accept(Visitor *v);
-
-    virtual BoolArrType *clone() const;
-
-    void swap(BoolArrType &);
-};
-
-class ClassArrType : public ArrType {
-public:
-    Ident ident_;
-
-    ClassArrType(const ClassArrType &);
-
-    ClassArrType &operator=(const ClassArrType &);
-
-    ClassArrType(Ident p1);
-
-    ~ClassArrType();
-
-    virtual void accept(Visitor *v);
-
-    virtual ClassArrType *clone() const;
-
-    void swap(ClassArrType &);
-};
-
-class Int : public Type {
+class Int : public TypeName {
 public:
 
     Int(const Int &);
@@ -1317,7 +1236,7 @@ public:
     void swap(Int &);
 };
 
-class Str : public Type {
+class Str : public TypeName {
 public:
 
     Str(const Str &);
@@ -1335,7 +1254,7 @@ public:
     void swap(Str &);
 };
 
-class Bool : public Type {
+class Bool : public TypeName {
 public:
 
     Bool(const Bool &);
@@ -1353,8 +1272,12 @@ public:
     void swap(Bool &);
 };
 
-class Void : public Type {
+class Void : public TypeName {
 public:
+
+    bool isVoid() override {
+        return true;
+    };
 
     Void(const Void &);
 
@@ -1364,10 +1287,6 @@ public:
 
     ~Void();
 
-    bool canBeArg() override {
-        return false;
-    }
-
     virtual void accept(Visitor *v);
 
     virtual Void *clone() const;
@@ -1375,26 +1294,7 @@ public:
     void swap(Void &);
 };
 
-class Arr : public Type {
-public:
-    ArrType *arrtype_;
-
-    Arr(const Arr &);
-
-    Arr &operator=(const Arr &);
-
-    Arr(ArrType *p1);
-
-    ~Arr();
-
-    virtual void accept(Visitor *v);
-
-    virtual Arr *clone() const;
-
-    void swap(Arr &);
-};
-
-class Class : public Type {
+class Class : public TypeName {
 public:
     Ident ident_;
 
@@ -1411,6 +1311,61 @@ public:
     virtual Class *clone() const;
 
     void swap(Class &);
+};
+
+class Arr : public Type {
+public:
+
+    bool canBeArg() override {
+        return !this->typename_->isVoid();
+    };
+
+    bool canBeReturned() override {
+        return !this->typename_->isVoid();
+    };
+
+    TypeName *typename_;
+
+    Arr(const Arr &);
+
+    Arr &operator=(const Arr &);
+
+    Arr(TypeName *p1);
+
+    ~Arr();
+
+    virtual void accept(Visitor *v);
+
+    virtual Arr *clone() const;
+
+    void swap(Arr &);
+};
+
+class NotArr : public Type {
+public:
+    bool canBeArg() override {
+        return !this->typename_->isVoid();
+    };
+
+    virtual bool canBeReturned() override {
+        return true;
+    };
+
+    TypeName *typename_;
+
+    NotArr(const NotArr &);
+
+    NotArr &operator=(const NotArr &);
+
+    NotArr(TypeName *p1);
+
+    ~NotArr();
+
+    virtual void accept(Visitor *v);
+
+    virtual NotArr *clone() const;
+
+    void swap(NotArr &);
 };
 
 class EVar : public Expr {

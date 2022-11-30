@@ -24,6 +24,11 @@ public:
         return current_type;
     }
 
+    CType *getType(TypeName *t) {
+        t->accept(this);
+        return current_type;
+    }
+
     void visitInt(Int *t) override { current_type = new CType("int", false); }
 
     void visitStr(Str *t) override { current_type = new CType("string", false); }
@@ -31,6 +36,10 @@ public:
     void visitBool(Bool *t) override { current_type = new CType("boolean", false); }
 
     void visitVoid(Void *t) override { current_type = new CType("void", false); }
+
+    void visitClass(Class *t) override {
+        current_type = new CType(t->ident_, false);
+    }
 
     CClass *getClass(Ident name, int line_number, int char_number) {
         for (auto def: defined_classes) {
@@ -42,41 +51,14 @@ public:
         return nullptr;
     }
 
-    void visitClass(Class *t) override {
-        getClass(t->ident_, t->line_number, t->char_number);
-
-        current_type = new CType(t->ident_, false);
-    }
-
     void visitArr(Arr *t) override {
-        t->arrtype_->accept(this);
-
+        t->typename_->accept(this);
         current_type = new CType(current_type->name, true);
     }
 
-    CType *getArrayType(ArrType *t) {
+    CType *getTypeNameType(TypeName *t) {
         t->accept(this);
         return current_type;
-    }
-
-    void visitIntArrType(IntArrType *t) override { current_type = new CType("int", false); }
-
-    void visitStrArrType(StrArrType *t) override { current_type = new CType("string", false); }
-
-    void visitBoolArrType(BoolArrType *t) override { current_type = new CType("boolean", false); }
-
-    void visitClassArrType(ClassArrType *t) override {
-        bool defined = false;
-        for (auto def: defined_classes) {
-            if (def->name == t->ident_) {
-                defined = true;
-            }
-        }
-        if (!defined) {
-            throwError(t->line_number, t->char_number, "undefined class \"" + t->ident_ + "\"");
-        }
-
-        current_type = new CType(t->ident_, false);
     }
 
     CType *getExprType(Expr *e) {
@@ -303,7 +285,11 @@ public:
     }
 
     void visitCArray(CArray *c) override { // a[1]
-        arrayCommon(c->ident_, c->expr_, c->line_number, c->char_number, c->expr_->line_number, c->expr_->char_number);
+        auto type = getTypeNameType(c->typename_);
+        if (isBasicType(type->name))
+            throwError(c->line_number, c->char_number, "");
+
+        arrayCommon(type->name, c->expr_, c->line_number, c->char_number, c->expr_->line_number, c->expr_->char_number);
     }
 
     void visitCArrayB(CArrayB *c) override { // (a)[1]
@@ -325,6 +311,9 @@ public:
 
     void visitNewObject(NewObject *c) override { // new <class> / new int
         if (!isBasicType(c->ident_)) {
+            if (c->ident_ == "void")
+                throwError(c->line_number, c->char_number, "cannot create void-type object or array");
+
             getClass(c->ident_, c->line_number, c->line_number); // make sure class exists
         } else {
             throwError(c->line_number, c->char_number, "can't 'new' basic non-array type");
@@ -334,10 +323,13 @@ public:
     }
 
     void visitNewArray(NewArray *c) override { // (new <class>[1]) / (new int[1])
-        auto type = getArrayType(c->arrtype_);
+        auto type = getTypeNameType(c->typename_);
         if (!isBasicType(type->name)) {
             getClass(type->name, c->line_number, c->line_number); // make sure class exists
         }
+
+        if (type->name == "void")
+            throwError(c->line_number, c->char_number, "cannot create void-type object or array");
 
         c->expr_->accept(this);
         if (current_type->name != "int" || !current_type->is_not_array())

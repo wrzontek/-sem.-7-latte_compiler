@@ -455,7 +455,7 @@ void PrintAbsyn::visitForEach(ForEach *p) {
     render("for");
     render('(');
     _i_ = 0;
-    p->type_->accept(this);
+    p->typename_->accept(this);
     visitIdent(p->ident_1);
     render(':');
     visitIdent(p->ident_2);
@@ -564,7 +564,8 @@ void PrintAbsyn::visitCArray(CArray *p) {
     int oldi = _i_;
     if (oldi > 0) render(_L_PAREN);
 
-    visitIdent(p->ident_);
+    _i_ = 0;
+    p->typename_->accept(this);
     render('[');
     _i_ = 0;
     p->expr_->accept(this);
@@ -621,7 +622,7 @@ void PrintAbsyn::visitNewArray(NewArray *p) {
 
     render("new");
     _i_ = 0;
-    p->arrtype_->accept(this);
+    p->typename_->accept(this);
     render('[');
     _i_ = 0;
     p->expr_->accept(this);
@@ -670,49 +671,7 @@ void PrintAbsyn::visitMethod(Method *p) {
     _i_ = oldi;
 }
 
-void PrintAbsyn::visitArrType(ArrType *p) {} //abstract class
-
-void PrintAbsyn::visitIntArrType(IntArrType *p) {
-    int oldi = _i_;
-    if (oldi > 0) render(_L_PAREN);
-
-    render("int");
-
-    if (oldi > 0) render(_R_PAREN);
-    _i_ = oldi;
-}
-
-void PrintAbsyn::visitStrArrType(StrArrType *p) {
-    int oldi = _i_;
-    if (oldi > 0) render(_L_PAREN);
-
-    render("string");
-
-    if (oldi > 0) render(_R_PAREN);
-    _i_ = oldi;
-}
-
-void PrintAbsyn::visitBoolArrType(BoolArrType *p) {
-    int oldi = _i_;
-    if (oldi > 0) render(_L_PAREN);
-
-    render("boolean");
-
-    if (oldi > 0) render(_R_PAREN);
-    _i_ = oldi;
-}
-
-void PrintAbsyn::visitClassArrType(ClassArrType *p) {
-    int oldi = _i_;
-    if (oldi > 0) render(_L_PAREN);
-
-    visitIdent(p->ident_);
-
-    if (oldi > 0) render(_R_PAREN);
-    _i_ = oldi;
-}
-
-void PrintAbsyn::visitType(Type *p) {} //abstract class
+void PrintAbsyn::visitTypeName(TypeName *p) {} //abstract class
 
 void PrintAbsyn::visitInt(Int *p) {
     int oldi = _i_;
@@ -754,12 +713,24 @@ void PrintAbsyn::visitVoid(Void *p) {
     _i_ = oldi;
 }
 
+void PrintAbsyn::visitClass(Class *p) {
+    int oldi = _i_;
+    if (oldi > 0) render(_L_PAREN);
+
+    visitIdent(p->ident_);
+
+    if (oldi > 0) render(_R_PAREN);
+    _i_ = oldi;
+}
+
+void PrintAbsyn::visitType(Type *p) {} //abstract class
+
 void PrintAbsyn::visitArr(Arr *p) {
     int oldi = _i_;
     if (oldi > 0) render(_L_PAREN);
 
     _i_ = 0;
-    p->arrtype_->accept(this);
+    p->typename_->accept(this);
     render('[');
     render(']');
 
@@ -767,11 +738,12 @@ void PrintAbsyn::visitArr(Arr *p) {
     _i_ = oldi;
 }
 
-void PrintAbsyn::visitClass(Class *p) {
+void PrintAbsyn::visitNotArr(NotArr *p) {
     int oldi = _i_;
     if (oldi > 0) render(_L_PAREN);
 
-    visitIdent(p->ident_);
+    _i_ = 0;
+    p->typename_->accept(this);
 
     if (oldi > 0) render(_R_PAREN);
     _i_ = oldi;
@@ -1430,7 +1402,7 @@ void ShowAbsyn::visitForEach(ForEach *p) {
     bufAppend("ForEach");
     bufAppend(' ');
     bufAppend('[');
-    if (p->type_) p->type_->accept(this);
+    if (p->typename_) p->typename_->accept(this);
     bufAppend(']');
     bufAppend(' ');
     visitIdent(p->ident_1);
@@ -1520,7 +1492,9 @@ void ShowAbsyn::visitCArray(CArray *p) {
     bufAppend('(');
     bufAppend("CArray");
     bufAppend(' ');
-    visitIdent(p->ident_);
+    bufAppend('[');
+    if (p->typename_) p->typename_->accept(this);
+    bufAppend(']');
     bufAppend(' ');
     bufAppend('[');
     if (p->expr_) p->expr_->accept(this);
@@ -1568,7 +1542,7 @@ void ShowAbsyn::visitNewArray(NewArray *p) {
     bufAppend("NewArray");
     bufAppend(' ');
     bufAppend('[');
-    if (p->arrtype_) p->arrtype_->accept(this);
+    if (p->typename_) p->typename_->accept(this);
     bufAppend(']');
     bufAppend(' ');
     bufAppend('[');
@@ -1610,29 +1584,7 @@ void ShowAbsyn::visitMethod(Method *p) {
     bufAppend(')');
 }
 
-void ShowAbsyn::visitArrType(ArrType *p) {} //abstract class
-
-void ShowAbsyn::visitIntArrType(IntArrType *p) {
-    bufAppend("IntArrType");
-}
-
-void ShowAbsyn::visitStrArrType(StrArrType *p) {
-    bufAppend("StrArrType");
-}
-
-void ShowAbsyn::visitBoolArrType(BoolArrType *p) {
-    bufAppend("BoolArrType");
-}
-
-void ShowAbsyn::visitClassArrType(ClassArrType *p) {
-    bufAppend('(');
-    bufAppend("ClassArrType");
-    bufAppend(' ');
-    visitIdent(p->ident_);
-    bufAppend(')');
-}
-
-void ShowAbsyn::visitType(Type *p) {} //abstract class
+void ShowAbsyn::visitTypeName(TypeName *p) {} //abstract class
 
 void ShowAbsyn::visitInt(Int *p) {
     bufAppend("Int");
@@ -1650,22 +1602,34 @@ void ShowAbsyn::visitVoid(Void *p) {
     bufAppend("Void");
 }
 
-void ShowAbsyn::visitArr(Arr *p) {
-    bufAppend('(');
-    bufAppend("Arr");
-    bufAppend(' ');
-    bufAppend('[');
-    if (p->arrtype_) p->arrtype_->accept(this);
-    bufAppend(']');
-    bufAppend(' ');
-    bufAppend(')');
-}
-
 void ShowAbsyn::visitClass(Class *p) {
     bufAppend('(');
     bufAppend("Class");
     bufAppend(' ');
     visitIdent(p->ident_);
+    bufAppend(')');
+}
+
+void ShowAbsyn::visitType(Type *p) {} //abstract class
+
+void ShowAbsyn::visitArr(Arr *p) {
+    bufAppend('(');
+    bufAppend("Arr");
+    bufAppend(' ');
+    bufAppend('[');
+    if (p->typename_) p->typename_->accept(this);
+    bufAppend(']');
+    bufAppend(' ');
+    bufAppend(')');
+}
+
+void ShowAbsyn::visitNotArr(NotArr *p) {
+    bufAppend('(');
+    bufAppend("NotArr");
+    bufAppend(' ');
+    bufAppend('[');
+    if (p->typename_) p->typename_->accept(this);
+    bufAppend(']');
     bufAppend(')');
 }
 

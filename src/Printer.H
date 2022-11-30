@@ -140,16 +140,7 @@ public:
 
     void visitMethod(Method *p);
 
-    void visitArrType(ArrType *p); /* abstract class */
-    void visitIntArrType(IntArrType *p);
-
-    void visitStrArrType(StrArrType *p);
-
-    void visitBoolArrType(BoolArrType *p);
-
-    void visitClassArrType(ClassArrType *p);
-
-    void visitType(Type *p); /* abstract class */
+    void visitTypeName(TypeName *p); /* abstract class */
     void visitInt(Int *p);
 
     void visitStr(Str *p);
@@ -158,9 +149,12 @@ public:
 
     void visitVoid(Void *p);
 
+    void visitClass(Class *p);
+
+    void visitType(Type *p); /* abstract class */
     void visitArr(Arr *p);
 
-    void visitClass(Class *p);
+    void visitNotArr(NotArr *p);
 
     void visitExpr(Expr *p); /* abstract class */
     void visitEVar(EVar *p);
@@ -397,16 +391,7 @@ public:
 
     void visitMethod(Method *p);
 
-    void visitArrType(ArrType *p); /* abstract class */
-    void visitIntArrType(IntArrType *p);
-
-    void visitStrArrType(StrArrType *p);
-
-    void visitBoolArrType(BoolArrType *p);
-
-    void visitClassArrType(ClassArrType *p);
-
-    void visitType(Type *p); /* abstract class */
+    void visitTypeName(TypeName *p); /* abstract class */
     void visitInt(Int *p);
 
     void visitStr(Str *p);
@@ -415,9 +400,12 @@ public:
 
     void visitVoid(Void *p);
 
+    void visitClass(Class *p);
+
+    void visitType(Type *p); /* abstract class */
     void visitArr(Arr *p);
 
-    void visitClass(Class *p);
+    void visitNotArr(NotArr *p);
 
     void visitExpr(Expr *p); /* abstract class */
     void visitEVar(EVar *p);

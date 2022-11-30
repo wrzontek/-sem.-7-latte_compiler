@@ -58,7 +58,7 @@ CondElse.  Stmt ::= "if" "(" Expr ")" Stmt "else" Stmt  ;
 
 While.     Stmt ::= "while" "(" Expr ")" Stmt ;
 
-ForEach.   Stmt ::= "for" "(" Type Ident ":" Ident ")" Stmt ;
+ForEach.   Stmt ::= "for" "(" TypeName Ident ":" Ident ")" Stmt ;
 
 SExp.      Stmt ::= Expr  ";" ;
 
@@ -70,7 +70,7 @@ CMember.      ComplexStart ::= Ident "." Ident ;
 
 CMemberB.     ComplexStart ::= "(" Ident ")" "." Ident ;
 
-CArray.       ComplexStart ::= Ident "[" Expr "]" ;
+CArray.       ComplexStart ::= TypeName "[" Expr "]" ; -- sztuczne, musi być Ident tak naprawde
 
 CArrayB.      ComplexStart ::= "(" Ident ")" "[" Expr "]" ;
 
@@ -78,7 +78,7 @@ CFunction.    ComplexStart ::= Ident "(" [Expr] ")" ;
 
 NewObject.    ComplexStart ::= "new" Ident ;
 
-NewArray.     ComplexStart ::= "new" ArrType  "[" Expr "]"  ;
+NewArray.     ComplexStart ::= "new" TypeName  "[" Expr "]"  ; -- sztuczne, musi być Ident tak naprawde
 
 ------------------------------------------------
 
@@ -88,30 +88,21 @@ ArrElement.    ComplexPart ::= "[" Expr "]" ;
 
 Method.        ComplexPart ::= "(" [Expr] ")" ;
 
--- ArrTypes ------------------------------------------------
-
-IntArrType.   ArrType ::= "int" ;
-
-StrArrType.   ArrType ::= "string" ;
-
-BoolArrType.  ArrType ::= "boolean" ;
-
-ClassArrType. ArrType ::= Ident ;
-
 -- Types ---------------------------------------------------
 
-Int.       Type ::= "int" ;
+Int.       TypeName ::= "int" ;
 
-Str.       Type ::= "string" ;
+Str.       TypeName ::= "string" ;
 
-Bool.      Type ::= "boolean" ;
+Bool.      TypeName ::= "boolean" ;
 
-Void.      Type ::= "void" ;
+Void.      TypeName ::= "void" ;
 
-Arr.       Type ::= ArrType "[" "]" ;
+Class.     TypeName ::= Ident ;
 
-Class.     Type ::= Ident ;
+Arr.       Type ::= TypeName "[" "]" ;
 
+NotArr.    Type ::= TypeName ;
 
 -- Expressions ---------------------------------------------
 

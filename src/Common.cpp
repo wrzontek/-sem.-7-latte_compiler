@@ -5,7 +5,7 @@
 #include "Absyn.H"
 
 bool isBasicType(Ident type_name) {
-    return type_name == "int" || type_name == "boolean" || type_name == "string";
+    return type_name == "int" || type_name == "boolean" || type_name == "string" || type_name == "void";
 }
 
 bool isBuiltInFunction(Ident name) {

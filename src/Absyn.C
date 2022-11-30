@@ -745,8 +745,8 @@ While *While::clone() const {
 
 
 /********************   ForEach    ********************/
-ForEach::ForEach(Type *p1, Ident p2, Ident p3, Stmt *p4) {
-    type_ = p1;
+ForEach::ForEach(TypeName *p1, Ident p2, Ident p3, Stmt *p4) {
+    typename_ = p1;
     ident_1 = p2;
     ident_2 = p3;
     stmt_ = p4;
@@ -754,7 +754,7 @@ ForEach::ForEach(Type *p1, Ident p2, Ident p3, Stmt *p4) {
 }
 
 ForEach::ForEach(const ForEach &other) {
-    type_ = other.type_->clone();
+    typename_ = other.typename_->clone();
     ident_1 = other.ident_1;
     ident_2 = other.ident_2;
     stmt_ = other.stmt_->clone();
@@ -768,7 +768,7 @@ ForEach &ForEach::operator=(const ForEach &other) {
 }
 
 void ForEach::swap(ForEach &other) {
-    std::swap(type_, other.type_);
+    std::swap(typename_, other.typename_);
     std::swap(ident_1, other.ident_1);
     std::swap(ident_2, other.ident_2);
     std::swap(stmt_, other.stmt_);
@@ -776,7 +776,7 @@ void ForEach::swap(ForEach &other) {
 }
 
 ForEach::~ForEach() {
-    delete (type_);
+    delete (typename_);
     delete (stmt_);
 
 }
@@ -1013,14 +1013,14 @@ CMemberB *CMemberB::clone() const {
 
 
 /********************   CArray    ********************/
-CArray::CArray(Ident p1, Expr *p2) {
-    ident_ = p1;
+CArray::CArray(TypeName *p1, Expr *p2) {
+    typename_ = p1;
     expr_ = p2;
 
 }
 
 CArray::CArray(const CArray &other) {
-    ident_ = other.ident_;
+    typename_ = other.typename_->clone();
     expr_ = other.expr_->clone();
 
 }
@@ -1032,12 +1032,13 @@ CArray &CArray::operator=(const CArray &other) {
 }
 
 void CArray::swap(CArray &other) {
-    std::swap(ident_, other.ident_);
+    std::swap(typename_, other.typename_);
     std::swap(expr_, other.expr_);
 
 }
 
 CArray::~CArray() {
+    delete (typename_);
     delete (expr_);
 
 }
@@ -1165,14 +1166,14 @@ NewObject *NewObject::clone() const {
 
 
 /********************   NewArray    ********************/
-NewArray::NewArray(ArrType *p1, Expr *p2) {
-    arrtype_ = p1;
+NewArray::NewArray(TypeName *p1, Expr *p2) {
+    typename_ = p1;
     expr_ = p2;
 
 }
 
 NewArray::NewArray(const NewArray &other) {
-    arrtype_ = other.arrtype_->clone();
+    typename_ = other.typename_->clone();
     expr_ = other.expr_->clone();
 
 }
@@ -1184,13 +1185,13 @@ NewArray &NewArray::operator=(const NewArray &other) {
 }
 
 void NewArray::swap(NewArray &other) {
-    std::swap(arrtype_, other.arrtype_);
+    std::swap(typename_, other.typename_);
     std::swap(expr_, other.expr_);
 
 }
 
 NewArray::~NewArray() {
-    delete (arrtype_);
+    delete (typename_);
     delete (expr_);
 
 }
@@ -1308,137 +1309,6 @@ void Method::accept(Visitor *v) {
 
 Method *Method::clone() const {
     return new Method(*this);
-}
-
-
-/********************   IntArrType    ********************/
-IntArrType::IntArrType() {
-
-}
-
-IntArrType::IntArrType(const IntArrType &other) {
-
-}
-
-IntArrType &IntArrType::operator=(const IntArrType &other) {
-    IntArrType tmp(other);
-    swap(tmp);
-    return *this;
-}
-
-void IntArrType::swap(IntArrType &other) {
-
-}
-
-IntArrType::~IntArrType() {
-
-}
-
-void IntArrType::accept(Visitor *v) {
-    v->visitIntArrType(this);
-}
-
-IntArrType *IntArrType::clone() const {
-    return new IntArrType(*this);
-}
-
-
-/********************   StrArrType    ********************/
-StrArrType::StrArrType() {
-
-}
-
-StrArrType::StrArrType(const StrArrType &other) {
-
-}
-
-StrArrType &StrArrType::operator=(const StrArrType &other) {
-    StrArrType tmp(other);
-    swap(tmp);
-    return *this;
-}
-
-void StrArrType::swap(StrArrType &other) {
-
-}
-
-StrArrType::~StrArrType() {
-
-}
-
-void StrArrType::accept(Visitor *v) {
-    v->visitStrArrType(this);
-}
-
-StrArrType *StrArrType::clone() const {
-    return new StrArrType(*this);
-}
-
-
-/********************   BoolArrType    ********************/
-BoolArrType::BoolArrType() {
-
-}
-
-BoolArrType::BoolArrType(const BoolArrType &other) {
-
-}
-
-BoolArrType &BoolArrType::operator=(const BoolArrType &other) {
-    BoolArrType tmp(other);
-    swap(tmp);
-    return *this;
-}
-
-void BoolArrType::swap(BoolArrType &other) {
-
-}
-
-BoolArrType::~BoolArrType() {
-
-}
-
-void BoolArrType::accept(Visitor *v) {
-    v->visitBoolArrType(this);
-}
-
-BoolArrType *BoolArrType::clone() const {
-    return new BoolArrType(*this);
-}
-
-
-/********************   ClassArrType    ********************/
-ClassArrType::ClassArrType(Ident p1) {
-    ident_ = p1;
-
-}
-
-ClassArrType::ClassArrType(const ClassArrType &other) {
-    ident_ = other.ident_;
-
-}
-
-ClassArrType &ClassArrType::operator=(const ClassArrType &other) {
-    ClassArrType tmp(other);
-    swap(tmp);
-    return *this;
-}
-
-void ClassArrType::swap(ClassArrType &other) {
-    std::swap(ident_, other.ident_);
-
-}
-
-ClassArrType::~ClassArrType() {
-
-}
-
-void ClassArrType::accept(Visitor *v) {
-    v->visitClassArrType(this);
-}
-
-ClassArrType *ClassArrType::clone() const {
-    return new ClassArrType(*this);
 }
 
 
@@ -1570,42 +1440,6 @@ Void *Void::clone() const {
 }
 
 
-/********************   Arr    ********************/
-Arr::Arr(ArrType *p1) {
-    arrtype_ = p1;
-
-}
-
-Arr::Arr(const Arr &other) {
-    arrtype_ = other.arrtype_->clone();
-
-}
-
-Arr &Arr::operator=(const Arr &other) {
-    Arr tmp(other);
-    swap(tmp);
-    return *this;
-}
-
-void Arr::swap(Arr &other) {
-    std::swap(arrtype_, other.arrtype_);
-
-}
-
-Arr::~Arr() {
-    delete (arrtype_);
-
-}
-
-void Arr::accept(Visitor *v) {
-    v->visitArr(this);
-}
-
-Arr *Arr::clone() const {
-    return new Arr(*this);
-}
-
-
 /********************   Class    ********************/
 Class::Class(Ident p1) {
     ident_ = p1;
@@ -1638,6 +1472,78 @@ void Class::accept(Visitor *v) {
 
 Class *Class::clone() const {
     return new Class(*this);
+}
+
+
+/********************   Arr    ********************/
+Arr::Arr(TypeName *p1) {
+    typename_ = p1;
+
+}
+
+Arr::Arr(const Arr &other) {
+    typename_ = other.typename_->clone();
+
+}
+
+Arr &Arr::operator=(const Arr &other) {
+    Arr tmp(other);
+    swap(tmp);
+    return *this;
+}
+
+void Arr::swap(Arr &other) {
+    std::swap(typename_, other.typename_);
+
+}
+
+Arr::~Arr() {
+    delete (typename_);
+
+}
+
+void Arr::accept(Visitor *v) {
+    v->visitArr(this);
+}
+
+Arr *Arr::clone() const {
+    return new Arr(*this);
+}
+
+
+/********************   NotArr    ********************/
+NotArr::NotArr(TypeName *p1) {
+    typename_ = p1;
+
+}
+
+NotArr::NotArr(const NotArr &other) {
+    typename_ = other.typename_->clone();
+
+}
+
+NotArr &NotArr::operator=(const NotArr &other) {
+    NotArr tmp(other);
+    swap(tmp);
+    return *this;
+}
+
+void NotArr::swap(NotArr &other) {
+    std::swap(typename_, other.typename_);
+
+}
+
+NotArr::~NotArr() {
+    delete (typename_);
+
+}
+
+void NotArr::accept(Visitor *v) {
+    v->visitNotArr(this);
+}
+
+NotArr *NotArr::clone() const {
+    return new NotArr(*this);
 }
 
 

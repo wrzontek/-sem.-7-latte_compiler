@@ -32,7 +32,7 @@ public:
                                  bool is_method) {
         if (!return_type->canBeReturned()) {
             throwError(line_number, char_number,
-                       "invalid return type"); // w sumie to chyba dowolny typ może być ale niech zostanie
+                       "invalid return type");
         }
 
         auto dummy_vector = std::vector<CVar *>();
@@ -89,7 +89,7 @@ public:
             }
         }
 
-        if (!arg->type_->canBeArg()) { // np void nie może być
+        if (!arg->type_->canBeArg()) {
             throwError(arg->line_number, arg->char_number, "invalid argument type");
         }
 

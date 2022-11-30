@@ -303,7 +303,7 @@ public:
             throwError(stmt->line_number, stmt->char_number, "cannot iterate over non-array");
         }
 
-        auto iterator_type = typeVisitor->getType(stmt->type_);
+        auto iterator_type = typeVisitor->getType(stmt->typename_);
         if (iterator_type->is_array || iterator_type->name != array->type->name) {
             throwError(stmt->line_number, stmt->char_number, "invalid iterator type");
         }

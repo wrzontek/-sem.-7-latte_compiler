@@ -66,7 +66,7 @@ extern yyscan_t latte__initialize_lexer(FILE * inp);
   ListItem* listitem_;
   ComplexStart* complexstart_;
   ComplexPart* complexpart_;
-  ArrType* arrtype_;
+  TypeName* typename_;
   Type* type_;
   Expr* expr_;
   ListComplexPart* listcomplexpart_;
@@ -149,7 +149,7 @@ extern int yylex(YYSTYPE *lvalp, YYLTYPE *llocp, yyscan_t scanner);
 %type <listitem_> ListItem
 %type <complexstart_> ComplexStart
 %type <complexpart_> ComplexPart
-%type <arrtype_> ArrType
+%type <typename_> TypeName
 %type <type_> Type
 %type <expr_> Expr6
 %type <listcomplexpart_> ListComplexPart
@@ -205,7 +205,7 @@ Stmt : _SEMI { $$ = new Empty(); $$->line_number = @$.first_line; $$->char_numbe
   | _KW_if _LPAREN Expr _RPAREN Stmt { $$ = new Cond($3, $5); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _KW_if _LPAREN Expr _RPAREN Stmt _KW_else Stmt { $$ = new CondElse($3, $5, $7); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _KW_while _LPAREN Expr _RPAREN Stmt { $$ = new While($3, $5); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
-  | _KW_for _LPAREN Type _IDENT_ _COLON _IDENT_ _RPAREN Stmt { $$ = new ForEach($3, $4, $6, $8); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
+  | _KW_for _LPAREN TypeName _IDENT_ _COLON _IDENT_ _RPAREN Stmt { $$ = new ForEach($3, $4, $6, $8); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | Expr _SEMI { $$ = new SExp($1); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
 ;
 Item : _IDENT_ { $$ = new NoInit($1); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
@@ -217,27 +217,24 @@ ListItem : Item { $$ = new ListItem(); $$->push_back($1); }
 ComplexStart : _LPAREN ComplexStart _RPAREN { $$ = new CBracketed($2); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _IDENT_ _DOT _IDENT_ { $$ = new CMember($1, $3); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _LPAREN _IDENT_ _RPAREN _DOT _IDENT_ { $$ = new CMemberB($2, $5); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
-  | _IDENT_ _LBRACK Expr _RBRACK { $$ = new CArray($1, $3); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
+  | TypeName _LBRACK Expr _RBRACK { $$ = new CArray($1, $3); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _LPAREN _IDENT_ _RPAREN _LBRACK Expr _RBRACK { $$ = new CArrayB($2, $5); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _IDENT_ _LPAREN ListExpr _RPAREN { std::reverse($3->begin(),$3->end()) ;$$ = new CFunction($1, $3); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _KW_new _IDENT_ { $$ = new NewObject($2); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
-  | _KW_new ArrType _LBRACK Expr _RBRACK { $$ = new NewArray($2, $4); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
+  | _KW_new TypeName _LBRACK Expr _RBRACK { $$ = new NewArray($2, $4); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
 ;
 ComplexPart : _DOT _IDENT_ { $$ = new Variable($2); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _LBRACK Expr _RBRACK { $$ = new ArrElement($2); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _LPAREN ListExpr _RPAREN { std::reverse($2->begin(),$2->end()) ;$$ = new Method($2); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
 ;
-ArrType : _KW_int { $$ = new IntArrType(); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
-  | _KW_string { $$ = new StrArrType(); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
-  | _KW_boolean { $$ = new BoolArrType(); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
-  | _IDENT_ { $$ = new ClassArrType($1); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
-;
-Type : _KW_int { $$ = new Int(); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
+TypeName : _KW_int { $$ = new Int(); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _KW_string { $$ = new Str(); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _KW_boolean { $$ = new Bool(); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _KW_void { $$ = new Void(); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
-  | ArrType _LBRACK _RBRACK { $$ = new Arr($1); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _IDENT_ { $$ = new Class($1); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
+;
+Type : TypeName _LBRACK _RBRACK { $$ = new Arr($1); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
+  | TypeName { $$ = new NotArr($1); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
 ;
 Expr6 : _IDENT_ { $$ = new EVar($1); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _LPAREN _IDENT_ _RPAREN { $$ = new EBracketVar($2); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }

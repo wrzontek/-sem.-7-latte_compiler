@@ -18,7 +18,7 @@ void Skeleton::visitStmt(Stmt *t) {} //abstract class
 void Skeleton::visitItem(Item *t) {} //abstract class
 void Skeleton::visitComplexStart(ComplexStart *t) {} //abstract class
 void Skeleton::visitComplexPart(ComplexPart *t) {} //abstract class
-void Skeleton::visitArrType(ArrType *t) {} //abstract class
+void Skeleton::visitTypeName(TypeName *t) {} //abstract class
 void Skeleton::visitType(Type *t) {} //abstract class
 void Skeleton::visitExpr(Expr *t) {} //abstract class
 void Skeleton::visitAddOp(AddOp *t) {} //abstract class
@@ -176,7 +176,7 @@ void Skeleton::visitWhile(While *while_) {
 void Skeleton::visitForEach(ForEach *for_each) {
     /* Code For ForEach Goes Here */
 
-    if (for_each->type_) for_each->type_->accept(this);
+    if (for_each->typename_) for_each->typename_->accept(this);
     visitIdent(for_each->ident_1);
     visitIdent(for_each->ident_2);
     if (for_each->stmt_) for_each->stmt_->accept(this);
@@ -231,7 +231,7 @@ void Skeleton::visitCMemberB(CMemberB *c_member_b) {
 void Skeleton::visitCArray(CArray *c_array) {
     /* Code For CArray Goes Here */
 
-    visitIdent(c_array->ident_);
+    if (c_array->typename_) c_array->typename_->accept(this);
     if (c_array->expr_) c_array->expr_->accept(this);
 
 }
@@ -262,7 +262,7 @@ void Skeleton::visitNewObject(NewObject *new_object) {
 void Skeleton::visitNewArray(NewArray *new_array) {
     /* Code For NewArray Goes Here */
 
-    if (new_array->arrtype_) new_array->arrtype_->accept(this);
+    if (new_array->typename_) new_array->typename_->accept(this);
     if (new_array->expr_) new_array->expr_->accept(this);
 
 }
@@ -285,31 +285,6 @@ void Skeleton::visitMethod(Method *method) {
     /* Code For Method Goes Here */
 
     if (method->listexpr_) method->listexpr_->accept(this);
-
-}
-
-void Skeleton::visitIntArrType(IntArrType *int_arr_type) {
-    /* Code For IntArrType Goes Here */
-
-
-}
-
-void Skeleton::visitStrArrType(StrArrType *str_arr_type) {
-    /* Code For StrArrType Goes Here */
-
-
-}
-
-void Skeleton::visitBoolArrType(BoolArrType *bool_arr_type) {
-    /* Code For BoolArrType Goes Here */
-
-
-}
-
-void Skeleton::visitClassArrType(ClassArrType *class_arr_type) {
-    /* Code For ClassArrType Goes Here */
-
-    visitIdent(class_arr_type->ident_);
 
 }
 
@@ -337,17 +312,24 @@ void Skeleton::visitVoid(Void *void_) {
 
 }
 
-void Skeleton::visitArr(Arr *arr) {
-    /* Code For Arr Goes Here */
-
-    if (arr->arrtype_) arr->arrtype_->accept(this);
-
-}
-
 void Skeleton::visitClass(Class *class_) {
     /* Code For Class Goes Here */
 
     visitIdent(class_->ident_);
+
+}
+
+void Skeleton::visitArr(Arr *arr) {
+    /* Code For Arr Goes Here */
+
+    if (arr->typename_) arr->typename_->accept(this);
+
+}
+
+void Skeleton::visitNotArr(NotArr *not_arr) {
+    /* Code For NotArr Goes Here */
+
+    if (not_arr->typename_) not_arr->typename_->accept(this);
 
 }
 
