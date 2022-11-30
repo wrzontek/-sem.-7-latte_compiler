@@ -1,8 +1,0 @@
-int main() {
-    int l = (new int[1]).length;
-//    string[] a = new string[1];
-//    int a = (new int[1])[0];
-//    int []arr;
-//    int ll = (arr).length;
-    return 4;
-}

@@ -15,6 +15,7 @@ public:
     std::vector<CVar *> defined_variables;
     std::map<Ident, int> variable_to_depth;
     int current_depth;
+    bool can_declare = true;
 
     CFun *current_function; // or method, whatever
     CClass *current_class;
@@ -147,6 +148,7 @@ public:
     }
 
     void visitBStmt(BStmt *stmt) override {
+        can_declare = true;
         stmt->block_->accept(this);
     }
 
@@ -157,6 +159,9 @@ public:
     }
 
     void visitDecl(Decl *stmt) override {
+        if (!can_declare)
+            throwError(stmt->line_number, stmt->char_number, "cannot declare variable in blockless cond statement");
+
         auto typeVisitor = new Type_Visitor(defined_classes, defined_variables, defined_global_functions);
         current_type = typeVisitor->getType(stmt->type_);
         if (current_type->name == "void")
@@ -280,9 +285,11 @@ public:
         }
         delete (typeVisitor);
 
+        can_declare = false;
         bool always_returning_backup = always_returning;
         stmt->stmt_->accept(this);
         bool if_true_always_returning = always_returning;
+        can_declare = true;
 
         always_returning = always_returning_backup ||
                            (if_true_always_returning && stmt->expr_->isAlwaysTrue());
@@ -325,9 +332,11 @@ public:
         }
         delete (typeVisitor);
 
+        can_declare = false;
         bool always_returning_backup = always_returning;
         stmt->stmt_->accept(this);
         bool if_true_always_returning = always_returning;
+        can_declare = true;
 
         always_returning = always_returning_backup ||
                            (if_true_always_returning && stmt->expr_->isAlwaysTrue());
@@ -342,12 +351,15 @@ public:
         }
         delete (typeVisitor);
 
+        can_declare = false;
         bool always_returning_backup = always_returning;
         stmt->stmt_1->accept(this);
         bool if_true_always_returning = always_returning;
 
+        can_declare = false;
         stmt->stmt_2->accept(this);
         bool if_false_always_returning = always_returning;
+        can_declare = true;
 
         always_returning = always_returning_backup ||
                            (if_true_always_returning && if_false_always_returning) ||

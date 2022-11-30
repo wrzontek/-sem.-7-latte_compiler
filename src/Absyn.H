@@ -517,6 +517,9 @@ public:
 
     virtual bool isAlwaysFalse() { return false; }
 
+    virtual int get_const_value() { return -1; } // only call when is_const_value() == true
+    virtual bool is_const_value() { return false; }
+
     int line_number;
     int char_number;
 };
@@ -542,6 +545,8 @@ public:
 class RelOp : public Visitable {
 public:
     virtual RelOp *clone() const = 0;
+
+    virtual bool compare(int a, int b) = 0;
 
     virtual std::vector <Ident> allowed_types() const = 0;
 
@@ -1487,6 +1492,11 @@ public:
 
 class ELitInt : public Expr {
 public:
+
+    bool is_const_value() override { return true; }
+
+    int get_const_value() override { return integer_; }
+
     Integer integer_;
 
     ELitInt(const ELitInt &);
@@ -1588,6 +1598,15 @@ public:
 
 class Not : public Expr {
 public:
+
+    bool isAlwaysTrue() override {
+        return expr_->isAlwaysFalse();
+    }
+
+    bool isAlwaysFalse() override {
+        return expr_->isAlwaysTrue();
+    }
+
     Expr *expr_;
 
     Not(const Not &);
@@ -1653,6 +1672,25 @@ public:
     RelOp *relop_;
     Expr *expr_2;
 
+    bool isAlwaysTrue() override {
+        if (expr_1->is_const_value() && expr_2->is_const_value()) {
+            int a = expr_1->get_const_value();
+            int b = expr_2->get_const_value();
+            return relop_->compare(a, b);
+        }
+        return false;
+    }
+
+    bool isAlwaysFalse() override {
+        if (expr_1->is_const_value() && expr_2->is_const_value()) {
+            int a = expr_1->get_const_value();
+            int b = expr_2->get_const_value();
+            return !relop_->compare(a, b);
+        }
+        return false;
+    }
+
+
     ERel(const ERel &);
 
     ERel &operator=(const ERel &);
@@ -1670,6 +1708,15 @@ public:
 
 class EAnd : public Expr {
 public:
+
+    bool isAlwaysTrue() override {
+        return expr_1->isAlwaysTrue() && expr_2->isAlwaysTrue();
+    }
+
+    bool isAlwaysFalse() override {
+        return expr_1->isAlwaysFalse() || expr_2->isAlwaysFalse();
+    }
+
     Expr *expr_1;
     Expr *expr_2;
 
@@ -1690,6 +1737,15 @@ public:
 
 class EOr : public Expr {
 public:
+
+    bool isAlwaysTrue() override {
+        return expr_1->isAlwaysTrue() || expr_2->isAlwaysTrue();
+    }
+
+    bool isAlwaysFalse() override {
+        return expr_1->isAlwaysFalse() && expr_2->isAlwaysFalse();
+    }
+
     Expr *expr_1;
     Expr *expr_2;
 
@@ -1814,6 +1870,10 @@ public:
 class LTH : public RelOp {
 public:
 
+    bool compare(int a, int b) {
+        return a < b;
+    };
+
     virtual std::vector <Ident> allowed_types() const {
         auto v = std::vector<Ident>();
         v.push_back("int");
@@ -1837,6 +1897,10 @@ public:
 
 class LE : public RelOp {
 public:
+
+    bool compare(int a, int b) {
+        return a <= b;
+    };
 
     virtual std::vector <Ident> allowed_types() const {
         auto v = std::vector<Ident>();
@@ -1862,6 +1926,10 @@ public:
 class GTH : public RelOp {
 public:
 
+    bool compare(int a, int b) {
+        return a > b;
+    };
+
     virtual std::vector <Ident> allowed_types() const {
         auto v = std::vector<Ident>();
         v.push_back("int");
@@ -1885,6 +1953,9 @@ public:
 
 class GE : public RelOp {
 public:
+    bool compare(int a, int b) {
+        return a >= b;
+    };
 
     virtual std::vector <Ident> allowed_types() const {
         auto v = std::vector<Ident>();
@@ -1909,6 +1980,10 @@ public:
 
 class EQU : public RelOp {
 public:
+
+    bool compare(int a, int b) {
+        return a == b;
+    };
 
     virtual std::vector <Ident> allowed_types() const {
         auto v = std::vector<Ident>();
@@ -1935,6 +2010,10 @@ public:
 
 class NE : public RelOp {
 public:
+
+    bool compare(int a, int b) {
+        return a != b;
+    };
 
     virtual std::vector <Ident> allowed_types() const {
         auto v = std::vector<Ident>();

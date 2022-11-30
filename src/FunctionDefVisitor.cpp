@@ -35,7 +35,8 @@ public:
                        "invalid return type"); // w sumie to chyba dowolny typ może być ale niech zostanie
         }
 
-        typeVisitor = new Type_Visitor(defined_classes, std::vector<CVar *>(), defined_functions);
+        auto dummy_vector = std::vector<CVar *>();
+        typeVisitor = new Type_Visitor(defined_classes, dummy_vector, defined_functions);
         CType *creturn_type = typeVisitor->getType(return_type);
         delete (typeVisitor);
 
@@ -93,7 +94,8 @@ public:
         }
 
         current_arg_name = arg->ident_;
-        typeVisitor = new Type_Visitor(defined_classes, std::vector<CVar *>(), defined_functions);
+        auto dummy_vector = std::vector<CVar *>();
+        typeVisitor = new Type_Visitor(defined_classes, dummy_vector, defined_functions);
         CType *arg_type = typeVisitor->getType(arg->type_);
         delete (typeVisitor);
 

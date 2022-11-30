@@ -7,15 +7,15 @@
 
 class Type_Visitor : public Skeleton {
 public:
-    std::vector<CClass *> defined_classes; // todo te defined rzeczy mógłby dostawać referencje bo i tak ich nie zmienia
-    std::vector<CVar *> defined_variables;
-    std::vector<CFun *> defined_global_functions;
+    std::vector<CClass *> &defined_classes;
+    std::vector<CVar *> &defined_variables;
+    std::vector<CFun *> &defined_global_functions;
 
     CType *current_type = nullptr;
     std::vector<CVar *> current_call_arguments = std::vector<CVar *>();
 
-    explicit Type_Visitor(std::vector<CClass *> defined_classes, std::vector<CVar *> defined_variables,
-                          std::vector<CFun *> defined_global_functions)
+    explicit Type_Visitor(std::vector<CClass *> &defined_classes, std::vector<CVar *> &defined_variables,
+                          std::vector<CFun *> &defined_global_functions)
             : defined_classes(defined_classes), defined_variables(defined_variables),
               defined_global_functions(defined_global_functions) {}
 
