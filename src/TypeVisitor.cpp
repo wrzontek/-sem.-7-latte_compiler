@@ -310,16 +310,17 @@ public:
     }
 
     void visitNewObject(NewObject *c) override { // new <class> / new int
-        if (!isBasicType(c->ident_)) {
-            if (c->ident_ == "void")
+        auto type = getTypeNameType(c->typename_);
+        if (!isBasicType(type->name)) {
+            if (type->name == "void")
                 throwError(c->line_number, c->char_number, "cannot create void-type object or array");
 
-            getClass(c->ident_, c->line_number, c->line_number); // make sure class exists
+            getClass(type->name, c->line_number, c->line_number); // make sure class exists
         } else {
             throwError(c->line_number, c->char_number, "can't 'new' basic non-array type");
         }
 
-        current_type = new CType(c->ident_, false);
+        current_type = new CType(type->name, false);
     }
 
     void visitNewArray(NewArray *c) override { // (new <class>[1]) / (new int[1])

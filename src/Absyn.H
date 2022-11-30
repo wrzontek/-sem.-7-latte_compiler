@@ -1124,13 +1124,13 @@ public:
 
 class NewObject : public ComplexStart {
 public:
-    Ident ident_;
+    TypeName *typename_;
 
     NewObject(const NewObject &);
 
     NewObject &operator=(const NewObject &);
 
-    NewObject(Ident p1);
+    NewObject(TypeName *p1);
 
     ~NewObject();
 

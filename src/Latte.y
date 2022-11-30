@@ -220,7 +220,7 @@ ComplexStart : _LPAREN ComplexStart _RPAREN { $$ = new CBracketed($2); $$->line_
   | TypeName _LBRACK Expr _RBRACK { $$ = new CArray($1, $3); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _LPAREN _IDENT_ _RPAREN _LBRACK Expr _RBRACK { $$ = new CArrayB($2, $5); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _IDENT_ _LPAREN ListExpr _RPAREN { std::reverse($3->begin(),$3->end()) ;$$ = new CFunction($1, $3); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
-  | _KW_new _IDENT_ { $$ = new NewObject($2); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
+  | _KW_new TypeName { $$ = new NewObject($2); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
   | _KW_new TypeName _LBRACK Expr _RBRACK { $$ = new NewArray($2, $4); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }
 ;
 ComplexPart : _DOT _IDENT_ { $$ = new Variable($2); $$->line_number = @$.first_line; $$->char_number = @$.first_column; }

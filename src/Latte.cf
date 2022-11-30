@@ -76,10 +76,9 @@ CArrayB.      ComplexStart ::= "(" Ident ")" "[" Expr "]" ;
 
 CFunction.    ComplexStart ::= Ident "(" [Expr] ")" ;
 
-NewObject.    ComplexStart ::= "new" Ident ;
+NewObject.    ComplexStart ::= "new" TypeName ; -- sztuczne, musi być Ident tak naprawde
 
-NewArray.     ComplexStart ::= "new" TypeName  "[" Expr "]"  ; -- sztuczne, musi być Ident tak naprawde
-
+NewArray.     ComplexStart ::= "new" TypeName  "[" Expr "]"  ;
 ------------------------------------------------
 
 Variable.      ComplexPart ::=  "." Ident ;
