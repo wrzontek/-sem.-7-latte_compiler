@@ -15,6 +15,8 @@
 #include "Absyn.H"
 #include "ParserError.H"
 #include "TypeChecker.cpp"
+#include "FourValueTranslatorVisitor.cpp"
+#include <filesystem>
 
 void usage() {
     printf("usage: Call with one of the following argument combinations:\n");
@@ -69,6 +71,12 @@ int main(int argc, char **argv) {
         type_checker->checkCorrectness();
         std::cerr << "OK\n";
         delete (type_checker);
+
+        auto path = std::filesystem::path(filename);
+        auto four_value_translator = new FourValueTranslatorVisitor(parse_tree, path.replace_extension("FVC"));
+        parse_tree->accept(four_value_translator);
+        four_value_translator->close();
+        
         delete (parse_tree);
         return 0;
     }

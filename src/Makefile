@@ -51,5 +51,6 @@ Skeleton.o : Skeleton.C Skeleton.H Absyn.H
 
 Main.o : Main.C Parser.H Printer.H Absyn.H TypeChecker.cpp \
 		 FunctionDefVisitor.cpp Common.cpp ClassDefNameOnlyVisitor.cpp \
-		 TypeVisitor.cpp ClassDefVisitor.cpp FunctionBodyVisitor.cpp
+		 TypeVisitor.cpp ClassDefVisitor.cpp FunctionBodyVisitor.cpp \
+		 FourValueTranslatorVisitor.cpp
 	${CXX} ${CXXFLAGS} -c Main.C
