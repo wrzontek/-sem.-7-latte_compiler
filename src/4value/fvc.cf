@@ -4,18 +4,18 @@ Prog. Program ::= [CodeBlock] ;
 
 Block.        CodeBlock ::= Ident ":" [NonJmpStmt] JmpStmt;
 
-StmtBinOp.      NonJmpStmt ::= Ident ":=" Atom ArithOp Atom ;
+StmtBinOp.      NonJmpStmt ::= Ident ":=" Atom BinOp Atom ;
 StmtNoOp.       NonJmpStmt ::= Ident ":=" Atom ;
 StmtCallAss.    NonJmpStmt ::= Ident ":=" Call ;
 StmtCallExpr.   NonJmpStmt ::= Call ;
 StmtInc.        NonJmpStmt ::= Ident "++" ;
 StmtDecr.       NonJmpStmt ::= Ident "--" ;
 
-FunctionCall.   Call ::= "call" Ident [ Atom ] ;
+FunctionCall.   Call ::= "_call" Ident [ Atom ] ;
 
 StmtGoto.           JmpStmt ::= "goto" Ident ; -- todo trzeba uważać na zmienne nazwana goto itp
-StmtGoNext.         JmpStmt ::= "__go_next__;
-StmtCondJmp.        JmpStmt ::= "if" Atom RelOp Atom "then" "goto" Ident "else" "goto" Ident;
+StmtGoNext.         JmpStmt ::= "_go_next;
+StmtCondJmp.        JmpStmt ::= "if" Atom "then" "goto" Ident "else" "goto" Ident;
 StmtRet.            JmpStmt ::= "return" Atom ;
 StmtVRet.           JmpStmt ::= "return" ; -- todo konflikt? chyba niegroźny shift/reduce
 
@@ -23,18 +23,20 @@ AtomVar.   Atom ::= Ident ; -- variable or string constant
 AtomInt.   Atom ::= Integer ;
 AtomStr.   Atom ::= String ;
 
-AddOp.  ArithOp ::= "+" ;
-SubOp.  ArithOp ::= "-" ;
-MulOp.  ArithOp ::= "*" ;
-DivOp.  ArithOp ::= "/" ;
-ModOp.  ArithOp ::= "%" ;
+AddOp.      BinOp ::= "+" ;
+SubOp.      BinOp ::= "-" ;
+MulOp.      BinOp ::= "*" ;
+DivOp.      BinOp ::= "/" ;
+ModOp.      BinOp ::= "%" ;
+AndOp.      BinOp ::= "&&" ;
+OrOp.       BinOp ::= "||" ;
 
-LTH.       RelOp ::= "<" ;
-LE.        RelOp ::= "<=" ;
-GTH.       RelOp ::= ">" ;
-GE.        RelOp ::= ">=" ;
-EQU.       RelOp ::= "==" ;
-NE.        RelOp ::= "!=" ;
+LTH.       BinOp ::= "<" ;
+LE.        BinOp ::= "<=" ;
+GTH.       BinOp ::= ">" ;
+GE.        BinOp ::= ">=" ;
+EQU.       BinOp ::= "==" ;
+NE.        BinOp ::= "!=" ;
 
 separator CodeBlock "" ;
 separator NonJmpStmt "" ;
