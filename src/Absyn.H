@@ -540,6 +540,10 @@ public:
 
 class RelOp : public Visitable {
 public:
+    virtual bool isEQUNE() {
+        return false;
+    }
+
     virtual RelOp *clone() const = 0;
 
     virtual bool compare(int a, int b) = 0;
@@ -1944,6 +1948,10 @@ public:
 class EQU : public RelOp {
 public:
 
+    bool isEQUNE() override {
+        return true;
+    }
+
     bool compare(int a, int b) {
         return a == b;
     };
@@ -1974,6 +1982,10 @@ public:
 
 class NE : public RelOp {
 public:
+
+    bool isEQUNE() override {
+        return true;
+    }
 
     bool compare(int a, int b) {
         return a != b;

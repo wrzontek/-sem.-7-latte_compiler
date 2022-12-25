@@ -6,12 +6,9 @@ Block.        CodeBlock ::= Ident ":" [NonJmpStmt] JmpStmt;
 
 StmtBinOp.      NonJmpStmt ::= Ident ":=" Atom BinOp Atom ;
 StmtNoOp.       NonJmpStmt ::= Ident ":=" Atom ;
-StmtCallAss.    NonJmpStmt ::= Ident ":=" Call ;
-StmtCallExpr.   NonJmpStmt ::= Call ;
+StmtCall.    NonJmpStmt ::= Ident ":=" "_call" Ident [ Atom ] ;
 StmtInc.        NonJmpStmt ::= Ident "++" ;
 StmtDecr.       NonJmpStmt ::= Ident "--" ;
-
-FunctionCall.   Call ::= "_call" Ident [ Atom ] ;
 
 StmtGoto.           JmpStmt ::= "goto" Ident ; -- todo trzeba uważać na zmienne nazwana goto itp
 StmtGoNext.         JmpStmt ::= "_go_next;

@@ -1,23 +1,26 @@
-f:
-	return 123
-
 b:
-	_call printString s
-	return 1
+	return b
 
 main:
-	_t1 := 2 > 1
-	_t2 := 1 < 2
-	_t3 := _t1 || _t2
-	if _t3 then goto _if_true_1 else goto _end_if_1
+	y := 0
+	x := 0
+	if x then goto _true_l1 else goto _middle_l3
+_middle_l3:
+	if y then goto _true_l1 else goto _false_l2
+_true_l1:
+	_t1 := 1
+	_goto _end_l4
+_false_l2:
+	_t1 := 0
+	_goto _end_l4
+_end_l4:
+	if _t1 then goto _if_true_1 else goto _after_if_true_1
 _if_true_1:
-	_call printInt 123
-	_go_next
-_end_if_1:
-	a := "asdasdasda"
-	_t4 := _call b "1 shouldn't be called"
-	_t5 := 1 || _t4
-	_t6 := _call b "2 should be called"
-	_t7 := 1 && _t6
+	_t2 := ! y
+	x := _t2
+	_t3 := ! x
+	y := _t3
+	_goto _after_if_true_1
+_after_if_true_1:
 	return 0
 
