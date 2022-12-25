@@ -18,6 +18,7 @@ private:
     Ident current_decl_type;
     Ident current_operator;
     Ident result; // register or constant
+    bool is_result_atomic;
 
     int current_call = 0;
     std::map<int, Ident> call_to_args_string;
@@ -41,6 +42,11 @@ public:
         return std::string("_t" + std::to_string(next_t_var_number));
     }
 
+    Ident next_t_block() {
+        next_t_block_number++;
+        return std::string("_t" + std::to_string(next_t_block_number));
+    }
+
     void close() {
         output_file.close();
     }
@@ -61,8 +67,6 @@ public:
         fnDef->block_->accept(this);
         emitRaw("\n");
     }
-
-    void visitBStmt(BStmt *stmt) override {} // TODO
 
     void visitDecl(Decl *stmt) override {
         current_decl_type = typeVisitor->getType(stmt->type_)->name;
@@ -108,7 +112,42 @@ public:
         emitLine("return");
     }
 
-    void visitCond(Cond *stmt) override {} // todo
+    void visitBStmt(BStmt *stmt) override { // todo musi się zachowyać mądrzej przy ifie/pętlach
+        auto t_block = next_t_block();
+        emitLine("_go_next");
+        emitRaw(t_block + ":\n");
+
+        stmt->block_->accept(this);
+
+        emitLine("_go_next");
+        emitRaw("_after" + t_block + ":\n");
+    }
+
+    void visitCond(Cond *stmt) override {
+        stmt->expr_->accept(this);
+        Ident cond_atom;
+        if (is_result_atomic) {
+            cond_atom = result;
+        } else {
+            cond_atom = next_t_var();
+            emitLine(cond_atom + " := " + result);
+        }
+
+        if (stmt->stmt_->isBlock()) {
+            // TODO
+        } else {
+            next_t_block_number++;
+            auto if_true = "_if_true_" + std::to_string(next_t_block_number);
+            auto end_if = "_end_if_" + std::to_string(next_t_block_number);
+            emitLine("if " + cond_atom + " then goto " + if_true + " else goto " + end_if);
+            emitRaw(if_true + ":\n");
+
+            stmt->stmt_->accept(this);
+            emitLine("_go_next");
+            emitRaw(end_if + ":\n");
+        }
+//        emitLine("if " + t_var + "then goto _after_t" + next_t_block_number);
+    }
 
     void visitCondElse(CondElse *stmt) override {} // todo
 
@@ -130,6 +169,7 @@ public:
         expr->listexpr_->accept(this);
 
         result = "_call " + expr->ident_ + call_to_args_string[current_call];
+        is_result_atomic = false;
         call_to_args_string.erase(current_call);
 
         current_call--;
@@ -140,19 +180,26 @@ public:
             (*i)->accept(this);
 
             if (current_call > 0) {
-                auto t_var = next_t_var();
-                emitLine(t_var + " := " + result);
-                call_to_args_string[current_call] += " " + t_var;
+                Ident arg;
+                if (is_result_atomic) {
+                    arg = result;
+                } else {
+                    arg = next_t_var();
+                    emitLine(arg + " := " + result);
+                }
+                call_to_args_string[current_call] += " " + arg;
             }
         }
     }
 
     void visitEVar(EVar *expr) override {
         result = expr->ident_;
+        is_result_atomic = true;
     }
 
     void visitEBracketVar(EBracketVar *expr) override {
         result = expr->ident_;
+        is_result_atomic = true;
     }
 
 //    void visitEComplex(EComplex *expr) override {} // todo teraz tylko CFunction więc jest git, potem rozwinąć
@@ -161,18 +208,22 @@ public:
 
     void visitELitInt(ELitInt *expr) override {
         result = std::to_string(expr->integer_);
+        is_result_atomic = true;
     }
 
     void visitELitTrue(ELitTrue *expr) override {
         result = "1";
+        is_result_atomic = true;
     }
 
     void visitELitFalse(ELitFalse *expr) override {
         result = "0";
+        is_result_atomic = true;
     }
 
     void visitEString(EString *expr) override {
-        result = expr->string_;
+        result = "\"" + expr->string_ + "\"";
+        is_result_atomic = true;
     }
 
     void visitNeg(Neg *expr) override {
@@ -180,6 +231,7 @@ public:
         Ident t_var = next_t_var();
         emitLine(t_var + " := - " + result);
         result = t_var;
+        is_result_atomic = true;
     }
 
     void visitNot(Not *expr) override {
@@ -187,6 +239,7 @@ public:
         Ident t_var = next_t_var();
         emitLine(t_var + " := ! " + result);
         result = t_var;
+        is_result_atomic = true;
     }
 
     void visitEMul(EMul *expr) override {
@@ -218,12 +271,23 @@ public:
         Ident operator_ = current_operator;
         e1->accept(this);
         Ident left = result;
+        if (!is_result_atomic) {
+            Ident t_var = next_t_var();
+            emitLine(t_var + " := " + result);
+            left = t_var;
+        }
         e2->accept(this);
         Ident right = result;
+        if (!is_result_atomic) {
+            Ident t_var = next_t_var();
+            emitLine(t_var + " := " + result);
+            right = t_var;
+        }
 
         Ident t_var = next_t_var();
         emitLine(t_var + " := " + left + operator_ + right);
         result = t_var;
+        is_result_atomic = true;
     }
 
     void visitPlus(Plus *op) override { current_operator = " + "; }

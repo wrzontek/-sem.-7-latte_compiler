@@ -447,6 +447,10 @@ public:
 
 class Stmt : public Visitable {
 public:
+    virtual bool isBlock() {
+        return false;
+    };
+
     virtual Stmt *clone() const = 0;
 
     int line_number;
@@ -730,6 +734,10 @@ public:
 
 class BStmt : public Stmt {
 public:
+    bool isBlock() override {
+        return true;
+    };
+
     Block *block_;
 
     BStmt(const BStmt &);

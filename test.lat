@@ -2,12 +2,21 @@ int f(int a, string s, int c, int d) {
     return 123;
 }
 
-int g(int a) {
-    return a * a;
+//int g(int a) {
+//    return a * a;
+//}
+boolean b(string s) {
+    printString(s);
+    return true;
 }
 
 int main() {
-    int b = f(4, "asd" + "bcd", 1 * 2 * 3, f(1, "a", 2, 3));
-//    f(1, "a", 2, 3);
+//    int b = f(4, "asd" + "bcd", 1 * 2 * 3, f(1, "a", 2, 3));
+    if (2 > 1 || 1 < 2)
+        printInt(123);
+
+    string a = "asdasdasda";
+    true || b("1 shouldn't be called");
+    true && b("2 should be called");
     return (0);
 }
