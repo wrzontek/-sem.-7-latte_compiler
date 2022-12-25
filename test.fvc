@@ -1,26 +1,48 @@
 b:
 	return b
 
+f:
+	return 1
+
 main:
-	y := 0
-	x := 0
-	if x then goto _true_l1 else goto _middle_l3
-_middle_l3:
-	if y then goto _true_l1 else goto _false_l2
-_true_l1:
-	_t1 := 1
-	_goto _end_l4
-_false_l2:
-	_t1 := 0
-	_goto _end_l4
-_end_l4:
-	if _t1 then goto _if_true_1 else goto _after_if_true_1
+	a := 123
+	if 1 then _goto _if_true_1 else _goto _end_if_1
 _if_true_1:
-	_t2 := ! y
-	x := _t2
-	_t3 := ! x
-	y := _t3
-	_goto _after_if_true_1
-_after_if_true_1:
+	return 1
+	_go_next
+_end_if_1:
+	return 0
+
+main2:
+	a := 123
+	_goto _if_true_1
+_if_true_1:
+	return 1
+
+main3:
+	a := 123
+	_go_next
+_t1:
+	return 1
+	_go_next
+_after_t1:
+	return 0
+
+main4:
+	a := 123
+	if 1 then _goto _if_true_1 else _goto _if_false_1
+_if_true_1:
+	return 1
+	_goto _end_if_1
+_if_false_1:
+	return 0
+	_go_next
+_end_if_1:
+	_t1 := _call f 1
+
+main5:
+	a := 123
+	_go_next
+_while_body_1:
 	return 0
 

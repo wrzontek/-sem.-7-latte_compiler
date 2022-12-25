@@ -11,6 +11,7 @@
 class BoolLazyEvalChecker : public Skeleton {
 public:
     bool is_lazy_eval = false;
+    bool has_call = false;
 
     explicit BoolLazyEvalChecker() {}
 
@@ -22,8 +23,13 @@ public:
         is_lazy_eval = true;
     }
 
-    void visitCFunction(CFunction *e) override {} // do not consider function arguments, they are handled separately
+    void visitCFunction(CFunction *e) override {
+        has_call = true;
+    } // do not consider function arguments for lazy eval, they are handled separately
 
+//    void visitMethod(Method *e) override {
+//        has_call = true;
+//    } // do not consider method arguments for lazy eval, TODO they are  handled separately
 };
 
 struct labels_struct {
@@ -45,7 +51,10 @@ private:
     Ident result; // register or constant
     bool is_result_atomic;
 
-    Ident next_block_name;
+    bool is_last_stmt = false;
+    bool inside_block = false;
+
+    bool block_emit_labels_and_gotos = true;
 
     bool using_lazy_eval = false;
     labels_struct labels;
@@ -108,6 +117,17 @@ public:
         emitRaw("\n");
     }
 
+    void visitListStmt(ListStmt *list_stmt) override {
+        for (ListStmt::iterator stmt = list_stmt->begin(); stmt != list_stmt->end(); ++stmt) {
+            auto copy = stmt;
+            if (!inside_block) { // so inner block bodies don't count
+                is_last_stmt = (++copy) == list_stmt->end();
+            }
+
+            (*stmt)->accept(this);
+        }
+    }
+
     void visitDecl(Decl *stmt) override {
         using_lazy_eval = false;
         current_decl_type = typeVisitor->getType(stmt->type_)->name;
@@ -140,7 +160,8 @@ public:
         emitLine("_goto " + labels.label_end);
         emitRaw(labels.label_false + ":\n");
         if (!result_register.empty()) emitLine(result_register + " := 0");
-        emitLine("_goto " + labels.label_end);
+        emitLine("_go_next");
+
         emitRaw(labels.label_end + ":\n");
 
         labels = labels_backup;
@@ -180,30 +201,30 @@ public:
 
     void visitSExp(SExp *stmt) override {
         boolLazyEvalChecker->is_lazy_eval = false;
+        boolLazyEvalChecker->has_call = false;
         stmt->expr_->accept(boolLazyEvalChecker);
         using_lazy_eval = boolLazyEvalChecker->is_lazy_eval;
 
-        if (!using_lazy_eval) {
-            stmt->expr_->accept(this); // if function/method, this will emit the call, else do nothing
-            if (result.substr(0, 5) == "_call") { // todo???
-                emitLine(result);
+        if (boolLazyEvalChecker->has_call) { // if not function/method do nothing
+            if (!using_lazy_eval) {
+                stmt->expr_->accept(this);
+            } else {
+                lazyEval("", stmt->expr_);
+                using_lazy_eval = false;
             }
-        } else {
-            lazyEval("", stmt->expr_);
-            using_lazy_eval = false;
         }
     }
 
     void visitIncr(Incr *stmt) override {
         using_lazy_eval = false;
         stmt->expr_->accept(this);
-        emitLine(result + " ++");
+        emitLine(result + "++");
     }
 
     void visitDecr(Decr *stmt) override {
         using_lazy_eval = false;
         stmt->expr_->accept(this);
-        emitLine(result + " --");
+        emitLine(result + "--");
     }
 
     void visitRet(Ret *stmt) override {
@@ -217,36 +238,39 @@ public:
         emitLine("return");
     }
 
-    void visitBStmt(BStmt *stmt) override { // todo musi się zachowyać mądrzej przy ifie/pętlach
+    void visitBStmt(BStmt *stmt) override {
+        bool inside_block_backup = inside_block;
+        inside_block = true;
+        bool emit_labels_gotos_backup = block_emit_labels_and_gotos;
         using_lazy_eval = false;
-        Ident t_block;
-        if (next_block_name.empty()) {
+        Ident t_block, after_t_block;
+        if (block_emit_labels_and_gotos) {
             t_block = next_t_block();
-        } else {
-            t_block = next_block_name;
+            after_t_block = "_after" + t_block;
+            emitLine("_go_next");
+            emitRaw(t_block + ":\n");
         }
 
-        auto after_t_block = "_after" + t_block;
-        if (next_block_name.empty()) {
-            emitLine("_goto " + t_block);
-        }
-        next_block_name = "";
-        emitRaw(t_block + ":\n");
-
+        block_emit_labels_and_gotos = true;
         stmt->block_->accept(this);
+        block_emit_labels_and_gotos = emit_labels_gotos_backup;
 
-        emitLine("_goto " + after_t_block);
-        emitRaw(after_t_block + ":\n");
+        if (block_emit_labels_and_gotos && !is_last_stmt) {
+            emitLine("_go_next");
+            emitRaw(after_t_block + ":\n");
+        }
+
+        inside_block = inside_block_backup;
     }
 
-    void visitCond(Cond *stmt) override {
+    Ident getCondAtom(Expr *expr_) {
         Ident cond_atom;
         boolLazyEvalChecker->is_lazy_eval = false;
-        stmt->expr_->accept(boolLazyEvalChecker);
+        expr_->accept(boolLazyEvalChecker);
         using_lazy_eval = boolLazyEvalChecker->is_lazy_eval;
 
         if (!using_lazy_eval) {
-            stmt->expr_->accept(this);
+            expr_->accept(this);
             if (is_result_atomic) {
                 cond_atom = result;
             } else {
@@ -255,45 +279,97 @@ public:
             }
         } else {
             cond_atom = next_t_var();
-            lazyEval(cond_atom, stmt->expr_);
+            lazyEval(cond_atom, expr_);
             using_lazy_eval = false;
         }
+        return cond_atom;
+    }
 
-        if (stmt->stmt_->isBlock()) {
-            next_t_block_number++;
-            next_block_name = "_if_true_" + std::to_string(next_t_block_number);
-            auto after_block = "_after" + next_block_name;
-
-            emitLine("if " + cond_atom + " then goto " + next_block_name + " else goto " + after_block);
-//            emitRaw(next_block_name + ":\n");
-            stmt->stmt_->accept(this);
+    void visitCond(Cond *stmt) override {
+        next_t_block_number++;
+        auto if_true = "_if_true_" + std::to_string(next_t_block_number);
+        auto end_if = "_end_if_" + std::to_string(next_t_block_number);
+        if (!is_last_stmt) {
+            auto cond_atom = getCondAtom(stmt->expr_);
+            emitLine("if " + cond_atom + " then _goto " + if_true + " else _goto " + end_if);
         } else {
-            next_t_block_number++;
-            auto if_true = "_if_true_" + std::to_string(next_t_block_number);
-            auto end_if = "_end_if_" + std::to_string(next_t_block_number);
-            emitLine("if " + cond_atom + " then goto " + if_true + " else goto " + end_if);
-            emitRaw(if_true + ":\n");
+            emitLine("_goto " + if_true); // typeChecker guarantees correctness
+        }
 
-            stmt->stmt_->accept(this);
-            emitLine("_goto " + end_if);
+        emitRaw(if_true + ":\n");
+        block_emit_labels_and_gotos = false;
+        stmt->stmt_->accept(this);
+        block_emit_labels_and_gotos = true;
+
+        if (!is_last_stmt) {
+            emitLine("_go_next");
             emitRaw(end_if + ":\n");
         }
     }
 
     void visitCondElse(CondElse *stmt) override {
-        using_lazy_eval = false;
+        auto cond_atom = getCondAtom(stmt->expr_);
 
-    } // todo
+        next_t_block_number++;
+        auto if_true = "_if_true_" + std::to_string(next_t_block_number);
+        auto if_false = "_if_false_" + std::to_string(next_t_block_number);
+        auto end_if = "_end_if_" + std::to_string(next_t_block_number);
+
+
+        emitLine("if " + cond_atom + " then _goto " + if_true + " else _goto " + if_false);
+        emitRaw(if_true + ":\n");
+
+        block_emit_labels_and_gotos = false;
+        stmt->stmt_1->accept(this);
+        block_emit_labels_and_gotos = true;
+
+        if (!is_last_stmt) {
+            emitLine("_goto " + end_if);
+        }
+
+        emitRaw(if_false + ":\n");
+
+        block_emit_labels_and_gotos = false;
+        stmt->stmt_2->accept(this);
+        block_emit_labels_and_gotos = true;
+
+        if (!is_last_stmt) {
+            emitLine("_go_next");
+            emitRaw(end_if + ":\n");
+        }
+    }
 
     void visitWhile(While *stmt) override {
-        using_lazy_eval = false;
+        next_t_block_number++;
+        auto while_cond = "_while_cond_" + std::to_string(next_t_block_number);
+        auto while_body = "_while_body_" + std::to_string(next_t_block_number);
+        auto end_while = "_end_while_" + std::to_string(next_t_block_number);
 
-    } // todo
+        if (!is_last_stmt) {
+            emitLine("_goto " + while_cond);
+        } else {
+            emitLine("_go_next");
+        }
 
-    void visitForEach(ForEach *stmt) override {
-        using_lazy_eval = false;
+        emitRaw(while_body + ":\n");
+        block_emit_labels_and_gotos = false;
+        stmt->stmt_->accept(this);
+        block_emit_labels_and_gotos = true;
 
-    } // todo
+        if (!is_last_stmt) {
+            emitLine("_go_next");
+            emitRaw(while_cond + ":\n");
+            auto cond_atom = getCondAtom(stmt->expr_);
+            emitLine("if " + cond_atom + " then _goto " + while_body + " else _goto " + end_while);
+
+            emitRaw(end_while + ":\n");
+        }
+    }
+
+//    void visitForEach(ForEach *stmt) override {
+//        using_lazy_eval = false;
+//
+//    } // todo
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -314,7 +390,7 @@ public:
 
         labels = labels_backup;
         if (using_lazy_eval) {
-            emitLine("if " + result + " then goto " + labels.label_true + " else goto " + labels.label_false);
+            emitLine("if " + result + " then _goto " + labels.label_true + " else _goto " + labels.label_false);
         }
     }
 
@@ -352,7 +428,7 @@ public:
         is_result_atomic = true;
 
         if (using_lazy_eval) {
-            emitLine("if " + result + " then goto " + labels.label_true + " else goto " + labels.label_false);
+            emitLine("if " + result + " then _goto " + labels.label_true + " else _goto " + labels.label_false);
         }
     }
 
@@ -465,8 +541,10 @@ public:
         labels = labels_backup;
     }
 
-    void visitEQUNEcommon(Ident operator_) {
+    void visitEQUNEcommon() {
         if (using_lazy_eval) {
+            Ident operator_ = current_operator;
+
             Ident left;
             auto labels_backup = labels;
             boolLazyEvalChecker->is_lazy_eval = false;
@@ -511,22 +589,18 @@ public:
             emitLine(t_var + " := " + left + operator_ + right);
             result = t_var;
             is_result_atomic = true;
+            emitLine("if " + result + " then _goto " + labels.label_true + " else _goto " + labels.label_false);
         }
     }
 
     void visitEQU(EQU *op) override {
-        visitEQUNEcommon(" == ");
-        if (using_lazy_eval) {
-            emitLine("if " + result + " then goto " + labels.label_true + " else goto " + labels.label_false);
-        }
+        current_operator = " == ";
+        visitEQUNEcommon();
     }
 
     void visitNE(NE *op) override {
-        visitEQUNEcommon(" != ");
-
-        if (using_lazy_eval) {
-            emitLine("if " + result + " then goto " + labels.label_true + " else goto " + labels.label_false);
-        }
+        current_operator = " != ";
+        visitEQUNEcommon();
     }
 
     void visitBinOpp(Expr *e1, Expr *e2) {
@@ -554,7 +628,7 @@ public:
         result = t_var;
         is_result_atomic = true;
         if (using_lazy_eval) {
-            emitLine("if " + result + " then goto " + labels.label_true + " else goto " + labels.label_false);
+            emitLine("if " + result + " then _goto " + labels.label_true + " else _goto " + labels.label_false);
         }
     }
 

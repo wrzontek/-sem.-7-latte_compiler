@@ -2,7 +2,7 @@ entrypoints Program;
 
 Prog. Program ::= [CodeBlock] ;
 
-Block.        CodeBlock ::= Ident ":" [NonJmpStmt] JmpStmt;
+Block.        CodeBlock ::= Ident ":" [NonJmpStmt] [JmpStmt]; -- TODO może być np return 0 _go_next, po prostu brać pierwsze resztę wywalić
 
 StmtBinOp.      NonJmpStmt ::= Ident ":=" Atom BinOp Atom ;
 StmtNoOp.       NonJmpStmt ::= Ident ":=" Atom ;
@@ -10,9 +10,9 @@ StmtCall.    NonJmpStmt ::= Ident ":=" "_call" Ident [ Atom ] ;
 StmtInc.        NonJmpStmt ::= Ident "++" ;
 StmtDecr.       NonJmpStmt ::= Ident "--" ;
 
-StmtGoto.           JmpStmt ::= "goto" Ident ; -- todo trzeba uważać na zmienne nazwana goto itp
+StmtGoto.           JmpStmt ::= "_goto" Ident ;
 StmtGoNext.         JmpStmt ::= "_go_next;
-StmtCondJmp.        JmpStmt ::= "if" Atom "then" "goto" Ident "else" "goto" Ident;
+StmtCondJmp.        JmpStmt ::= "if" Atom "then" "_goto" Ident "else" "_goto" Ident;
 StmtRet.            JmpStmt ::= "return" Atom ;
 StmtVRet.           JmpStmt ::= "return" ; -- todo konflikt? chyba niegroźny shift/reduce
 
@@ -36,7 +36,7 @@ EQU.       BinOp ::= "==" ;
 NE.        BinOp ::= "!=" ;
 
 separator CodeBlock "" ;
-separator NonJmpStmt "" ;
+separator nonempty NonJmpStmt "" ;
 separator Atom "" ;
 
 comment ";" ;
