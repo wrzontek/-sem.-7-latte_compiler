@@ -15,237 +15,237 @@
 #endif
 
 #ifdef yy_create_buffer
-#define fvc__create_buffer_ALREADY_DEFINED
+#define latte__create_buffer_ALREADY_DEFINED
 #else
-#define yy_create_buffer fvc__create_buffer
+#define yy_create_buffer latte__create_buffer
 #endif
 
 #ifdef yy_delete_buffer
-#define fvc__delete_buffer_ALREADY_DEFINED
+#define latte__delete_buffer_ALREADY_DEFINED
 #else
-#define yy_delete_buffer fvc__delete_buffer
+#define yy_delete_buffer latte__delete_buffer
 #endif
 
 #ifdef yy_scan_buffer
-#define fvc__scan_buffer_ALREADY_DEFINED
+#define latte__scan_buffer_ALREADY_DEFINED
 #else
-#define yy_scan_buffer fvc__scan_buffer
+#define yy_scan_buffer latte__scan_buffer
 #endif
 
 #ifdef yy_scan_string
-#define fvc__scan_string_ALREADY_DEFINED
+#define latte__scan_string_ALREADY_DEFINED
 #else
-#define yy_scan_string fvc__scan_string
+#define yy_scan_string latte__scan_string
 #endif
 
 #ifdef yy_scan_bytes
-#define fvc__scan_bytes_ALREADY_DEFINED
+#define latte__scan_bytes_ALREADY_DEFINED
 #else
-#define yy_scan_bytes fvc__scan_bytes
+#define yy_scan_bytes latte__scan_bytes
 #endif
 
 #ifdef yy_init_buffer
-#define fvc__init_buffer_ALREADY_DEFINED
+#define latte__init_buffer_ALREADY_DEFINED
 #else
-#define yy_init_buffer fvc__init_buffer
+#define yy_init_buffer latte__init_buffer
 #endif
 
 #ifdef yy_flush_buffer
-#define fvc__flush_buffer_ALREADY_DEFINED
+#define latte__flush_buffer_ALREADY_DEFINED
 #else
-#define yy_flush_buffer fvc__flush_buffer
+#define yy_flush_buffer latte__flush_buffer
 #endif
 
 #ifdef yy_load_buffer_state
-#define fvc__load_buffer_state_ALREADY_DEFINED
+#define latte__load_buffer_state_ALREADY_DEFINED
 #else
-#define yy_load_buffer_state fvc__load_buffer_state
+#define yy_load_buffer_state latte__load_buffer_state
 #endif
 
 #ifdef yy_switch_to_buffer
-#define fvc__switch_to_buffer_ALREADY_DEFINED
+#define latte__switch_to_buffer_ALREADY_DEFINED
 #else
-#define yy_switch_to_buffer fvc__switch_to_buffer
+#define yy_switch_to_buffer latte__switch_to_buffer
 #endif
 
 #ifdef yypush_buffer_state
-#define fvc_push_buffer_state_ALREADY_DEFINED
+#define latte_push_buffer_state_ALREADY_DEFINED
 #else
-#define yypush_buffer_state fvc_push_buffer_state
+#define yypush_buffer_state latte_push_buffer_state
 #endif
 
 #ifdef yypop_buffer_state
-#define fvc_pop_buffer_state_ALREADY_DEFINED
+#define latte_pop_buffer_state_ALREADY_DEFINED
 #else
-#define yypop_buffer_state fvc_pop_buffer_state
+#define yypop_buffer_state latte_pop_buffer_state
 #endif
 
 #ifdef yyensure_buffer_stack
-#define fvc_ensure_buffer_stack_ALREADY_DEFINED
+#define latte_ensure_buffer_stack_ALREADY_DEFINED
 #else
-#define yyensure_buffer_stack fvc_ensure_buffer_stack
+#define yyensure_buffer_stack latte_ensure_buffer_stack
 #endif
 
 #ifdef yylex
-#define fvc_lex_ALREADY_DEFINED
+#define latte_lex_ALREADY_DEFINED
 #else
-#define yylex fvc_lex
+#define yylex latte_lex
 #endif
 
 #ifdef yyrestart
-#define fvc_restart_ALREADY_DEFINED
+#define latte_restart_ALREADY_DEFINED
 #else
-#define yyrestart fvc_restart
+#define yyrestart latte_restart
 #endif
 
 #ifdef yylex_init
-#define fvc_lex_init_ALREADY_DEFINED
+#define latte_lex_init_ALREADY_DEFINED
 #else
-#define yylex_init fvc_lex_init
+#define yylex_init latte_lex_init
 #endif
 
 #ifdef yylex_init_extra
-#define fvc_lex_init_extra_ALREADY_DEFINED
+#define latte_lex_init_extra_ALREADY_DEFINED
 #else
-#define yylex_init_extra fvc_lex_init_extra
+#define yylex_init_extra latte_lex_init_extra
 #endif
 
 #ifdef yylex_destroy
-#define fvc_lex_destroy_ALREADY_DEFINED
+#define latte_lex_destroy_ALREADY_DEFINED
 #else
-#define yylex_destroy fvc_lex_destroy
+#define yylex_destroy latte_lex_destroy
 #endif
 
 #ifdef yyget_debug
-#define fvc_get_debug_ALREADY_DEFINED
+#define latte_get_debug_ALREADY_DEFINED
 #else
-#define yyget_debug fvc_get_debug
+#define yyget_debug latte_get_debug
 #endif
 
 #ifdef yyset_debug
-#define fvc_set_debug_ALREADY_DEFINED
+#define latte_set_debug_ALREADY_DEFINED
 #else
-#define yyset_debug fvc_set_debug
+#define yyset_debug latte_set_debug
 #endif
 
 #ifdef yyget_extra
-#define fvc_get_extra_ALREADY_DEFINED
+#define latte_get_extra_ALREADY_DEFINED
 #else
-#define yyget_extra fvc_get_extra
+#define yyget_extra latte_get_extra
 #endif
 
 #ifdef yyset_extra
-#define fvc_set_extra_ALREADY_DEFINED
+#define latte_set_extra_ALREADY_DEFINED
 #else
-#define yyset_extra fvc_set_extra
+#define yyset_extra latte_set_extra
 #endif
 
 #ifdef yyget_in
-#define fvc_get_in_ALREADY_DEFINED
+#define latte_get_in_ALREADY_DEFINED
 #else
-#define yyget_in fvc_get_in
+#define yyget_in latte_get_in
 #endif
 
 #ifdef yyset_in
-#define fvc_set_in_ALREADY_DEFINED
+#define latte_set_in_ALREADY_DEFINED
 #else
-#define yyset_in fvc_set_in
+#define yyset_in latte_set_in
 #endif
 
 #ifdef yyget_out
-#define fvc_get_out_ALREADY_DEFINED
+#define latte_get_out_ALREADY_DEFINED
 #else
-#define yyget_out fvc_get_out
+#define yyget_out latte_get_out
 #endif
 
 #ifdef yyset_out
-#define fvc_set_out_ALREADY_DEFINED
+#define latte_set_out_ALREADY_DEFINED
 #else
-#define yyset_out fvc_set_out
+#define yyset_out latte_set_out
 #endif
 
 #ifdef yyget_leng
-#define fvc_get_leng_ALREADY_DEFINED
+#define latte_get_leng_ALREADY_DEFINED
 #else
-#define yyget_leng fvc_get_leng
+#define yyget_leng latte_get_leng
 #endif
 
 #ifdef yyget_text
-#define fvc_get_text_ALREADY_DEFINED
+#define latte_get_text_ALREADY_DEFINED
 #else
-#define yyget_text fvc_get_text
+#define yyget_text latte_get_text
 #endif
 
 #ifdef yyget_lineno
-#define fvc_get_lineno_ALREADY_DEFINED
+#define latte_get_lineno_ALREADY_DEFINED
 #else
-#define yyget_lineno fvc_get_lineno
+#define yyget_lineno latte_get_lineno
 #endif
 
 #ifdef yyset_lineno
-#define fvc_set_lineno_ALREADY_DEFINED
+#define latte_set_lineno_ALREADY_DEFINED
 #else
-#define yyset_lineno fvc_set_lineno
+#define yyset_lineno latte_set_lineno
 #endif
 
 #ifdef yyget_column
-#define fvc_get_column_ALREADY_DEFINED
+#define latte_get_column_ALREADY_DEFINED
 #else
-#define yyget_column fvc_get_column
+#define yyget_column latte_get_column
 #endif
 
 #ifdef yyset_column
-#define fvc_set_column_ALREADY_DEFINED
+#define latte_set_column_ALREADY_DEFINED
 #else
-#define yyset_column fvc_set_column
+#define yyset_column latte_set_column
 #endif
 
 #ifdef yywrap
-#define fvc_wrap_ALREADY_DEFINED
+#define latte_wrap_ALREADY_DEFINED
 #else
-#define yywrap fvc_wrap
+#define yywrap latte_wrap
 #endif
 
 #ifdef yyget_lval
-#define fvc_get_lval_ALREADY_DEFINED
+#define latte_get_lval_ALREADY_DEFINED
 #else
-#define yyget_lval fvc_get_lval
+#define yyget_lval latte_get_lval
 #endif
 
 #ifdef yyset_lval
-#define fvc_set_lval_ALREADY_DEFINED
+#define latte_set_lval_ALREADY_DEFINED
 #else
-#define yyset_lval fvc_set_lval
+#define yyset_lval latte_set_lval
 #endif
 
 #ifdef yyget_lloc
-#define fvc_get_lloc_ALREADY_DEFINED
+#define latte_get_lloc_ALREADY_DEFINED
 #else
-#define yyget_lloc fvc_get_lloc
+#define yyget_lloc latte_get_lloc
 #endif
 
 #ifdef yyset_lloc
-#define fvc_set_lloc_ALREADY_DEFINED
+#define latte_set_lloc_ALREADY_DEFINED
 #else
-#define yyset_lloc fvc_set_lloc
+#define yyset_lloc latte_set_lloc
 #endif
 
 #ifdef yyalloc
-#define fvc_alloc_ALREADY_DEFINED
+#define latte_alloc_ALREADY_DEFINED
 #else
-#define yyalloc fvc_alloc
+#define yyalloc latte_alloc
 #endif
 
 #ifdef yyrealloc
-#define fvc_realloc_ALREADY_DEFINED
+#define latte_realloc_ALREADY_DEFINED
 #else
-#define yyrealloc fvc_realloc
+#define yyrealloc latte_realloc
 #endif
 
 #ifdef yyfree
-#define fvc_free_ALREADY_DEFINED
+#define latte_free_ALREADY_DEFINED
 #else
-#define yyfree fvc_free
+#define yyfree latte_free
 #endif
 
 /* First, we deal with  platform-specific or compiler-specific issues. */
@@ -563,7 +563,7 @@ void yyfree(void *, yyscan_t yyscanner);
 
 /* Begin user sect3 */
 
-#define fvc_wrap(yyscanner) (/*CONSTCOND*/1)
+#define latte_wrap(yyscanner) (/*CONSTCOND*/1)
 #define YY_SKIP_YYWRAP
 typedef flex_uint8_t YY_CHAR;
 
@@ -588,25 +588,31 @@ static void yynoreturn yy_fatal_error(const char *msg, yyscan_t yyscanner);
     yyg->yy_hold_char = *yy_cp; \
     *yy_cp = '\0'; \
     yyg->yy_c_buf_p = yy_cp;
-#define YY_NUM_RULES 42
-#define YY_END_OF_BUFFER 43
+#define YY_NUM_RULES 64
+#define YY_END_OF_BUFFER 65
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info {
     flex_int32_t yy_verify;
     flex_int32_t yy_nxt;
 };
-static const flex_int16_t yy_accept[88] =
+static const flex_int16_t yy_accept[138] =
         {0,
          0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-         0, 0, 43, 41, 40, 40, 41, 28, 13, 41,
-         11, 9, 10, 12, 39, 1, 4, 16, 41, 18,
-         27, 27, 27, 27, 27, 27, 41, 42, 31, 30,
-         29, 38, 36, 37, 32, 33, 34, 35, 21, 14,
-         5, 6, 39, 2, 26, 17, 20, 19, 27, 27,
-         27, 27, 27, 23, 27, 27, 15, 27, 27, 27,
-         27, 27, 27, 27, 27, 22, 27, 25, 3, 27,
-         7, 27, 27, 24, 27, 8, 0
+         0, 0, 0, 0, 65, 63, 62, 62, 15, 49,
+         43, 21, 63, 1, 2, 19, 18, 5, 14, 11,
+         20, 60, 10, 6, 22, 7, 24, 61, 12, 13,
+         61, 61, 61, 61, 61, 61, 61, 61, 61, 61,
+         61, 3, 63, 4, 64, 52, 51, 50, 59, 57,
+         58, 53, 54, 55, 56, 47, 48, 47, 27, 43,
+         16, 8, 9, 45, 44, 60, 23, 26, 25, 61,
+         61, 61, 61, 61, 61, 61, 34, 61, 61, 61,
+         61, 61, 61, 61, 61, 17, 46, 44, 61, 61,
+
+         61, 61, 61, 33, 35, 36, 61, 61, 61, 61,
+         61, 61, 61, 61, 30, 61, 61, 37, 61, 61,
+         40, 41, 61, 61, 29, 61, 32, 61, 61, 42,
+         61, 61, 38, 39, 28, 31, 0
         };
 
 static const YY_CHAR yy_ec[256] =
@@ -614,17 +620,17 @@ static const YY_CHAR yy_ec[256] =
          1, 1, 1, 1, 1, 1, 1, 1, 2, 3,
          1, 2, 2, 1, 1, 1, 1, 1, 1, 1,
          1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-         1, 2, 4, 5, 1, 1, 6, 7, 8, 1,
-         1, 9, 10, 1, 11, 1, 12, 13, 13, 13,
-         13, 13, 13, 13, 13, 13, 13, 14, 15, 16,
-         17, 18, 1, 1, 19, 19, 19, 19, 19, 19,
-         19, 19, 19, 19, 19, 19, 19, 19, 19, 19,
-         19, 19, 19, 19, 19, 19, 19, 19, 19, 19,
-         1, 20, 1, 1, 21, 1, 22, 19, 23, 19,
+         1, 2, 4, 5, 6, 1, 7, 8, 9, 10,
+         11, 12, 13, 14, 15, 16, 17, 18, 18, 18,
+         18, 18, 18, 18, 18, 18, 18, 19, 20, 21,
+         22, 23, 1, 1, 24, 24, 24, 24, 24, 24,
+         24, 24, 24, 24, 24, 24, 24, 24, 24, 24,
+         24, 24, 24, 24, 24, 24, 24, 24, 24, 24,
+         25, 26, 27, 1, 9, 1, 28, 29, 30, 31,
 
-         24, 25, 26, 27, 28, 19, 19, 29, 19, 30,
-         31, 19, 19, 32, 33, 34, 35, 19, 19, 36,
-         19, 19, 1, 37, 1, 1, 1, 1, 1, 1,
+         32, 33, 34, 35, 36, 24, 24, 37, 24, 38,
+         39, 24, 24, 40, 41, 42, 43, 44, 45, 46,
+         24, 24, 47, 48, 49, 1, 1, 1, 1, 1,
          1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
          1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
          1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -641,102 +647,107 @@ static const YY_CHAR yy_ec[256] =
          1, 1, 1, 1, 1
         };
 
-static const YY_CHAR yy_meta[38] =
+static const YY_CHAR yy_meta[50] =
         {0,
-         1, 1, 2, 1, 1, 1, 1, 3, 1, 1,
-         1, 1, 3, 1, 1, 1, 1, 1, 3, 1,
+         1, 1, 2, 1, 1, 1, 1, 1, 3, 1,
+         1, 1, 1, 1, 1, 1, 1, 3, 1, 1,
+         1, 1, 1, 3, 1, 1, 1, 3, 3, 3,
          3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-         3, 3, 3, 3, 3, 3, 1
+         3, 3, 3, 3, 3, 3, 1, 1, 1
         };
 
-static const flex_int16_t yy_base[93] =
+static const flex_int16_t yy_base[145] =
         {0,
-         0, 0, 0, 0, 0, 0, 0, 0, 35, 36,
-         54, 86, 78, 195, 195, 195, 59, 195, 195, 68,
-         195, 63, 60, 195, 41, 35, 0, 34, 32, 29,
-         37, 39, 40, 42, 56, 45, 7, 195, 195, 195,
-         195, 195, 195, 195, 195, 195, 195, 195, 195, 195,
-         195, 195, 30, 195, 0, 195, 195, 195, 60, 62,
-         74, 77, 79, 82, 89, 93, 195, 84, 94, 101,
-         86, 111, 116, 118, 119, 121, 122, 123, 125, 128,
-         126, 130, 145, 147, 148, 149, 195, 182, 185, 188,
-         191, 39
+         0, 0, 0, 0, 0, 0, 0, 0, 47, 48,
+         51, 52, 55, 56, 157, 158, 158, 158, 134, 158,
+         0, 158, 147, 158, 158, 158, 141, 158, 138, 158,
+         48, 134, 158, 158, 129, 128, 127, 0, 158, 158,
+         109, 110, 24, 36, 33, 37, 114, 103, 104, 104,
+         107, 158, 93, 158, 158, 158, 158, 158, 158, 158,
+         158, 158, 158, 158, 158, 158, 158, 123, 158, 0,
+         158, 158, 158, 158, 0, 121, 158, 158, 158, 0,
+         99, 109, 95, 93, 97, 93, 0, 90, 86, 93,
+         87, 88, 84, 90, 89, 158, 158, 0, 87, 82,
 
+         90, 89, 79, 0, 0, 0, 82, 75, 81, 84,
+         84, 77, 81, 70, 0, 70, 56, 0, 47, 48,
+         0, 0, 51, 54, 0, 50, 0, 41, 42, 0,
+         34, 22, 0, 0, 0, 0, 158, 94, 97, 100,
+         103, 106, 59, 109
         };
 
-static const flex_int16_t yy_def[93] =
+static const flex_int16_t yy_def[145] =
         {0,
-         87, 1, 88, 88, 88, 88, 88, 88, 89, 89,
-         90, 90, 87, 87, 87, 87, 87, 87, 87, 87,
-         87, 87, 87, 87, 87, 87, 91, 87, 87, 87,
-         92, 92, 92, 92, 92, 92, 87, 87, 87, 87,
-         87, 87, 87, 87, 87, 87, 87, 87, 87, 87,
-         87, 87, 87, 87, 91, 87, 87, 87, 92, 92,
-         92, 92, 92, 92, 92, 92, 87, 92, 92, 92,
-         92, 92, 92, 92, 92, 92, 92, 92, 92, 92,
-         92, 92, 92, 92, 92, 92, 0, 87, 87, 87,
-         87, 87
+         137, 1, 138, 138, 138, 138, 138, 138, 139, 139,
+         140, 140, 141, 141, 137, 137, 137, 137, 137, 137,
+         142, 137, 137, 137, 137, 137, 137, 137, 137, 137,
+         137, 137, 137, 137, 137, 137, 137, 143, 137, 137,
+         143, 143, 143, 143, 143, 143, 143, 143, 143, 143,
+         143, 137, 137, 137, 137, 137, 137, 137, 137, 137,
+         137, 137, 137, 137, 137, 137, 137, 137, 137, 142,
+         137, 137, 137, 137, 144, 137, 137, 137, 137, 143,
+         143, 143, 143, 143, 143, 143, 143, 143, 143, 143,
+         143, 143, 143, 143, 143, 137, 137, 144, 143, 143,
 
+         143, 143, 143, 143, 143, 143, 143, 143, 143, 143,
+         143, 143, 143, 143, 143, 143, 143, 143, 143, 143,
+         143, 143, 143, 143, 143, 143, 143, 143, 143, 143,
+         143, 143, 143, 143, 143, 143, 0, 137, 137, 137,
+         137, 137, 137, 137
         };
 
-static const flex_int16_t yy_nxt[233] =
+static const flex_int16_t yy_nxt[208] =
         {0,
-         14, 15, 16, 17, 18, 19, 20, 14, 21, 22,
-         23, 24, 25, 26, 27, 28, 29, 30, 31, 14,
-         32, 31, 31, 33, 31, 31, 31, 34, 31, 31,
-         31, 35, 31, 36, 31, 31, 37, 38, 38, 40,
-         40, 60, 53, 67, 59, 58, 59, 59, 57, 59,
-         56, 54, 59, 53, 41, 41, 38, 59, 43, 59,
-         59, 61, 59, 59, 62, 59, 64, 59, 63, 59,
-         52, 66, 51, 44, 50, 49, 59, 87, 45, 65,
-         59, 59, 59, 46, 59, 47, 59, 48, 38, 59,
-         43, 59, 87, 59, 59, 68, 59, 59, 87, 59,
+         16, 17, 18, 19, 20, 21, 22, 23, 16, 24,
+         25, 26, 27, 28, 29, 30, 31, 32, 33, 34,
+         35, 36, 37, 38, 39, 16, 40, 38, 41, 42,
+         38, 43, 44, 38, 38, 45, 38, 46, 38, 47,
+         48, 49, 38, 50, 51, 38, 52, 53, 54, 55,
+         55, 57, 57, 55, 55, 60, 60, 67, 67, 74,
+         83, 80, 136, 85, 75, 87, 68, 68, 89, 84,
+         88, 135, 58, 58, 86, 134, 61, 61, 133, 90,
+         132, 131, 130, 62, 62, 129, 128, 127, 63, 63,
+         64, 64, 65, 65, 55, 55, 55, 56, 56, 56,
 
-         59, 59, 59, 87, 59, 44, 59, 69, 59, 59,
-         45, 70, 73, 59, 74, 46, 72, 47, 59, 48,
-         77, 59, 71, 59, 76, 59, 59, 75, 59, 59,
-         59, 59, 59, 59, 87, 59, 59, 59, 59, 59,
-         78, 59, 59, 59, 79, 59, 59, 80, 59, 81,
-         59, 83, 59, 82, 59, 59, 59, 87, 87, 84,
-         87, 87, 87, 87, 87, 59, 87, 59, 59, 59,
-         87, 87, 87, 87, 87, 87, 87, 87, 87, 87,
-         85, 86, 38, 38, 38, 39, 39, 39, 42, 42,
-         42, 55, 87, 55, 13, 87, 87, 87, 87, 87,
+         59, 59, 59, 66, 66, 66, 70, 126, 70, 98,
+         125, 98, 124, 123, 122, 121, 120, 119, 118, 117,
+         116, 115, 114, 113, 112, 111, 110, 109, 108, 107,
+         106, 105, 104, 103, 102, 101, 100, 99, 76, 97,
+         96, 95, 94, 93, 92, 91, 82, 81, 79, 78,
+         77, 76, 73, 72, 71, 69, 137, 15, 137, 137,
+         137, 137, 137, 137, 137, 137, 137, 137, 137, 137,
+         137, 137, 137, 137, 137, 137, 137, 137, 137, 137,
+         137, 137, 137, 137, 137, 137, 137, 137, 137, 137,
+         137, 137, 137, 137, 137, 137, 137, 137, 137, 137,
 
-         87, 87, 87, 87, 87, 87, 87, 87, 87, 87,
-         87, 87, 87, 87, 87, 87, 87, 87, 87, 87,
-         87, 87, 87, 87, 87, 87, 87, 87, 87, 87,
-         87, 87
+         137, 137, 137, 137, 137, 137, 137
         };
 
-static const flex_int16_t yy_chk[233] =
+static const flex_int16_t yy_chk[208] =
         {0,
          1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
          1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
          1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-         1, 1, 1, 1, 1, 1, 1, 9, 10, 9,
-         10, 92, 53, 37, 31, 30, 32, 33, 29, 34,
-         28, 26, 36, 25, 9, 10, 11, 31, 11, 32,
-         33, 32, 34, 35, 32, 36, 34, 59, 33, 60,
-         23, 36, 22, 11, 20, 17, 35, 13, 11, 35,
-         59, 61, 60, 11, 62, 11, 63, 11, 12, 64,
-         12, 68, 0, 71, 61, 61, 65, 62, 0, 63,
+         1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+         1, 1, 1, 1, 1, 1, 1, 1, 1, 9,
+         10, 9, 10, 11, 12, 11, 12, 13, 14, 31,
+         43, 143, 132, 44, 31, 45, 13, 14, 46, 43,
+         45, 131, 9, 10, 44, 129, 11, 12, 128, 46,
+         126, 124, 123, 11, 12, 120, 119, 117, 11, 12,
+         11, 12, 11, 12, 138, 138, 138, 139, 139, 139,
 
-         66, 69, 64, 0, 68, 12, 71, 62, 70, 65,
-         12, 63, 68, 66, 69, 12, 66, 12, 72, 12,
-         71, 70, 65, 73, 70, 74, 75, 69, 76, 77,
-         78, 72, 79, 81, 0, 80, 73, 82, 74, 75,
-         72, 76, 77, 78, 73, 79, 81, 74, 80, 75,
-         82, 80, 83, 77, 84, 85, 86, 0, 0, 82,
-         0, 0, 0, 0, 0, 83, 0, 84, 85, 86,
-         0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-         83, 85, 88, 88, 88, 89, 89, 89, 90, 90,
-         90, 91, 0, 91, 87, 87, 87, 87, 87, 87,
+         140, 140, 140, 141, 141, 141, 142, 116, 142, 144,
+         114, 144, 113, 112, 111, 110, 109, 108, 107, 103,
+         102, 101, 100, 99, 95, 94, 93, 92, 91, 90,
+         89, 88, 86, 85, 84, 83, 82, 81, 76, 68,
+         53, 51, 50, 49, 48, 47, 42, 41, 37, 36,
+         35, 32, 29, 27, 23, 19, 15, 137, 137, 137,
+         137, 137, 137, 137, 137, 137, 137, 137, 137, 137,
+         137, 137, 137, 137, 137, 137, 137, 137, 137, 137,
+         137, 137, 137, 137, 137, 137, 137, 137, 137, 137,
+         137, 137, 137, 137, 137, 137, 137, 137, 137, 137,
 
-         87, 87, 87, 87, 87, 87, 87, 87, 87, 87,
-         87, 87, 87, 87, 87, 87, 87, 87, 87, 87,
-         87, 87, 87, 87, 87, 87, 87, 87, 87, 87,
-         87, 87
+         137, 137, 137, 137, 137, 137, 137
         };
 
 /* The intent behind this definition is that it'll catch
@@ -746,17 +757,17 @@ static const flex_int16_t yy_chk[233] =
 #define yymore() yymore_used_but_not_detected
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
-#line 1 "fvc.l"
+#line 1 "Latte.l"
 /* -*- c++ -*- File generated by the BNF Converter (bnfc 2.9.3). */
 /* Lexer definition for use with FLex */
 #define YY_NO_INPUT 1
 /* Additional data for the lexer: a buffer for lexing string literals. */
-#line 12 "fvc.l"
+#line 12 "Latte.l"
 
 #include "Absyn.H"
 #include "Bison.H"
 
-#define initialize_lexer fvc__initialize_lexer
+#define initialize_lexer latte__initialize_lexer
 
 /* BEGIN extensible string buffer */
 
@@ -801,9 +812,9 @@ static void update_loc(YYLTYPE *loc, char *text) {
 
 #define YY_USER_ACTION update_loc(yylloc, yytext);
 
-#line 790 "Lexer.C"
+#line 801 "Lexer.C"
 
-#line 792 "Lexer.C"
+#line 803 "Lexer.C"
 
 #define INITIAL 0
 #define CHAR 1
@@ -811,6 +822,7 @@ static void update_loc(YYLTYPE *loc, char *text) {
 #define CHAREND 3
 #define STRING 4
 #define ESCAPED 5
+#define COMMENT 6
 
 #ifndef YY_NO_UNISTD_H
 /* Special case for "unistd.h", since it is non-ANSI. We include it way
@@ -1086,10 +1098,10 @@ YY_DECL {
     }
 
     {
-#line 69 "fvc.l"
+#line 69 "Latte.l"
 
 
-#line 1080 "Lexer.C"
+#line 1092 "Lexer.C"
 
         while ( /*CONSTCOND*/1)        /* loops until end-of-file is reached */
         {
@@ -1113,12 +1125,12 @@ YY_DECL {
                 }
                 while (yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state) {
                     yy_current_state = (int) yy_def[yy_current_state];
-                    if (yy_current_state >= 88)
+                    if (yy_current_state >= 138)
                         yy_c = yy_meta[yy_c];
                 }
                 yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
                 ++yy_cp;
-            } while (yy_base[yy_current_state] != 195);
+            } while (yy_base[yy_current_state] != 158);
 
             yy_find_action:
             yy_act = yy_accept[yy_current_state];
@@ -1142,238 +1154,350 @@ YY_DECL {
 
                 case 1:
                     YY_RULE_SETUP
-#line 71 "fvc.l"
-                    return _COLON;
+#line 71 "Latte.l"
+                    return _LPAREN;
                     YY_BREAK
                 case 2:
                     YY_RULE_SETUP
-#line 72 "fvc.l"
-                    return _COLONEQ;
+#line 72 "Latte.l"
+                    return _RPAREN;
                     YY_BREAK
                 case 3:
                     YY_RULE_SETUP
-#line 73 "fvc.l"
-                    return _SYMB_2;
+#line 73 "Latte.l"
+                    return _LBRACE;
                     YY_BREAK
                 case 4:
                     YY_RULE_SETUP
-#line 74 "fvc.l"
-                    return _SEMI;
+#line 74 "Latte.l"
+                    return _RBRACE;
                     YY_BREAK
                 case 5:
                     YY_RULE_SETUP
-#line 75 "fvc.l"
-                    return _DPLUS;
+#line 75 "Latte.l"
+                    return _COMMA;
                     YY_BREAK
                 case 6:
                     YY_RULE_SETUP
-#line 76 "fvc.l"
-                    return _DMINUS;
+#line 76 "Latte.l"
+                    return _SEMI;
                     YY_BREAK
                 case 7:
                     YY_RULE_SETUP
-#line 77 "fvc.l"
-                    return _SYMB_6;
+#line 77 "Latte.l"
+                    return _EQ;
                     YY_BREAK
                 case 8:
                     YY_RULE_SETUP
-#line 78 "fvc.l"
-                    return _SYMB_7;
+#line 78 "Latte.l"
+                    return _DPLUS;
                     YY_BREAK
                 case 9:
                     YY_RULE_SETUP
-#line 79 "fvc.l"
-                    return _PLUS;
+#line 79 "Latte.l"
+                    return _DMINUS;
                     YY_BREAK
                 case 10:
                     YY_RULE_SETUP
-#line 80 "fvc.l"
-                    return _MINUS;
+#line 80 "Latte.l"
+                    return _COLON;
                     YY_BREAK
                 case 11:
                     YY_RULE_SETUP
-#line 81 "fvc.l"
-                    return _STAR;
+#line 81 "Latte.l"
+                    return _DOT;
                     YY_BREAK
                 case 12:
                     YY_RULE_SETUP
-#line 82 "fvc.l"
-                    return _SLASH;
+#line 82 "Latte.l"
+                    return _LBRACK;
                     YY_BREAK
                 case 13:
                     YY_RULE_SETUP
-#line 83 "fvc.l"
-                    return _PERCENT;
+#line 83 "Latte.l"
+                    return _RBRACK;
                     YY_BREAK
                 case 14:
                     YY_RULE_SETUP
-#line 84 "fvc.l"
-                    return _DAMP;
+#line 84 "Latte.l"
+                    return _MINUS;
                     YY_BREAK
                 case 15:
                     YY_RULE_SETUP
-#line 85 "fvc.l"
-                    return _DBAR;
+#line 85 "Latte.l"
+                    return _BANG;
                     YY_BREAK
                 case 16:
                     YY_RULE_SETUP
-#line 86 "fvc.l"
-                    return _LT;
+#line 86 "Latte.l"
+                    return _DAMP;
                     YY_BREAK
                 case 17:
                     YY_RULE_SETUP
-#line 87 "fvc.l"
-                    return _LDARROW;
+#line 87 "Latte.l"
+                    return _DBAR;
                     YY_BREAK
                 case 18:
                     YY_RULE_SETUP
-#line 88 "fvc.l"
-                    return _GT;
+#line 88 "Latte.l"
+                    return _PLUS;
                     YY_BREAK
                 case 19:
                     YY_RULE_SETUP
-#line 89 "fvc.l"
-                    return _GTEQ;
+#line 89 "Latte.l"
+                    return _STAR;
                     YY_BREAK
                 case 20:
                     YY_RULE_SETUP
-#line 90 "fvc.l"
-                    return _DEQ;
+#line 90 "Latte.l"
+                    return _SLASH;
                     YY_BREAK
                 case 21:
                     YY_RULE_SETUP
-#line 91 "fvc.l"
-                    return _BANGEQ;
+#line 91 "Latte.l"
+                    return _PERCENT;
                     YY_BREAK
                 case 22:
                     YY_RULE_SETUP
-#line 92 "fvc.l"
-                    return _KW_else;
+#line 92 "Latte.l"
+                    return _LT;
                     YY_BREAK
                 case 23:
                     YY_RULE_SETUP
-#line 93 "fvc.l"
-                    return _KW_if;
+#line 93 "Latte.l"
+                    return _LDARROW;
                     YY_BREAK
                 case 24:
                     YY_RULE_SETUP
-#line 94 "fvc.l"
-                    return _KW_return;
+#line 94 "Latte.l"
+                    return _GT;
                     YY_BREAK
                 case 25:
                     YY_RULE_SETUP
-#line 95 "fvc.l"
-                    return _KW_then;
+#line 95 "Latte.l"
+                    return _GTEQ;
                     YY_BREAK
                 case 26:
                     YY_RULE_SETUP
-#line 97 "fvc.l"
-/* skip */; /* BNFC: comment ";" */
+#line 96 "Latte.l"
+                    return _DEQ;
                     YY_BREAK
                 case 27:
                     YY_RULE_SETUP
-#line 99 "fvc.l"
-                    yylval->_string = strdup(yytext);
-                    return T_UIdent;
+#line 97 "Latte.l"
+                    return _BANGEQ;
                     YY_BREAK
                 case 28:
                     YY_RULE_SETUP
-#line 100 "fvc.l"
-                    LITERAL_BUFFER_CREATE();
-                    BEGIN STRING;
+#line 98 "Latte.l"
+                    return _KW_boolean;
                     YY_BREAK
                 case 29:
                     YY_RULE_SETUP
-#line 101 "fvc.l"
-                    BEGIN ESCAPED;
+#line 99 "Latte.l"
+                    return _KW_class;
                     YY_BREAK
                 case 30:
                     YY_RULE_SETUP
-#line 102 "fvc.l"
+#line 100 "Latte.l"
+                    return _KW_else;
+                    YY_BREAK
+                case 31:
+                    YY_RULE_SETUP
+#line 101 "Latte.l"
+                    return _KW_extends;
+                    YY_BREAK
+                case 32:
+                    YY_RULE_SETUP
+#line 102 "Latte.l"
+                    return _KW_false;
+                    YY_BREAK
+                case 33:
+                    YY_RULE_SETUP
+#line 103 "Latte.l"
+                    return _KW_for;
+                    YY_BREAK
+                case 34:
+                    YY_RULE_SETUP
+#line 104 "Latte.l"
+                    return _KW_if;
+                    YY_BREAK
+                case 35:
+                    YY_RULE_SETUP
+#line 105 "Latte.l"
+                    return _KW_int;
+                    YY_BREAK
+                case 36:
+                    YY_RULE_SETUP
+#line 106 "Latte.l"
+                    return _KW_new;
+                    YY_BREAK
+                case 37:
+                    YY_RULE_SETUP
+#line 107 "Latte.l"
+                    return _KW_null;
+                    YY_BREAK
+                case 38:
+                    YY_RULE_SETUP
+#line 108 "Latte.l"
+                    return _KW_return;
+                    YY_BREAK
+                case 39:
+                    YY_RULE_SETUP
+#line 109 "Latte.l"
+                    return _KW_string;
+                    YY_BREAK
+                case 40:
+                    YY_RULE_SETUP
+#line 110 "Latte.l"
+                    return _KW_true;
+                    YY_BREAK
+                case 41:
+                    YY_RULE_SETUP
+#line 111 "Latte.l"
+                    return _KW_void;
+                    YY_BREAK
+                case 42:
+                    YY_RULE_SETUP
+#line 112 "Latte.l"
+                    return _KW_while;
+                    YY_BREAK
+                case 43:
+                    YY_RULE_SETUP
+#line 114 "Latte.l"
+/* skip */; /* BNFC: comment "#" */
+                    YY_BREAK
+                case 44:
+                    YY_RULE_SETUP
+#line 115 "Latte.l"
+/* skip */; /* BNFC: comment "//" */
+                    YY_BREAK
+                case 45:
+                    YY_RULE_SETUP
+#line 116 "Latte.l"
+                    BEGIN COMMENT;
+                    YY_BREAK
+                case 46:
+                    YY_RULE_SETUP
+#line 117 "Latte.l"
+                    BEGIN INITIAL;
+                    YY_BREAK
+                case 47:
+                    YY_RULE_SETUP
+#line 118 "Latte.l"
+/* skip */;
+                    YY_BREAK
+                case 48:
+/* rule 48 can match eol */
+                    YY_RULE_SETUP
+#line 119 "Latte.l"
+/* skip */;
+                    YY_BREAK
+                case 49:
+                    YY_RULE_SETUP
+#line 121 "Latte.l"
+                    LITERAL_BUFFER_CREATE();
+                    BEGIN STRING;
+                    YY_BREAK
+                case 50:
+                    YY_RULE_SETUP
+#line 122 "Latte.l"
+                    BEGIN ESCAPED;
+                    YY_BREAK
+                case 51:
+                    YY_RULE_SETUP
+#line 123 "Latte.l"
                     yylval->_string = LITERAL_BUFFER_HARVEST();
                     BEGIN INITIAL;
                     return _STRING_;
                     YY_BREAK
-                case 31:
+                case 52:
                     YY_RULE_SETUP
-#line 103 "fvc.l"
+#line 124 "Latte.l"
                     LITERAL_BUFFER_APPEND_CHAR(yytext[0]);
                     YY_BREAK
-                case 32:
+                case 53:
                     YY_RULE_SETUP
-#line 104 "fvc.l"
+#line 125 "Latte.l"
                     LITERAL_BUFFER_APPEND_CHAR('\f');
                     BEGIN STRING;
                     YY_BREAK
-                case 33:
+                case 54:
                     YY_RULE_SETUP
-#line 105 "fvc.l"
+#line 126 "Latte.l"
                     LITERAL_BUFFER_APPEND_CHAR('\n');
                     BEGIN STRING;
                     YY_BREAK
-                case 34:
+                case 55:
                     YY_RULE_SETUP
-#line 106 "fvc.l"
+#line 127 "Latte.l"
                     LITERAL_BUFFER_APPEND_CHAR('\r');
                     BEGIN STRING;
                     YY_BREAK
-                case 35:
+                case 56:
                     YY_RULE_SETUP
-#line 107 "fvc.l"
+#line 128 "Latte.l"
                     LITERAL_BUFFER_APPEND_CHAR('\t');
                     BEGIN STRING;
                     YY_BREAK
-                case 36:
+                case 57:
                     YY_RULE_SETUP
-#line 108 "fvc.l"
+#line 129 "Latte.l"
                     LITERAL_BUFFER_APPEND_CHAR('"');
                     BEGIN STRING;
                     YY_BREAK
-                case 37:
+                case 58:
                     YY_RULE_SETUP
-#line 109 "fvc.l"
+#line 130 "Latte.l"
                     LITERAL_BUFFER_APPEND_CHAR('\\');
                     BEGIN STRING;
                     YY_BREAK
-                case 38:
+                case 59:
                     YY_RULE_SETUP
-#line 110 "fvc.l"
+#line 131 "Latte.l"
                     LITERAL_BUFFER_APPEND(yytext);
                     BEGIN STRING;
                     YY_BREAK
                 case YY_STATE_EOF(STRING):
                 case YY_STATE_EOF(ESCAPED):
-#line 111 "fvc.l"
+#line 132 "Latte.l"
                     LITERAL_BUFFER_FREE();
                     return _ERROR_;
                     YY_BREAK
-                case 39:
+                case 60:
                     YY_RULE_SETUP
-#line 112 "fvc.l"
+#line 133 "Latte.l"
                     yylval->_int = atoi(yytext);
                     return _INTEGER_;
                     YY_BREAK
-                case 40:
-/* rule 40 can match eol */
+                case 61:
                     YY_RULE_SETUP
-#line 113 "fvc.l"
+#line 134 "Latte.l"
+                    yylval->_string = strdup(yytext);
+                    return _IDENT_;
+                    YY_BREAK
+                case 62:
+/* rule 62 can match eol */
+                    YY_RULE_SETUP
+#line 135 "Latte.l"
 /* ignore white space. */;
                     YY_BREAK
-                case 41:
+                case 63:
                     YY_RULE_SETUP
-#line 114 "fvc.l"
+#line 136 "Latte.l"
                     return _ERROR_;
                     YY_BREAK
-                case 42:
+                case 64:
                     YY_RULE_SETUP
-#line 116 "fvc.l"
+#line 138 "Latte.l"
                     ECHO;
                     YY_BREAK
-#line 1353 "Lexer.C"
+#line 1476 "Lexer.C"
                 case YY_STATE_EOF(INITIAL):
                 case YY_STATE_EOF(CHAR):
                 case YY_STATE_EOF(CHARESC):
                 case YY_STATE_EOF(CHAREND):
+                case YY_STATE_EOF(COMMENT):
                     yyterminate();
 
                 case YY_END_OF_BUFFER: {
@@ -1637,7 +1761,7 @@ static yy_state_type yy_get_previous_state(yyscan_t yyscanner) {
         }
         while (yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state) {
             yy_current_state = (int) yy_def[yy_current_state];
-            if (yy_current_state >= 88)
+            if (yy_current_state >= 138)
                 yy_c = yy_meta[yy_c];
         }
         yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
@@ -1663,11 +1787,11 @@ static yy_state_type yy_try_NUL_trans(yy_state_type yy_current_state, yyscan_t y
     }
     while (yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state) {
         yy_current_state = (int) yy_def[yy_current_state];
-        if (yy_current_state >= 88)
+        if (yy_current_state >= 138)
             yy_c = yy_meta[yy_c];
     }
     yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
-    yy_is_jam = (yy_current_state == 87);
+    yy_is_jam = (yy_current_state == 137);
 
     (void) yyg;
     return yy_is_jam ? 0 : yy_current_state;
@@ -2446,7 +2570,7 @@ void yyfree(void *ptr, yyscan_t yyscanner) {
 
 #define YYTABLES_NAME "yytables"
 
-#line 116 "fvc.l"
+#line 138 "Latte.l"
 
 
 yyscan_t initialize_lexer(FILE *inp) {

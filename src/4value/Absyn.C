@@ -7,1274 +7,1041 @@
 #include "Absyn.H"
 
 /********************   Prog    ********************/
-Prog::Prog(ListCodeBlock *p1)
-{
-  listcodeblock_ = p1;
+Prog::Prog(ListCodeBlock *p1) {
+    listcodeblock_ = p1;
 
 }
 
-Prog::Prog(const Prog & other)
-{
-  listcodeblock_ = other.listcodeblock_->clone();
+Prog::Prog(const Prog &other) {
+    listcodeblock_ = other.listcodeblock_->clone();
 
 }
 
-Prog &Prog::operator=(const Prog & other)
-{
-  Prog tmp(other);
-  swap(tmp);
-  return *this;
+Prog &Prog::operator=(const Prog &other) {
+    Prog tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void Prog::swap(Prog & other)
-{
-  std::swap(listcodeblock_, other.listcodeblock_);
-
-}
-
-Prog::~Prog()
-{
-  delete(listcodeblock_);
+void Prog::swap(Prog &other) {
+    std::swap(listcodeblock_, other.listcodeblock_);
 
 }
 
-void Prog::accept(Visitor *v)
-{
-  v->visitProg(this);
+Prog::~Prog() {
+    delete (listcodeblock_);
+
 }
 
-Prog *Prog::clone() const
-{
-  return new Prog(*this);
+void Prog::accept(Visitor *v) {
+    v->visitProg(this);
 }
 
+Prog *Prog::clone() const {
+    return new Prog(*this);
+}
 
 
 /********************   Block    ********************/
-Block::Block(UIdent p1, ListNonJmpStmt *p2, ListJmpStmt *p3)
-{
-  uident_ = p1;
-  listnonjmpstmt_ = p2;
-  listjmpstmt_ = p3;
+Block::Block(UIdent p1, ListNonJmpStmt *p2, ListJmpStmt *p3) {
+    uident_ = p1;
+    listnonjmpstmt_ = p2;
+    listjmpstmt_ = p3;
 
 }
 
-Block::Block(const Block & other)
-{
-  uident_ = other.uident_;
-  listnonjmpstmt_ = other.listnonjmpstmt_->clone();
-  listjmpstmt_ = other.listjmpstmt_->clone();
+Block::Block(const Block &other) {
+    uident_ = other.uident_;
+    listnonjmpstmt_ = other.listnonjmpstmt_->clone();
+    listjmpstmt_ = other.listjmpstmt_->clone();
 
 }
 
-Block &Block::operator=(const Block & other)
-{
-  Block tmp(other);
-  swap(tmp);
-  return *this;
+Block &Block::operator=(const Block &other) {
+    Block tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void Block::swap(Block & other)
-{
-  std::swap(uident_, other.uident_);
-  std::swap(listnonjmpstmt_, other.listnonjmpstmt_);
-  std::swap(listjmpstmt_, other.listjmpstmt_);
-
-}
-
-Block::~Block()
-{
-  delete(listnonjmpstmt_);
-  delete(listjmpstmt_);
+void Block::swap(Block &other) {
+    std::swap(uident_, other.uident_);
+    std::swap(listnonjmpstmt_, other.listnonjmpstmt_);
+    std::swap(listjmpstmt_, other.listjmpstmt_);
 
 }
 
-void Block::accept(Visitor *v)
-{
-  v->visitBlock(this);
+Block::~Block() {
+    delete (listnonjmpstmt_);
+    delete (listjmpstmt_);
+
 }
 
-Block *Block::clone() const
-{
-  return new Block(*this);
+void Block::accept(Visitor *v) {
+    v->visitBlock(this);
 }
 
+Block *Block::clone() const {
+    return new Block(*this);
+}
 
 
 /********************   StmtBinOp    ********************/
-StmtBinOp::StmtBinOp(UIdent p1, Atom *p2, BinOp *p3, Atom *p4)
-{
-  uident_ = p1;
-  atom_1 = p2;
-  binop_ = p3;
-  atom_2 = p4;
+StmtBinOp::StmtBinOp(UIdent p1, Atom *p2, BinOp *p3, Atom *p4) {
+    uident_ = p1;
+    atom_1 = p2;
+    binop_ = p3;
+    atom_2 = p4;
 
 }
 
-StmtBinOp::StmtBinOp(const StmtBinOp & other)
-{
-  uident_ = other.uident_;
-  atom_1 = other.atom_1->clone();
-  binop_ = other.binop_->clone();
-  atom_2 = other.atom_2->clone();
+StmtBinOp::StmtBinOp(const StmtBinOp &other) {
+    uident_ = other.uident_;
+    atom_1 = other.atom_1->clone();
+    binop_ = other.binop_->clone();
+    atom_2 = other.atom_2->clone();
 
 }
 
-StmtBinOp &StmtBinOp::operator=(const StmtBinOp & other)
-{
-  StmtBinOp tmp(other);
-  swap(tmp);
-  return *this;
+StmtBinOp &StmtBinOp::operator=(const StmtBinOp &other) {
+    StmtBinOp tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void StmtBinOp::swap(StmtBinOp & other)
-{
-  std::swap(uident_, other.uident_);
-  std::swap(atom_1, other.atom_1);
-  std::swap(binop_, other.binop_);
-  std::swap(atom_2, other.atom_2);
-
-}
-
-StmtBinOp::~StmtBinOp()
-{
-  delete(atom_1);
-  delete(binop_);
-  delete(atom_2);
+void StmtBinOp::swap(StmtBinOp &other) {
+    std::swap(uident_, other.uident_);
+    std::swap(atom_1, other.atom_1);
+    std::swap(binop_, other.binop_);
+    std::swap(atom_2, other.atom_2);
 
 }
 
-void StmtBinOp::accept(Visitor *v)
-{
-  v->visitStmtBinOp(this);
+StmtBinOp::~StmtBinOp() {
+    delete (atom_1);
+    delete (binop_);
+    delete (atom_2);
+
 }
 
-StmtBinOp *StmtBinOp::clone() const
-{
-  return new StmtBinOp(*this);
+void StmtBinOp::accept(Visitor *v) {
+    v->visitStmtBinOp(this);
 }
 
+StmtBinOp *StmtBinOp::clone() const {
+    return new StmtBinOp(*this);
+}
 
 
 /********************   StmtNoOp    ********************/
-StmtNoOp::StmtNoOp(UIdent p1, Atom *p2)
-{
-  uident_ = p1;
-  atom_ = p2;
+StmtNoOp::StmtNoOp(UIdent p1, Atom *p2) {
+    uident_ = p1;
+    atom_ = p2;
 
 }
 
-StmtNoOp::StmtNoOp(const StmtNoOp & other)
-{
-  uident_ = other.uident_;
-  atom_ = other.atom_->clone();
+StmtNoOp::StmtNoOp(const StmtNoOp &other) {
+    uident_ = other.uident_;
+    atom_ = other.atom_->clone();
 
 }
 
-StmtNoOp &StmtNoOp::operator=(const StmtNoOp & other)
-{
-  StmtNoOp tmp(other);
-  swap(tmp);
-  return *this;
+StmtNoOp &StmtNoOp::operator=(const StmtNoOp &other) {
+    StmtNoOp tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void StmtNoOp::swap(StmtNoOp & other)
-{
-  std::swap(uident_, other.uident_);
-  std::swap(atom_, other.atom_);
-
-}
-
-StmtNoOp::~StmtNoOp()
-{
-  delete(atom_);
+void StmtNoOp::swap(StmtNoOp &other) {
+    std::swap(uident_, other.uident_);
+    std::swap(atom_, other.atom_);
 
 }
 
-void StmtNoOp::accept(Visitor *v)
-{
-  v->visitStmtNoOp(this);
+StmtNoOp::~StmtNoOp() {
+    delete (atom_);
+
 }
 
-StmtNoOp *StmtNoOp::clone() const
-{
-  return new StmtNoOp(*this);
+void StmtNoOp::accept(Visitor *v) {
+    v->visitStmtNoOp(this);
 }
 
+StmtNoOp *StmtNoOp::clone() const {
+    return new StmtNoOp(*this);
+}
 
 
 /********************   StmtCall    ********************/
-StmtCall::StmtCall(UIdent p1, UIdent p2, ListAtom *p3)
-{
-  uident_1 = p1;
-  uident_2 = p2;
-  listatom_ = p3;
+StmtCall::StmtCall(UIdent p1, UIdent p2, ListAtom *p3) {
+    uident_1 = p1;
+    uident_2 = p2;
+    listatom_ = p3;
 
 }
 
-StmtCall::StmtCall(const StmtCall & other)
-{
-  uident_1 = other.uident_1;
-  uident_2 = other.uident_2;
-  listatom_ = other.listatom_->clone();
+StmtCall::StmtCall(const StmtCall &other) {
+    uident_1 = other.uident_1;
+    uident_2 = other.uident_2;
+    listatom_ = other.listatom_->clone();
 
 }
 
-StmtCall &StmtCall::operator=(const StmtCall & other)
-{
-  StmtCall tmp(other);
-  swap(tmp);
-  return *this;
+StmtCall &StmtCall::operator=(const StmtCall &other) {
+    StmtCall tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void StmtCall::swap(StmtCall & other)
-{
-  std::swap(uident_1, other.uident_1);
-  std::swap(uident_2, other.uident_2);
-  std::swap(listatom_, other.listatom_);
-
-}
-
-StmtCall::~StmtCall()
-{
-  delete(listatom_);
+void StmtCall::swap(StmtCall &other) {
+    std::swap(uident_1, other.uident_1);
+    std::swap(uident_2, other.uident_2);
+    std::swap(listatom_, other.listatom_);
 
 }
 
-void StmtCall::accept(Visitor *v)
-{
-  v->visitStmtCall(this);
+StmtCall::~StmtCall() {
+    delete (listatom_);
+
 }
 
-StmtCall *StmtCall::clone() const
-{
-  return new StmtCall(*this);
+void StmtCall::accept(Visitor *v) {
+    v->visitStmtCall(this);
 }
 
+StmtCall *StmtCall::clone() const {
+    return new StmtCall(*this);
+}
 
 
 /********************   StmtInc    ********************/
-StmtInc::StmtInc(UIdent p1)
-{
-  uident_ = p1;
+StmtInc::StmtInc(UIdent p1) {
+    uident_ = p1;
 
 }
 
-StmtInc::StmtInc(const StmtInc & other)
-{
-  uident_ = other.uident_;
+StmtInc::StmtInc(const StmtInc &other) {
+    uident_ = other.uident_;
 
 }
 
-StmtInc &StmtInc::operator=(const StmtInc & other)
-{
-  StmtInc tmp(other);
-  swap(tmp);
-  return *this;
+StmtInc &StmtInc::operator=(const StmtInc &other) {
+    StmtInc tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void StmtInc::swap(StmtInc & other)
-{
-  std::swap(uident_, other.uident_);
-
-}
-
-StmtInc::~StmtInc()
-{
+void StmtInc::swap(StmtInc &other) {
+    std::swap(uident_, other.uident_);
 
 }
 
-void StmtInc::accept(Visitor *v)
-{
-  v->visitStmtInc(this);
+StmtInc::~StmtInc() {
+
 }
 
-StmtInc *StmtInc::clone() const
-{
-  return new StmtInc(*this);
+void StmtInc::accept(Visitor *v) {
+    v->visitStmtInc(this);
 }
 
+StmtInc *StmtInc::clone() const {
+    return new StmtInc(*this);
+}
 
 
 /********************   StmtDecr    ********************/
-StmtDecr::StmtDecr(UIdent p1)
-{
-  uident_ = p1;
+StmtDecr::StmtDecr(UIdent p1) {
+    uident_ = p1;
 
 }
 
-StmtDecr::StmtDecr(const StmtDecr & other)
-{
-  uident_ = other.uident_;
+StmtDecr::StmtDecr(const StmtDecr &other) {
+    uident_ = other.uident_;
 
 }
 
-StmtDecr &StmtDecr::operator=(const StmtDecr & other)
-{
-  StmtDecr tmp(other);
-  swap(tmp);
-  return *this;
+StmtDecr &StmtDecr::operator=(const StmtDecr &other) {
+    StmtDecr tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void StmtDecr::swap(StmtDecr & other)
-{
-  std::swap(uident_, other.uident_);
-
-}
-
-StmtDecr::~StmtDecr()
-{
+void StmtDecr::swap(StmtDecr &other) {
+    std::swap(uident_, other.uident_);
 
 }
 
-void StmtDecr::accept(Visitor *v)
-{
-  v->visitStmtDecr(this);
+StmtDecr::~StmtDecr() {
+
 }
 
-StmtDecr *StmtDecr::clone() const
-{
-  return new StmtDecr(*this);
+void StmtDecr::accept(Visitor *v) {
+    v->visitStmtDecr(this);
 }
 
+StmtDecr *StmtDecr::clone() const {
+    return new StmtDecr(*this);
+}
 
 
 /********************   StmtGoto    ********************/
-StmtGoto::StmtGoto(UIdent p1)
-{
-  uident_ = p1;
+StmtGoto::StmtGoto(UIdent p1) {
+    uident_ = p1;
 
 }
 
-StmtGoto::StmtGoto(const StmtGoto & other)
-{
-  uident_ = other.uident_;
+StmtGoto::StmtGoto(const StmtGoto &other) {
+    uident_ = other.uident_;
 
 }
 
-StmtGoto &StmtGoto::operator=(const StmtGoto & other)
-{
-  StmtGoto tmp(other);
-  swap(tmp);
-  return *this;
+StmtGoto &StmtGoto::operator=(const StmtGoto &other) {
+    StmtGoto tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void StmtGoto::swap(StmtGoto & other)
-{
-  std::swap(uident_, other.uident_);
-
-}
-
-StmtGoto::~StmtGoto()
-{
+void StmtGoto::swap(StmtGoto &other) {
+    std::swap(uident_, other.uident_);
 
 }
 
-void StmtGoto::accept(Visitor *v)
-{
-  v->visitStmtGoto(this);
+StmtGoto::~StmtGoto() {
+
 }
 
-StmtGoto *StmtGoto::clone() const
-{
-  return new StmtGoto(*this);
+void StmtGoto::accept(Visitor *v) {
+    v->visitStmtGoto(this);
 }
 
+StmtGoto *StmtGoto::clone() const {
+    return new StmtGoto(*this);
+}
 
 
 /********************   StmtGoNext    ********************/
-StmtGoNext::StmtGoNext()
-{
+StmtGoNext::StmtGoNext() {
 
 }
 
-StmtGoNext::StmtGoNext(const StmtGoNext & other)
-{
+StmtGoNext::StmtGoNext(const StmtGoNext &other) {
 
 }
 
-StmtGoNext &StmtGoNext::operator=(const StmtGoNext & other)
-{
-  StmtGoNext tmp(other);
-  swap(tmp);
-  return *this;
+StmtGoNext &StmtGoNext::operator=(const StmtGoNext &other) {
+    StmtGoNext tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void StmtGoNext::swap(StmtGoNext & other)
-{
-
-}
-
-StmtGoNext::~StmtGoNext()
-{
+void StmtGoNext::swap(StmtGoNext &other) {
 
 }
 
-void StmtGoNext::accept(Visitor *v)
-{
-  v->visitStmtGoNext(this);
+StmtGoNext::~StmtGoNext() {
+
 }
 
-StmtGoNext *StmtGoNext::clone() const
-{
-  return new StmtGoNext(*this);
+void StmtGoNext::accept(Visitor *v) {
+    v->visitStmtGoNext(this);
 }
 
+StmtGoNext *StmtGoNext::clone() const {
+    return new StmtGoNext(*this);
+}
 
 
 /********************   StmtCondJmp    ********************/
-StmtCondJmp::StmtCondJmp(Atom *p1, UIdent p2, UIdent p3)
-{
-  atom_ = p1;
-  uident_1 = p2;
-  uident_2 = p3;
+StmtCondJmp::StmtCondJmp(Atom *p1, UIdent p2, UIdent p3) {
+    atom_ = p1;
+    uident_1 = p2;
+    uident_2 = p3;
 
 }
 
-StmtCondJmp::StmtCondJmp(const StmtCondJmp & other)
-{
-  atom_ = other.atom_->clone();
-  uident_1 = other.uident_1;
-  uident_2 = other.uident_2;
+StmtCondJmp::StmtCondJmp(const StmtCondJmp &other) {
+    atom_ = other.atom_->clone();
+    uident_1 = other.uident_1;
+    uident_2 = other.uident_2;
 
 }
 
-StmtCondJmp &StmtCondJmp::operator=(const StmtCondJmp & other)
-{
-  StmtCondJmp tmp(other);
-  swap(tmp);
-  return *this;
+StmtCondJmp &StmtCondJmp::operator=(const StmtCondJmp &other) {
+    StmtCondJmp tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void StmtCondJmp::swap(StmtCondJmp & other)
-{
-  std::swap(atom_, other.atom_);
-  std::swap(uident_1, other.uident_1);
-  std::swap(uident_2, other.uident_2);
-
-}
-
-StmtCondJmp::~StmtCondJmp()
-{
-  delete(atom_);
+void StmtCondJmp::swap(StmtCondJmp &other) {
+    std::swap(atom_, other.atom_);
+    std::swap(uident_1, other.uident_1);
+    std::swap(uident_2, other.uident_2);
 
 }
 
-void StmtCondJmp::accept(Visitor *v)
-{
-  v->visitStmtCondJmp(this);
+StmtCondJmp::~StmtCondJmp() {
+    delete (atom_);
+
 }
 
-StmtCondJmp *StmtCondJmp::clone() const
-{
-  return new StmtCondJmp(*this);
+void StmtCondJmp::accept(Visitor *v) {
+    v->visitStmtCondJmp(this);
 }
 
+StmtCondJmp *StmtCondJmp::clone() const {
+    return new StmtCondJmp(*this);
+}
 
 
 /********************   StmtRet    ********************/
-StmtRet::StmtRet(Atom *p1)
-{
-  atom_ = p1;
+StmtRet::StmtRet(Atom *p1) {
+    atom_ = p1;
 
 }
 
-StmtRet::StmtRet(const StmtRet & other)
-{
-  atom_ = other.atom_->clone();
+StmtRet::StmtRet(const StmtRet &other) {
+    atom_ = other.atom_->clone();
 
 }
 
-StmtRet &StmtRet::operator=(const StmtRet & other)
-{
-  StmtRet tmp(other);
-  swap(tmp);
-  return *this;
+StmtRet &StmtRet::operator=(const StmtRet &other) {
+    StmtRet tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void StmtRet::swap(StmtRet & other)
-{
-  std::swap(atom_, other.atom_);
-
-}
-
-StmtRet::~StmtRet()
-{
-  delete(atom_);
+void StmtRet::swap(StmtRet &other) {
+    std::swap(atom_, other.atom_);
 
 }
 
-void StmtRet::accept(Visitor *v)
-{
-  v->visitStmtRet(this);
+StmtRet::~StmtRet() {
+    delete (atom_);
+
 }
 
-StmtRet *StmtRet::clone() const
-{
-  return new StmtRet(*this);
+void StmtRet::accept(Visitor *v) {
+    v->visitStmtRet(this);
 }
 
+StmtRet *StmtRet::clone() const {
+    return new StmtRet(*this);
+}
 
 
 /********************   StmtVRet    ********************/
-StmtVRet::StmtVRet()
-{
+StmtVRet::StmtVRet() {
 
 }
 
-StmtVRet::StmtVRet(const StmtVRet & other)
-{
+StmtVRet::StmtVRet(const StmtVRet &other) {
 
 }
 
-StmtVRet &StmtVRet::operator=(const StmtVRet & other)
-{
-  StmtVRet tmp(other);
-  swap(tmp);
-  return *this;
+StmtVRet &StmtVRet::operator=(const StmtVRet &other) {
+    StmtVRet tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void StmtVRet::swap(StmtVRet & other)
-{
-
-}
-
-StmtVRet::~StmtVRet()
-{
+void StmtVRet::swap(StmtVRet &other) {
 
 }
 
-void StmtVRet::accept(Visitor *v)
-{
-  v->visitStmtVRet(this);
+StmtVRet::~StmtVRet() {
+
 }
 
-StmtVRet *StmtVRet::clone() const
-{
-  return new StmtVRet(*this);
+void StmtVRet::accept(Visitor *v) {
+    v->visitStmtVRet(this);
 }
 
+StmtVRet *StmtVRet::clone() const {
+    return new StmtVRet(*this);
+}
 
 
 /********************   AtomVar    ********************/
-AtomVar::AtomVar(UIdent p1)
-{
-  uident_ = p1;
+AtomVar::AtomVar(UIdent p1) {
+    uident_ = p1;
 
 }
 
-AtomVar::AtomVar(const AtomVar & other)
-{
-  uident_ = other.uident_;
+AtomVar::AtomVar(const AtomVar &other) {
+    uident_ = other.uident_;
 
 }
 
-AtomVar &AtomVar::operator=(const AtomVar & other)
-{
-  AtomVar tmp(other);
-  swap(tmp);
-  return *this;
+AtomVar &AtomVar::operator=(const AtomVar &other) {
+    AtomVar tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void AtomVar::swap(AtomVar & other)
-{
-  std::swap(uident_, other.uident_);
-
-}
-
-AtomVar::~AtomVar()
-{
+void AtomVar::swap(AtomVar &other) {
+    std::swap(uident_, other.uident_);
 
 }
 
-void AtomVar::accept(Visitor *v)
-{
-  v->visitAtomVar(this);
+AtomVar::~AtomVar() {
+
 }
 
-AtomVar *AtomVar::clone() const
-{
-  return new AtomVar(*this);
+void AtomVar::accept(Visitor *v) {
+    v->visitAtomVar(this);
 }
 
+AtomVar *AtomVar::clone() const {
+    return new AtomVar(*this);
+}
 
 
 /********************   AtomInt    ********************/
-AtomInt::AtomInt(Integer p1)
-{
-  integer_ = p1;
+AtomInt::AtomInt(Integer p1) {
+    integer_ = p1;
 
 }
 
-AtomInt::AtomInt(const AtomInt & other)
-{
-  integer_ = other.integer_;
+AtomInt::AtomInt(const AtomInt &other) {
+    integer_ = other.integer_;
 
 }
 
-AtomInt &AtomInt::operator=(const AtomInt & other)
-{
-  AtomInt tmp(other);
-  swap(tmp);
-  return *this;
+AtomInt &AtomInt::operator=(const AtomInt &other) {
+    AtomInt tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void AtomInt::swap(AtomInt & other)
-{
-  std::swap(integer_, other.integer_);
-
-}
-
-AtomInt::~AtomInt()
-{
+void AtomInt::swap(AtomInt &other) {
+    std::swap(integer_, other.integer_);
 
 }
 
-void AtomInt::accept(Visitor *v)
-{
-  v->visitAtomInt(this);
+AtomInt::~AtomInt() {
+
 }
 
-AtomInt *AtomInt::clone() const
-{
-  return new AtomInt(*this);
+void AtomInt::accept(Visitor *v) {
+    v->visitAtomInt(this);
 }
 
+AtomInt *AtomInt::clone() const {
+    return new AtomInt(*this);
+}
 
 
 /********************   AtomStr    ********************/
-AtomStr::AtomStr(String p1)
-{
-  string_ = p1;
+AtomStr::AtomStr(String p1) {
+    string_ = p1;
 
 }
 
-AtomStr::AtomStr(const AtomStr & other)
-{
-  string_ = other.string_;
+AtomStr::AtomStr(const AtomStr &other) {
+    string_ = other.string_;
 
 }
 
-AtomStr &AtomStr::operator=(const AtomStr & other)
-{
-  AtomStr tmp(other);
-  swap(tmp);
-  return *this;
+AtomStr &AtomStr::operator=(const AtomStr &other) {
+    AtomStr tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void AtomStr::swap(AtomStr & other)
-{
-  std::swap(string_, other.string_);
-
-}
-
-AtomStr::~AtomStr()
-{
+void AtomStr::swap(AtomStr &other) {
+    std::swap(string_, other.string_);
 
 }
 
-void AtomStr::accept(Visitor *v)
-{
-  v->visitAtomStr(this);
+AtomStr::~AtomStr() {
+
 }
 
-AtomStr *AtomStr::clone() const
-{
-  return new AtomStr(*this);
+void AtomStr::accept(Visitor *v) {
+    v->visitAtomStr(this);
 }
 
+AtomStr *AtomStr::clone() const {
+    return new AtomStr(*this);
+}
 
 
 /********************   AddOp    ********************/
-AddOp::AddOp()
-{
+AddOp::AddOp() {
 
 }
 
-AddOp::AddOp(const AddOp & other)
-{
+AddOp::AddOp(const AddOp &other) {
 
 }
 
-AddOp &AddOp::operator=(const AddOp & other)
-{
-  AddOp tmp(other);
-  swap(tmp);
-  return *this;
+AddOp &AddOp::operator=(const AddOp &other) {
+    AddOp tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void AddOp::swap(AddOp & other)
-{
-
-}
-
-AddOp::~AddOp()
-{
+void AddOp::swap(AddOp &other) {
 
 }
 
-void AddOp::accept(Visitor *v)
-{
-  v->visitAddOp(this);
+AddOp::~AddOp() {
+
 }
 
-AddOp *AddOp::clone() const
-{
-  return new AddOp(*this);
+void AddOp::accept(Visitor *v) {
+    v->visitAddOp(this);
 }
 
+AddOp *AddOp::clone() const {
+    return new AddOp(*this);
+}
 
 
 /********************   SubOp    ********************/
-SubOp::SubOp()
-{
+SubOp::SubOp() {
 
 }
 
-SubOp::SubOp(const SubOp & other)
-{
+SubOp::SubOp(const SubOp &other) {
 
 }
 
-SubOp &SubOp::operator=(const SubOp & other)
-{
-  SubOp tmp(other);
-  swap(tmp);
-  return *this;
+SubOp &SubOp::operator=(const SubOp &other) {
+    SubOp tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void SubOp::swap(SubOp & other)
-{
-
-}
-
-SubOp::~SubOp()
-{
+void SubOp::swap(SubOp &other) {
 
 }
 
-void SubOp::accept(Visitor *v)
-{
-  v->visitSubOp(this);
+SubOp::~SubOp() {
+
 }
 
-SubOp *SubOp::clone() const
-{
-  return new SubOp(*this);
+void SubOp::accept(Visitor *v) {
+    v->visitSubOp(this);
 }
 
+SubOp *SubOp::clone() const {
+    return new SubOp(*this);
+}
 
 
 /********************   MulOp    ********************/
-MulOp::MulOp()
-{
+MulOp::MulOp() {
 
 }
 
-MulOp::MulOp(const MulOp & other)
-{
+MulOp::MulOp(const MulOp &other) {
 
 }
 
-MulOp &MulOp::operator=(const MulOp & other)
-{
-  MulOp tmp(other);
-  swap(tmp);
-  return *this;
+MulOp &MulOp::operator=(const MulOp &other) {
+    MulOp tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void MulOp::swap(MulOp & other)
-{
-
-}
-
-MulOp::~MulOp()
-{
+void MulOp::swap(MulOp &other) {
 
 }
 
-void MulOp::accept(Visitor *v)
-{
-  v->visitMulOp(this);
+MulOp::~MulOp() {
+
 }
 
-MulOp *MulOp::clone() const
-{
-  return new MulOp(*this);
+void MulOp::accept(Visitor *v) {
+    v->visitMulOp(this);
 }
 
+MulOp *MulOp::clone() const {
+    return new MulOp(*this);
+}
 
 
 /********************   DivOp    ********************/
-DivOp::DivOp()
-{
+DivOp::DivOp() {
 
 }
 
-DivOp::DivOp(const DivOp & other)
-{
+DivOp::DivOp(const DivOp &other) {
 
 }
 
-DivOp &DivOp::operator=(const DivOp & other)
-{
-  DivOp tmp(other);
-  swap(tmp);
-  return *this;
+DivOp &DivOp::operator=(const DivOp &other) {
+    DivOp tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void DivOp::swap(DivOp & other)
-{
-
-}
-
-DivOp::~DivOp()
-{
+void DivOp::swap(DivOp &other) {
 
 }
 
-void DivOp::accept(Visitor *v)
-{
-  v->visitDivOp(this);
+DivOp::~DivOp() {
+
 }
 
-DivOp *DivOp::clone() const
-{
-  return new DivOp(*this);
+void DivOp::accept(Visitor *v) {
+    v->visitDivOp(this);
 }
 
+DivOp *DivOp::clone() const {
+    return new DivOp(*this);
+}
 
 
 /********************   ModOp    ********************/
-ModOp::ModOp()
-{
+ModOp::ModOp() {
 
 }
 
-ModOp::ModOp(const ModOp & other)
-{
+ModOp::ModOp(const ModOp &other) {
 
 }
 
-ModOp &ModOp::operator=(const ModOp & other)
-{
-  ModOp tmp(other);
-  swap(tmp);
-  return *this;
+ModOp &ModOp::operator=(const ModOp &other) {
+    ModOp tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void ModOp::swap(ModOp & other)
-{
-
-}
-
-ModOp::~ModOp()
-{
+void ModOp::swap(ModOp &other) {
 
 }
 
-void ModOp::accept(Visitor *v)
-{
-  v->visitModOp(this);
+ModOp::~ModOp() {
+
 }
 
-ModOp *ModOp::clone() const
-{
-  return new ModOp(*this);
+void ModOp::accept(Visitor *v) {
+    v->visitModOp(this);
 }
 
+ModOp *ModOp::clone() const {
+    return new ModOp(*this);
+}
 
 
 /********************   AndOp    ********************/
-AndOp::AndOp()
-{
+AndOp::AndOp() {
 
 }
 
-AndOp::AndOp(const AndOp & other)
-{
+AndOp::AndOp(const AndOp &other) {
 
 }
 
-AndOp &AndOp::operator=(const AndOp & other)
-{
-  AndOp tmp(other);
-  swap(tmp);
-  return *this;
+AndOp &AndOp::operator=(const AndOp &other) {
+    AndOp tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void AndOp::swap(AndOp & other)
-{
-
-}
-
-AndOp::~AndOp()
-{
+void AndOp::swap(AndOp &other) {
 
 }
 
-void AndOp::accept(Visitor *v)
-{
-  v->visitAndOp(this);
+AndOp::~AndOp() {
+
 }
 
-AndOp *AndOp::clone() const
-{
-  return new AndOp(*this);
+void AndOp::accept(Visitor *v) {
+    v->visitAndOp(this);
 }
 
+AndOp *AndOp::clone() const {
+    return new AndOp(*this);
+}
 
 
 /********************   OrOp    ********************/
-OrOp::OrOp()
-{
+OrOp::OrOp() {
 
 }
 
-OrOp::OrOp(const OrOp & other)
-{
+OrOp::OrOp(const OrOp &other) {
 
 }
 
-OrOp &OrOp::operator=(const OrOp & other)
-{
-  OrOp tmp(other);
-  swap(tmp);
-  return *this;
+OrOp &OrOp::operator=(const OrOp &other) {
+    OrOp tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void OrOp::swap(OrOp & other)
-{
-
-}
-
-OrOp::~OrOp()
-{
+void OrOp::swap(OrOp &other) {
 
 }
 
-void OrOp::accept(Visitor *v)
-{
-  v->visitOrOp(this);
+OrOp::~OrOp() {
+
 }
 
-OrOp *OrOp::clone() const
-{
-  return new OrOp(*this);
+void OrOp::accept(Visitor *v) {
+    v->visitOrOp(this);
 }
 
+OrOp *OrOp::clone() const {
+    return new OrOp(*this);
+}
 
 
 /********************   LTH    ********************/
-LTH::LTH()
-{
+LTH::LTH() {
 
 }
 
-LTH::LTH(const LTH & other)
-{
+LTH::LTH(const LTH &other) {
 
 }
 
-LTH &LTH::operator=(const LTH & other)
-{
-  LTH tmp(other);
-  swap(tmp);
-  return *this;
+LTH &LTH::operator=(const LTH &other) {
+    LTH tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void LTH::swap(LTH & other)
-{
-
-}
-
-LTH::~LTH()
-{
+void LTH::swap(LTH &other) {
 
 }
 
-void LTH::accept(Visitor *v)
-{
-  v->visitLTH(this);
+LTH::~LTH() {
+
 }
 
-LTH *LTH::clone() const
-{
-  return new LTH(*this);
+void LTH::accept(Visitor *v) {
+    v->visitLTH(this);
 }
 
+LTH *LTH::clone() const {
+    return new LTH(*this);
+}
 
 
 /********************   LE    ********************/
-LE::LE()
-{
+LE::LE() {
 
 }
 
-LE::LE(const LE & other)
-{
+LE::LE(const LE &other) {
 
 }
 
-LE &LE::operator=(const LE & other)
-{
-  LE tmp(other);
-  swap(tmp);
-  return *this;
+LE &LE::operator=(const LE &other) {
+    LE tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void LE::swap(LE & other)
-{
-
-}
-
-LE::~LE()
-{
+void LE::swap(LE &other) {
 
 }
 
-void LE::accept(Visitor *v)
-{
-  v->visitLE(this);
+LE::~LE() {
+
 }
 
-LE *LE::clone() const
-{
-  return new LE(*this);
+void LE::accept(Visitor *v) {
+    v->visitLE(this);
 }
 
+LE *LE::clone() const {
+    return new LE(*this);
+}
 
 
 /********************   GTH    ********************/
-GTH::GTH()
-{
+GTH::GTH() {
 
 }
 
-GTH::GTH(const GTH & other)
-{
+GTH::GTH(const GTH &other) {
 
 }
 
-GTH &GTH::operator=(const GTH & other)
-{
-  GTH tmp(other);
-  swap(tmp);
-  return *this;
+GTH &GTH::operator=(const GTH &other) {
+    GTH tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void GTH::swap(GTH & other)
-{
-
-}
-
-GTH::~GTH()
-{
+void GTH::swap(GTH &other) {
 
 }
 
-void GTH::accept(Visitor *v)
-{
-  v->visitGTH(this);
+GTH::~GTH() {
+
 }
 
-GTH *GTH::clone() const
-{
-  return new GTH(*this);
+void GTH::accept(Visitor *v) {
+    v->visitGTH(this);
 }
 
+GTH *GTH::clone() const {
+    return new GTH(*this);
+}
 
 
 /********************   GE    ********************/
-GE::GE()
-{
+GE::GE() {
 
 }
 
-GE::GE(const GE & other)
-{
+GE::GE(const GE &other) {
 
 }
 
-GE &GE::operator=(const GE & other)
-{
-  GE tmp(other);
-  swap(tmp);
-  return *this;
+GE &GE::operator=(const GE &other) {
+    GE tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void GE::swap(GE & other)
-{
-
-}
-
-GE::~GE()
-{
+void GE::swap(GE &other) {
 
 }
 
-void GE::accept(Visitor *v)
-{
-  v->visitGE(this);
+GE::~GE() {
+
 }
 
-GE *GE::clone() const
-{
-  return new GE(*this);
+void GE::accept(Visitor *v) {
+    v->visitGE(this);
 }
 
+GE *GE::clone() const {
+    return new GE(*this);
+}
 
 
 /********************   EQU    ********************/
-EQU::EQU()
-{
+EQU::EQU() {
 
 }
 
-EQU::EQU(const EQU & other)
-{
+EQU::EQU(const EQU &other) {
 
 }
 
-EQU &EQU::operator=(const EQU & other)
-{
-  EQU tmp(other);
-  swap(tmp);
-  return *this;
+EQU &EQU::operator=(const EQU &other) {
+    EQU tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void EQU::swap(EQU & other)
-{
-
-}
-
-EQU::~EQU()
-{
+void EQU::swap(EQU &other) {
 
 }
 
-void EQU::accept(Visitor *v)
-{
-  v->visitEQU(this);
+EQU::~EQU() {
+
 }
 
-EQU *EQU::clone() const
-{
-  return new EQU(*this);
+void EQU::accept(Visitor *v) {
+    v->visitEQU(this);
 }
 
+EQU *EQU::clone() const {
+    return new EQU(*this);
+}
 
 
 /********************   NE    ********************/
-NE::NE()
-{
+NE::NE() {
 
 }
 
-NE::NE(const NE & other)
-{
+NE::NE(const NE &other) {
 
 }
 
-NE &NE::operator=(const NE & other)
-{
-  NE tmp(other);
-  swap(tmp);
-  return *this;
+NE &NE::operator=(const NE &other) {
+    NE tmp(other);
+    swap(tmp);
+    return *this;
 }
 
-void NE::swap(NE & other)
-{
-
-}
-
-NE::~NE()
-{
+void NE::swap(NE &other) {
 
 }
 
-void NE::accept(Visitor *v)
-{
-  v->visitNE(this);
+NE::~NE() {
+
 }
 
-NE *NE::clone() const
-{
-  return new NE(*this);
+void NE::accept(Visitor *v) {
+    v->visitNE(this);
 }
 
-
+NE *NE::clone() const {
+    return new NE(*this);
+}
 
 
 /********************   ListCodeBlock    ********************/
 
-void ListCodeBlock::accept(Visitor *v)
-{
-  v->visitListCodeBlock(this);
+void ListCodeBlock::accept(Visitor *v) {
+    v->visitListCodeBlock(this);
 }
 
-ListCodeBlock *ListCodeBlock::clone() const
-{
-  return new ListCodeBlock(*this);
+ListCodeBlock *ListCodeBlock::clone() const {
+    return new ListCodeBlock(*this);
 }
 
-ListCodeBlock* consListCodeBlock(CodeBlock* x, ListCodeBlock* xs) {
-  xs->insert(xs->begin(), x);
-  return xs;
+ListCodeBlock *consListCodeBlock(CodeBlock *x, ListCodeBlock *xs) {
+    xs->insert(xs->begin(), x);
+    return xs;
 }
 
 
 /********************   ListNonJmpStmt    ********************/
 
-void ListNonJmpStmt::accept(Visitor *v)
-{
-  v->visitListNonJmpStmt(this);
+void ListNonJmpStmt::accept(Visitor *v) {
+    v->visitListNonJmpStmt(this);
 }
 
-ListNonJmpStmt *ListNonJmpStmt::clone() const
-{
-  return new ListNonJmpStmt(*this);
+ListNonJmpStmt *ListNonJmpStmt::clone() const {
+    return new ListNonJmpStmt(*this);
 }
 
-ListNonJmpStmt* consListNonJmpStmt(NonJmpStmt* x, ListNonJmpStmt* xs) {
-  xs->insert(xs->begin(), x);
-  return xs;
+ListNonJmpStmt *consListNonJmpStmt(NonJmpStmt *x, ListNonJmpStmt *xs) {
+    xs->insert(xs->begin(), x);
+    return xs;
 }
 
 
 /********************   ListJmpStmt    ********************/
 
-void ListJmpStmt::accept(Visitor *v)
-{
-  v->visitListJmpStmt(this);
+void ListJmpStmt::accept(Visitor *v) {
+    v->visitListJmpStmt(this);
 }
 
-ListJmpStmt *ListJmpStmt::clone() const
-{
-  return new ListJmpStmt(*this);
+ListJmpStmt *ListJmpStmt::clone() const {
+    return new ListJmpStmt(*this);
 }
 
-ListJmpStmt* consListJmpStmt(JmpStmt* x, ListJmpStmt* xs) {
-  xs->insert(xs->begin(), x);
-  return xs;
+ListJmpStmt *consListJmpStmt(JmpStmt *x, ListJmpStmt *xs) {
+    xs->insert(xs->begin(), x);
+    return xs;
 }
 
 
 /********************   ListAtom    ********************/
 
-void ListAtom::accept(Visitor *v)
-{
-  v->visitListAtom(this);
+void ListAtom::accept(Visitor *v) {
+    v->visitListAtom(this);
 }
 
-ListAtom *ListAtom::clone() const
-{
-  return new ListAtom(*this);
+ListAtom *ListAtom::clone() const {
+    return new ListAtom(*this);
 }
 
-ListAtom* consListAtom(Atom* x, ListAtom* xs) {
-  xs->insert(xs->begin(), x);
-  return xs;
+ListAtom *consListAtom(Atom *x, ListAtom *xs) {
+    xs->insert(xs->begin(), x);
+    return xs;
 }
 
 

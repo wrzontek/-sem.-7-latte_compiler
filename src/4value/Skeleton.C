@@ -9,7 +9,6 @@
 #include "Skeleton.H"
 
 
-
 void Skeleton::visitProgram(Program *t) {} //abstract class
 void Skeleton::visitCodeBlock(CodeBlock *t) {} //abstract class
 void Skeleton::visitNonJmpStmt(NonJmpStmt *t) {} //abstract class
@@ -17,287 +16,245 @@ void Skeleton::visitJmpStmt(JmpStmt *t) {} //abstract class
 void Skeleton::visitAtom(Atom *t) {} //abstract class
 void Skeleton::visitBinOp(BinOp *t) {} //abstract class
 
-void Skeleton::visitProg(Prog *prog)
-{
-  /* Code For Prog Goes Here */
+void Skeleton::visitProg(Prog *prog) {
+    /* Code For Prog Goes Here */
 
-  if (prog->listcodeblock_) prog->listcodeblock_->accept(this);
-
-}
-
-void Skeleton::visitBlock(Block *block)
-{
-  /* Code For Block Goes Here */
-
-  visitUIdent(block->uident_);
-  if (block->listnonjmpstmt_) block->listnonjmpstmt_->accept(this);
-  if (block->listjmpstmt_) block->listjmpstmt_->accept(this);
+    if (prog->listcodeblock_) prog->listcodeblock_->accept(this);
 
 }
 
-void Skeleton::visitStmtBinOp(StmtBinOp *stmt_bin_op)
-{
-  /* Code For StmtBinOp Goes Here */
+void Skeleton::visitBlock(Block *block) {
+    /* Code For Block Goes Here */
 
-  visitUIdent(stmt_bin_op->uident_);
-  if (stmt_bin_op->atom_1) stmt_bin_op->atom_1->accept(this);
-  if (stmt_bin_op->binop_) stmt_bin_op->binop_->accept(this);
-  if (stmt_bin_op->atom_2) stmt_bin_op->atom_2->accept(this);
+    visitUIdent(block->uident_);
+    if (block->listnonjmpstmt_) block->listnonjmpstmt_->accept(this);
+    if (block->listjmpstmt_) block->listjmpstmt_->accept(this);
 
 }
 
-void Skeleton::visitStmtNoOp(StmtNoOp *stmt_no_op)
-{
-  /* Code For StmtNoOp Goes Here */
+void Skeleton::visitStmtBinOp(StmtBinOp *stmt_bin_op) {
+    /* Code For StmtBinOp Goes Here */
 
-  visitUIdent(stmt_no_op->uident_);
-  if (stmt_no_op->atom_) stmt_no_op->atom_->accept(this);
-
-}
-
-void Skeleton::visitStmtCall(StmtCall *stmt_call)
-{
-  /* Code For StmtCall Goes Here */
-
-  visitUIdent(stmt_call->uident_1);
-  visitUIdent(stmt_call->uident_2);
-  if (stmt_call->listatom_) stmt_call->listatom_->accept(this);
+    visitUIdent(stmt_bin_op->uident_);
+    if (stmt_bin_op->atom_1) stmt_bin_op->atom_1->accept(this);
+    if (stmt_bin_op->binop_) stmt_bin_op->binop_->accept(this);
+    if (stmt_bin_op->atom_2) stmt_bin_op->atom_2->accept(this);
 
 }
 
-void Skeleton::visitStmtInc(StmtInc *stmt_inc)
-{
-  /* Code For StmtInc Goes Here */
+void Skeleton::visitStmtNoOp(StmtNoOp *stmt_no_op) {
+    /* Code For StmtNoOp Goes Here */
 
-  visitUIdent(stmt_inc->uident_);
-
-}
-
-void Skeleton::visitStmtDecr(StmtDecr *stmt_decr)
-{
-  /* Code For StmtDecr Goes Here */
-
-  visitUIdent(stmt_decr->uident_);
+    visitUIdent(stmt_no_op->uident_);
+    if (stmt_no_op->atom_) stmt_no_op->atom_->accept(this);
 
 }
 
-void Skeleton::visitStmtGoto(StmtGoto *stmt_goto)
-{
-  /* Code For StmtGoto Goes Here */
+void Skeleton::visitStmtCall(StmtCall *stmt_call) {
+    /* Code For StmtCall Goes Here */
 
-  visitUIdent(stmt_goto->uident_);
+    visitUIdent(stmt_call->uident_1);
+    visitUIdent(stmt_call->uident_2);
+    if (stmt_call->listatom_) stmt_call->listatom_->accept(this);
 
 }
 
-void Skeleton::visitStmtGoNext(StmtGoNext *stmt_go_next)
-{
-  /* Code For StmtGoNext Goes Here */
+void Skeleton::visitStmtInc(StmtInc *stmt_inc) {
+    /* Code For StmtInc Goes Here */
+
+    visitUIdent(stmt_inc->uident_);
+
+}
+
+void Skeleton::visitStmtDecr(StmtDecr *stmt_decr) {
+    /* Code For StmtDecr Goes Here */
+
+    visitUIdent(stmt_decr->uident_);
+
+}
+
+void Skeleton::visitStmtGoto(StmtGoto *stmt_goto) {
+    /* Code For StmtGoto Goes Here */
+
+    visitUIdent(stmt_goto->uident_);
+
+}
+
+void Skeleton::visitStmtGoNext(StmtGoNext *stmt_go_next) {
+    /* Code For StmtGoNext Goes Here */
 
 
 }
 
-void Skeleton::visitStmtCondJmp(StmtCondJmp *stmt_cond_jmp)
-{
-  /* Code For StmtCondJmp Goes Here */
+void Skeleton::visitStmtCondJmp(StmtCondJmp *stmt_cond_jmp) {
+    /* Code For StmtCondJmp Goes Here */
 
-  if (stmt_cond_jmp->atom_) stmt_cond_jmp->atom_->accept(this);
-  visitUIdent(stmt_cond_jmp->uident_1);
-  visitUIdent(stmt_cond_jmp->uident_2);
-
-}
-
-void Skeleton::visitStmtRet(StmtRet *stmt_ret)
-{
-  /* Code For StmtRet Goes Here */
-
-  if (stmt_ret->atom_) stmt_ret->atom_->accept(this);
+    if (stmt_cond_jmp->atom_) stmt_cond_jmp->atom_->accept(this);
+    visitUIdent(stmt_cond_jmp->uident_1);
+    visitUIdent(stmt_cond_jmp->uident_2);
 
 }
 
-void Skeleton::visitStmtVRet(StmtVRet *stmt_v_ret)
-{
-  /* Code For StmtVRet Goes Here */
+void Skeleton::visitStmtRet(StmtRet *stmt_ret) {
+    /* Code For StmtRet Goes Here */
+
+    if (stmt_ret->atom_) stmt_ret->atom_->accept(this);
+
+}
+
+void Skeleton::visitStmtVRet(StmtVRet *stmt_v_ret) {
+    /* Code For StmtVRet Goes Here */
 
 
 }
 
-void Skeleton::visitAtomVar(AtomVar *atom_var)
-{
-  /* Code For AtomVar Goes Here */
+void Skeleton::visitAtomVar(AtomVar *atom_var) {
+    /* Code For AtomVar Goes Here */
 
-  visitUIdent(atom_var->uident_);
-
-}
-
-void Skeleton::visitAtomInt(AtomInt *atom_int)
-{
-  /* Code For AtomInt Goes Here */
-
-  visitInteger(atom_int->integer_);
+    visitUIdent(atom_var->uident_);
 
 }
 
-void Skeleton::visitAtomStr(AtomStr *atom_str)
-{
-  /* Code For AtomStr Goes Here */
+void Skeleton::visitAtomInt(AtomInt *atom_int) {
+    /* Code For AtomInt Goes Here */
 
-  visitString(atom_str->string_);
+    visitInteger(atom_int->integer_);
 
 }
 
-void Skeleton::visitAddOp(AddOp *add_op)
-{
-  /* Code For AddOp Goes Here */
+void Skeleton::visitAtomStr(AtomStr *atom_str) {
+    /* Code For AtomStr Goes Here */
+
+    visitString(atom_str->string_);
+
+}
+
+void Skeleton::visitAddOp(AddOp *add_op) {
+    /* Code For AddOp Goes Here */
 
 
 }
 
-void Skeleton::visitSubOp(SubOp *sub_op)
-{
-  /* Code For SubOp Goes Here */
+void Skeleton::visitSubOp(SubOp *sub_op) {
+    /* Code For SubOp Goes Here */
 
 
 }
 
-void Skeleton::visitMulOp(MulOp *mul_op)
-{
-  /* Code For MulOp Goes Here */
+void Skeleton::visitMulOp(MulOp *mul_op) {
+    /* Code For MulOp Goes Here */
 
 
 }
 
-void Skeleton::visitDivOp(DivOp *div_op)
-{
-  /* Code For DivOp Goes Here */
+void Skeleton::visitDivOp(DivOp *div_op) {
+    /* Code For DivOp Goes Here */
 
 
 }
 
-void Skeleton::visitModOp(ModOp *mod_op)
-{
-  /* Code For ModOp Goes Here */
+void Skeleton::visitModOp(ModOp *mod_op) {
+    /* Code For ModOp Goes Here */
 
 
 }
 
-void Skeleton::visitAndOp(AndOp *and_op)
-{
-  /* Code For AndOp Goes Here */
+void Skeleton::visitAndOp(AndOp *and_op) {
+    /* Code For AndOp Goes Here */
 
 
 }
 
-void Skeleton::visitOrOp(OrOp *or_op)
-{
-  /* Code For OrOp Goes Here */
+void Skeleton::visitOrOp(OrOp *or_op) {
+    /* Code For OrOp Goes Here */
 
 
 }
 
-void Skeleton::visitLTH(LTH *lth)
-{
-  /* Code For LTH Goes Here */
+void Skeleton::visitLTH(LTH *lth) {
+    /* Code For LTH Goes Here */
 
 
 }
 
-void Skeleton::visitLE(LE *le)
-{
-  /* Code For LE Goes Here */
+void Skeleton::visitLE(LE *le) {
+    /* Code For LE Goes Here */
 
 
 }
 
-void Skeleton::visitGTH(GTH *gth)
-{
-  /* Code For GTH Goes Here */
+void Skeleton::visitGTH(GTH *gth) {
+    /* Code For GTH Goes Here */
 
 
 }
 
-void Skeleton::visitGE(GE *ge)
-{
-  /* Code For GE Goes Here */
+void Skeleton::visitGE(GE *ge) {
+    /* Code For GE Goes Here */
 
 
 }
 
-void Skeleton::visitEQU(EQU *equ)
-{
-  /* Code For EQU Goes Here */
+void Skeleton::visitEQU(EQU *equ) {
+    /* Code For EQU Goes Here */
 
 
 }
 
-void Skeleton::visitNE(NE *ne)
-{
-  /* Code For NE Goes Here */
+void Skeleton::visitNE(NE *ne) {
+    /* Code For NE Goes Here */
 
 
 }
 
 
-void Skeleton::visitListCodeBlock(ListCodeBlock *list_code_block)
-{
-  for (ListCodeBlock::iterator i = list_code_block->begin() ; i != list_code_block->end() ; ++i)
-  {
-    (*i)->accept(this);
-  }
+void Skeleton::visitListCodeBlock(ListCodeBlock *list_code_block) {
+    for (ListCodeBlock::iterator i = list_code_block->begin(); i != list_code_block->end(); ++i) {
+        (*i)->accept(this);
+    }
 }
 
-void Skeleton::visitListNonJmpStmt(ListNonJmpStmt *list_non_jmp_stmt)
-{
-  for (ListNonJmpStmt::iterator i = list_non_jmp_stmt->begin() ; i != list_non_jmp_stmt->end() ; ++i)
-  {
-    (*i)->accept(this);
-  }
+void Skeleton::visitListNonJmpStmt(ListNonJmpStmt *list_non_jmp_stmt) {
+    for (ListNonJmpStmt::iterator i = list_non_jmp_stmt->begin(); i != list_non_jmp_stmt->end(); ++i) {
+        (*i)->accept(this);
+    }
 }
 
-void Skeleton::visitListJmpStmt(ListJmpStmt *list_jmp_stmt)
-{
-  for (ListJmpStmt::iterator i = list_jmp_stmt->begin() ; i != list_jmp_stmt->end() ; ++i)
-  {
-    (*i)->accept(this);
-  }
+void Skeleton::visitListJmpStmt(ListJmpStmt *list_jmp_stmt) {
+    for (ListJmpStmt::iterator i = list_jmp_stmt->begin(); i != list_jmp_stmt->end(); ++i) {
+        (*i)->accept(this);
+    }
 }
 
-void Skeleton::visitListAtom(ListAtom *list_atom)
-{
-  for (ListAtom::iterator i = list_atom->begin() ; i != list_atom->end() ; ++i)
-  {
-    (*i)->accept(this);
-  }
+void Skeleton::visitListAtom(ListAtom *list_atom) {
+    for (ListAtom::iterator i = list_atom->begin(); i != list_atom->end(); ++i) {
+        (*i)->accept(this);
+    }
 }
 
 
-void Skeleton::visitInteger(Integer x)
-{
-  /* Code for Integer Goes Here */
+void Skeleton::visitInteger(Integer x) {
+    /* Code for Integer Goes Here */
 }
 
-void Skeleton::visitChar(Char x)
-{
-  /* Code for Char Goes Here */
+void Skeleton::visitChar(Char x) {
+    /* Code for Char Goes Here */
 }
 
-void Skeleton::visitDouble(Double x)
-{
-  /* Code for Double Goes Here */
+void Skeleton::visitDouble(Double x) {
+    /* Code for Double Goes Here */
 }
 
-void Skeleton::visitString(String x)
-{
-  /* Code for String Goes Here */
+void Skeleton::visitString(String x) {
+    /* Code for String Goes Here */
 }
 
-void Skeleton::visitIdent(Ident x)
-{
-  /* Code for Ident Goes Here */
+void Skeleton::visitIdent(Ident x) {
+    /* Code for Ident Goes Here */
 }
 
-void Skeleton::visitUIdent(UIdent x)
-{
-  /* Code for UIdent Goes Here */
+void Skeleton::visitUIdent(UIdent x) {
+    /* Code for UIdent Goes Here */
 }
 
 

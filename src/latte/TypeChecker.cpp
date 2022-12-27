@@ -14,7 +14,7 @@ private:
     Program *program;
     std::vector<CFun *> defined_functions;
     std::vector<CClass *> defined_classes;
-    std::set<Ident> defined_class_idents;
+    std::set <Ident> defined_class_idents;
 
     // for ordering the visits, first the parents then the children
     std::vector<ClassDef *> class_defs;
@@ -98,9 +98,9 @@ public:
         while (visited_class_extends_defs < class_extend_defs.size()) { // A extends B
             for (int i = 0; i < class_extend_defs.size(); i++) {
                 auto def = class_extend_defs.at(i);
-                if (defined_class_idents.find(def->ident_1)  == defined_class_idents.end()
-                    && defined_class_idents.find(def->ident_2) != defined_class_idents.end())
-                { // A isn't defined yet but B is
+                if (defined_class_idents.find(def->ident_1) == defined_class_idents.end()
+                    && defined_class_idents.find(def->ident_2) !=
+                       defined_class_idents.end()) { // A isn't defined yet but B is
                     def->accept(classDefVisitor);
                     visited_class_extends_defs++;
                 }
@@ -116,9 +116,9 @@ public:
         while (visited_class_extends_defs < class_extend_defs.size()) { // A extends B
             for (int i = 0; i < class_extend_defs.size(); i++) {
                 auto def = class_extend_defs.at(i);
-                if (defined_class_idents.find(def->ident_1)  == defined_class_idents.end()
-                    && defined_class_idents.find(def->ident_2) != defined_class_idents.end())
-                { // A isn't defined yet but B is
+                if (defined_class_idents.find(def->ident_1) == defined_class_idents.end()
+                    && defined_class_idents.find(def->ident_2) !=
+                       defined_class_idents.end()) { // A isn't defined yet but B is
                     def->accept(classDefInitVisitor);
                     visited_class_extends_defs++;
                 }

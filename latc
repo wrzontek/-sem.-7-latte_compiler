@@ -4,7 +4,7 @@ if [ "$#" -ne 1 ]; then
     echo "Illegal number of arguments - please use 1 argument"
 fi
 
-./src/Main -s $1
+./src/latte/Main -s $1
 ./src/4value/Main -s ${1%.*}.fvc
 
 

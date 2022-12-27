@@ -23,581 +23,789 @@ typedef std::string UIdent;
 /********************   Forward Declarations    ********************/
 
 class Program;
+
 class CodeBlock;
+
 class NonJmpStmt;
+
 class JmpStmt;
+
 class Atom;
+
 class BinOp;
+
 class Prog;
+
 class Block;
+
 class StmtBinOp;
+
 class StmtNoOp;
+
 class StmtCall;
+
 class StmtInc;
+
 class StmtDecr;
+
 class StmtGoto;
+
 class StmtGoNext;
+
 class StmtCondJmp;
+
 class StmtRet;
+
 class StmtVRet;
+
 class AtomVar;
+
 class AtomInt;
+
 class AtomStr;
+
 class AddOp;
+
 class SubOp;
+
 class MulOp;
+
 class DivOp;
+
 class ModOp;
+
 class AndOp;
+
 class OrOp;
+
 class LTH;
+
 class LE;
+
 class GTH;
+
 class GE;
+
 class EQU;
+
 class NE;
+
 class ListCodeBlock;
+
 class ListNonJmpStmt;
+
 class ListJmpStmt;
+
 class ListAtom;
 
 
 /********************   Visitor Interfaces    ********************/
-class Visitor
-{
+class Visitor {
 public:
-  virtual ~Visitor() {}
-  virtual void visitProgram(Program *p) = 0;
-  virtual void visitCodeBlock(CodeBlock *p) = 0;
-  virtual void visitNonJmpStmt(NonJmpStmt *p) = 0;
-  virtual void visitJmpStmt(JmpStmt *p) = 0;
-  virtual void visitAtom(Atom *p) = 0;
-  virtual void visitBinOp(BinOp *p) = 0;
-  virtual void visitProg(Prog *p) = 0;
-  virtual void visitBlock(Block *p) = 0;
-  virtual void visitStmtBinOp(StmtBinOp *p) = 0;
-  virtual void visitStmtNoOp(StmtNoOp *p) = 0;
-  virtual void visitStmtCall(StmtCall *p) = 0;
-  virtual void visitStmtInc(StmtInc *p) = 0;
-  virtual void visitStmtDecr(StmtDecr *p) = 0;
-  virtual void visitStmtGoto(StmtGoto *p) = 0;
-  virtual void visitStmtGoNext(StmtGoNext *p) = 0;
-  virtual void visitStmtCondJmp(StmtCondJmp *p) = 0;
-  virtual void visitStmtRet(StmtRet *p) = 0;
-  virtual void visitStmtVRet(StmtVRet *p) = 0;
-  virtual void visitAtomVar(AtomVar *p) = 0;
-  virtual void visitAtomInt(AtomInt *p) = 0;
-  virtual void visitAtomStr(AtomStr *p) = 0;
-  virtual void visitAddOp(AddOp *p) = 0;
-  virtual void visitSubOp(SubOp *p) = 0;
-  virtual void visitMulOp(MulOp *p) = 0;
-  virtual void visitDivOp(DivOp *p) = 0;
-  virtual void visitModOp(ModOp *p) = 0;
-  virtual void visitAndOp(AndOp *p) = 0;
-  virtual void visitOrOp(OrOp *p) = 0;
-  virtual void visitLTH(LTH *p) = 0;
-  virtual void visitLE(LE *p) = 0;
-  virtual void visitGTH(GTH *p) = 0;
-  virtual void visitGE(GE *p) = 0;
-  virtual void visitEQU(EQU *p) = 0;
-  virtual void visitNE(NE *p) = 0;
-  virtual void visitListCodeBlock(ListCodeBlock *p) = 0;
-  virtual void visitListNonJmpStmt(ListNonJmpStmt *p) = 0;
-  virtual void visitListJmpStmt(ListJmpStmt *p) = 0;
-  virtual void visitListAtom(ListAtom *p) = 0;
+    virtual ~Visitor() {}
+
+    virtual void visitProgram(Program *p) = 0;
+
+    virtual void visitCodeBlock(CodeBlock *p) = 0;
+
+    virtual void visitNonJmpStmt(NonJmpStmt *p) = 0;
+
+    virtual void visitJmpStmt(JmpStmt *p) = 0;
+
+    virtual void visitAtom(Atom *p) = 0;
+
+    virtual void visitBinOp(BinOp *p) = 0;
+
+    virtual void visitProg(Prog *p) = 0;
+
+    virtual void visitBlock(Block *p) = 0;
+
+    virtual void visitStmtBinOp(StmtBinOp *p) = 0;
+
+    virtual void visitStmtNoOp(StmtNoOp *p) = 0;
+
+    virtual void visitStmtCall(StmtCall *p) = 0;
+
+    virtual void visitStmtInc(StmtInc *p) = 0;
+
+    virtual void visitStmtDecr(StmtDecr *p) = 0;
+
+    virtual void visitStmtGoto(StmtGoto *p) = 0;
+
+    virtual void visitStmtGoNext(StmtGoNext *p) = 0;
+
+    virtual void visitStmtCondJmp(StmtCondJmp *p) = 0;
+
+    virtual void visitStmtRet(StmtRet *p) = 0;
+
+    virtual void visitStmtVRet(StmtVRet *p) = 0;
+
+    virtual void visitAtomVar(AtomVar *p) = 0;
+
+    virtual void visitAtomInt(AtomInt *p) = 0;
+
+    virtual void visitAtomStr(AtomStr *p) = 0;
+
+    virtual void visitAddOp(AddOp *p) = 0;
+
+    virtual void visitSubOp(SubOp *p) = 0;
+
+    virtual void visitMulOp(MulOp *p) = 0;
+
+    virtual void visitDivOp(DivOp *p) = 0;
+
+    virtual void visitModOp(ModOp *p) = 0;
+
+    virtual void visitAndOp(AndOp *p) = 0;
+
+    virtual void visitOrOp(OrOp *p) = 0;
+
+    virtual void visitLTH(LTH *p) = 0;
+
+    virtual void visitLE(LE *p) = 0;
+
+    virtual void visitGTH(GTH *p) = 0;
+
+    virtual void visitGE(GE *p) = 0;
+
+    virtual void visitEQU(EQU *p) = 0;
+
+    virtual void visitNE(NE *p) = 0;
+
+    virtual void visitListCodeBlock(ListCodeBlock *p) = 0;
+
+    virtual void visitListNonJmpStmt(ListNonJmpStmt *p) = 0;
+
+    virtual void visitListJmpStmt(ListJmpStmt *p) = 0;
+
+    virtual void visitListAtom(ListAtom *p) = 0;
 
 
-  virtual void visitInteger(Integer x) = 0;
-  virtual void visitChar(Char x) = 0;
-  virtual void visitDouble(Double x) = 0;
-  virtual void visitString(String x) = 0;
-  virtual void visitIdent(Ident x) = 0;
-  virtual void visitUIdent(UIdent x) = 0;
+    virtual void visitInteger(Integer x) = 0;
+
+    virtual void visitChar(Char x) = 0;
+
+    virtual void visitDouble(Double x) = 0;
+
+    virtual void visitString(String x) = 0;
+
+    virtual void visitIdent(Ident x) = 0;
+
+    virtual void visitUIdent(UIdent x) = 0;
 
 };
 
 
-class Visitable
-{
- public:
-  virtual ~Visitable() {}
-  virtual void accept(Visitor *v) = 0;
+class Visitable {
+public:
+    virtual ~Visitable() {}
+
+    virtual void accept(Visitor *v) = 0;
 };
 
 
 /********************   Abstract Syntax Classes    ********************/
 
-class Program : public Visitable
-{
+class Program : public Visitable {
 public:
-  virtual Program *clone() const = 0;
+    virtual Program *clone() const = 0;
 
 };
 
-class CodeBlock : public Visitable
-{
+class CodeBlock : public Visitable {
 public:
-  virtual CodeBlock *clone() const = 0;
+    virtual CodeBlock *clone() const = 0;
 
 };
 
-class NonJmpStmt : public Visitable
-{
+class NonJmpStmt : public Visitable {
 public:
-  virtual NonJmpStmt *clone() const = 0;
+    virtual NonJmpStmt *clone() const = 0;
 
 };
 
-class JmpStmt : public Visitable
-{
+class JmpStmt : public Visitable {
 public:
-  virtual JmpStmt *clone() const = 0;
+    virtual JmpStmt *clone() const = 0;
 
 };
 
-class Atom : public Visitable
-{
+class Atom : public Visitable {
 public:
-  virtual Atom *clone() const = 0;
+    virtual Atom *clone() const = 0;
 
 };
 
-class BinOp : public Visitable
-{
+class BinOp : public Visitable {
 public:
-  virtual BinOp *clone() const = 0;
+    virtual BinOp *clone() const = 0;
 
 };
 
 
-
-class Prog : public Program
-{
+class Prog : public Program {
 public:
-  ListCodeBlock *listcodeblock_;
+    ListCodeBlock *listcodeblock_;
 
-  Prog(const Prog &);
-  Prog &operator=(const Prog &);
-  Prog(ListCodeBlock *p1);
-  ~Prog();
-  virtual void accept(Visitor *v);
-  virtual Prog *clone() const;
-  void swap(Prog &);
+    Prog(const Prog &);
+
+    Prog &operator=(const Prog &);
+
+    Prog(ListCodeBlock *p1);
+
+    ~Prog();
+
+    virtual void accept(Visitor *v);
+
+    virtual Prog *clone() const;
+
+    void swap(Prog &);
 };
 
-class Block : public CodeBlock
-{
+class Block : public CodeBlock {
 public:
-  UIdent uident_;
-  ListNonJmpStmt *listnonjmpstmt_;
-  ListJmpStmt *listjmpstmt_;
+    UIdent uident_;
+    ListNonJmpStmt *listnonjmpstmt_;
+    ListJmpStmt *listjmpstmt_;
 
-  Block(const Block &);
-  Block &operator=(const Block &);
-  Block(UIdent p1, ListNonJmpStmt *p2, ListJmpStmt *p3);
-  ~Block();
-  virtual void accept(Visitor *v);
-  virtual Block *clone() const;
-  void swap(Block &);
+    Block(const Block &);
+
+    Block &operator=(const Block &);
+
+    Block(UIdent p1, ListNonJmpStmt *p2, ListJmpStmt *p3);
+
+    ~Block();
+
+    virtual void accept(Visitor *v);
+
+    virtual Block *clone() const;
+
+    void swap(Block &);
 };
 
-class StmtBinOp : public NonJmpStmt
-{
+class StmtBinOp : public NonJmpStmt {
 public:
-  UIdent uident_;
-  Atom *atom_1;
-  BinOp *binop_;
-  Atom *atom_2;
+    UIdent uident_;
+    Atom *atom_1;
+    BinOp *binop_;
+    Atom *atom_2;
 
-  StmtBinOp(const StmtBinOp &);
-  StmtBinOp &operator=(const StmtBinOp &);
-  StmtBinOp(UIdent p1, Atom *p2, BinOp *p3, Atom *p4);
-  ~StmtBinOp();
-  virtual void accept(Visitor *v);
-  virtual StmtBinOp *clone() const;
-  void swap(StmtBinOp &);
+    StmtBinOp(const StmtBinOp &);
+
+    StmtBinOp &operator=(const StmtBinOp &);
+
+    StmtBinOp(UIdent p1, Atom *p2, BinOp *p3, Atom *p4);
+
+    ~StmtBinOp();
+
+    virtual void accept(Visitor *v);
+
+    virtual StmtBinOp *clone() const;
+
+    void swap(StmtBinOp &);
 };
 
-class StmtNoOp : public NonJmpStmt
-{
+class StmtNoOp : public NonJmpStmt {
 public:
-  UIdent uident_;
-  Atom *atom_;
+    UIdent uident_;
+    Atom *atom_;
 
-  StmtNoOp(const StmtNoOp &);
-  StmtNoOp &operator=(const StmtNoOp &);
-  StmtNoOp(UIdent p1, Atom *p2);
-  ~StmtNoOp();
-  virtual void accept(Visitor *v);
-  virtual StmtNoOp *clone() const;
-  void swap(StmtNoOp &);
+    StmtNoOp(const StmtNoOp &);
+
+    StmtNoOp &operator=(const StmtNoOp &);
+
+    StmtNoOp(UIdent p1, Atom *p2);
+
+    ~StmtNoOp();
+
+    virtual void accept(Visitor *v);
+
+    virtual StmtNoOp *clone() const;
+
+    void swap(StmtNoOp &);
 };
 
-class StmtCall : public NonJmpStmt
-{
+class StmtCall : public NonJmpStmt {
 public:
-  UIdent uident_1;
-  UIdent uident_2;
-  ListAtom *listatom_;
+    UIdent uident_1;
+    UIdent uident_2;
+    ListAtom *listatom_;
 
-  StmtCall(const StmtCall &);
-  StmtCall &operator=(const StmtCall &);
-  StmtCall(UIdent p1, UIdent p2, ListAtom *p3);
-  ~StmtCall();
-  virtual void accept(Visitor *v);
-  virtual StmtCall *clone() const;
-  void swap(StmtCall &);
+    StmtCall(const StmtCall &);
+
+    StmtCall &operator=(const StmtCall &);
+
+    StmtCall(UIdent p1, UIdent p2, ListAtom *p3);
+
+    ~StmtCall();
+
+    virtual void accept(Visitor *v);
+
+    virtual StmtCall *clone() const;
+
+    void swap(StmtCall &);
 };
 
-class StmtInc : public NonJmpStmt
-{
+class StmtInc : public NonJmpStmt {
 public:
-  UIdent uident_;
+    UIdent uident_;
 
-  StmtInc(const StmtInc &);
-  StmtInc &operator=(const StmtInc &);
-  StmtInc(UIdent p1);
-  ~StmtInc();
-  virtual void accept(Visitor *v);
-  virtual StmtInc *clone() const;
-  void swap(StmtInc &);
+    StmtInc(const StmtInc &);
+
+    StmtInc &operator=(const StmtInc &);
+
+    StmtInc(UIdent p1);
+
+    ~StmtInc();
+
+    virtual void accept(Visitor *v);
+
+    virtual StmtInc *clone() const;
+
+    void swap(StmtInc &);
 };
 
-class StmtDecr : public NonJmpStmt
-{
+class StmtDecr : public NonJmpStmt {
 public:
-  UIdent uident_;
+    UIdent uident_;
 
-  StmtDecr(const StmtDecr &);
-  StmtDecr &operator=(const StmtDecr &);
-  StmtDecr(UIdent p1);
-  ~StmtDecr();
-  virtual void accept(Visitor *v);
-  virtual StmtDecr *clone() const;
-  void swap(StmtDecr &);
+    StmtDecr(const StmtDecr &);
+
+    StmtDecr &operator=(const StmtDecr &);
+
+    StmtDecr(UIdent p1);
+
+    ~StmtDecr();
+
+    virtual void accept(Visitor *v);
+
+    virtual StmtDecr *clone() const;
+
+    void swap(StmtDecr &);
 };
 
-class StmtGoto : public JmpStmt
-{
+class StmtGoto : public JmpStmt {
 public:
-  UIdent uident_;
+    UIdent uident_;
 
-  StmtGoto(const StmtGoto &);
-  StmtGoto &operator=(const StmtGoto &);
-  StmtGoto(UIdent p1);
-  ~StmtGoto();
-  virtual void accept(Visitor *v);
-  virtual StmtGoto *clone() const;
-  void swap(StmtGoto &);
+    StmtGoto(const StmtGoto &);
+
+    StmtGoto &operator=(const StmtGoto &);
+
+    StmtGoto(UIdent p1);
+
+    ~StmtGoto();
+
+    virtual void accept(Visitor *v);
+
+    virtual StmtGoto *clone() const;
+
+    void swap(StmtGoto &);
 };
 
-class StmtGoNext : public JmpStmt
-{
+class StmtGoNext : public JmpStmt {
 public:
 
-  StmtGoNext(const StmtGoNext &);
-  StmtGoNext &operator=(const StmtGoNext &);
-  StmtGoNext();
-  ~StmtGoNext();
-  virtual void accept(Visitor *v);
-  virtual StmtGoNext *clone() const;
-  void swap(StmtGoNext &);
+    StmtGoNext(const StmtGoNext &);
+
+    StmtGoNext &operator=(const StmtGoNext &);
+
+    StmtGoNext();
+
+    ~StmtGoNext();
+
+    virtual void accept(Visitor *v);
+
+    virtual StmtGoNext *clone() const;
+
+    void swap(StmtGoNext &);
 };
 
-class StmtCondJmp : public JmpStmt
-{
+class StmtCondJmp : public JmpStmt {
 public:
-  Atom *atom_;
-  UIdent uident_1;
-  UIdent uident_2;
+    Atom *atom_;
+    UIdent uident_1;
+    UIdent uident_2;
 
-  StmtCondJmp(const StmtCondJmp &);
-  StmtCondJmp &operator=(const StmtCondJmp &);
-  StmtCondJmp(Atom *p1, UIdent p2, UIdent p3);
-  ~StmtCondJmp();
-  virtual void accept(Visitor *v);
-  virtual StmtCondJmp *clone() const;
-  void swap(StmtCondJmp &);
+    StmtCondJmp(const StmtCondJmp &);
+
+    StmtCondJmp &operator=(const StmtCondJmp &);
+
+    StmtCondJmp(Atom *p1, UIdent p2, UIdent p3);
+
+    ~StmtCondJmp();
+
+    virtual void accept(Visitor *v);
+
+    virtual StmtCondJmp *clone() const;
+
+    void swap(StmtCondJmp &);
 };
 
-class StmtRet : public JmpStmt
-{
+class StmtRet : public JmpStmt {
 public:
-  Atom *atom_;
+    Atom *atom_;
 
-  StmtRet(const StmtRet &);
-  StmtRet &operator=(const StmtRet &);
-  StmtRet(Atom *p1);
-  ~StmtRet();
-  virtual void accept(Visitor *v);
-  virtual StmtRet *clone() const;
-  void swap(StmtRet &);
+    StmtRet(const StmtRet &);
+
+    StmtRet &operator=(const StmtRet &);
+
+    StmtRet(Atom *p1);
+
+    ~StmtRet();
+
+    virtual void accept(Visitor *v);
+
+    virtual StmtRet *clone() const;
+
+    void swap(StmtRet &);
 };
 
-class StmtVRet : public JmpStmt
-{
-public:
-
-  StmtVRet(const StmtVRet &);
-  StmtVRet &operator=(const StmtVRet &);
-  StmtVRet();
-  ~StmtVRet();
-  virtual void accept(Visitor *v);
-  virtual StmtVRet *clone() const;
-  void swap(StmtVRet &);
-};
-
-class AtomVar : public Atom
-{
-public:
-  UIdent uident_;
-
-  AtomVar(const AtomVar &);
-  AtomVar &operator=(const AtomVar &);
-  AtomVar(UIdent p1);
-  ~AtomVar();
-  virtual void accept(Visitor *v);
-  virtual AtomVar *clone() const;
-  void swap(AtomVar &);
-};
-
-class AtomInt : public Atom
-{
-public:
-  Integer integer_;
-
-  AtomInt(const AtomInt &);
-  AtomInt &operator=(const AtomInt &);
-  AtomInt(Integer p1);
-  ~AtomInt();
-  virtual void accept(Visitor *v);
-  virtual AtomInt *clone() const;
-  void swap(AtomInt &);
-};
-
-class AtomStr : public Atom
-{
-public:
-  String string_;
-
-  AtomStr(const AtomStr &);
-  AtomStr &operator=(const AtomStr &);
-  AtomStr(String p1);
-  ~AtomStr();
-  virtual void accept(Visitor *v);
-  virtual AtomStr *clone() const;
-  void swap(AtomStr &);
-};
-
-class AddOp : public BinOp
-{
+class StmtVRet : public JmpStmt {
 public:
 
-  AddOp(const AddOp &);
-  AddOp &operator=(const AddOp &);
-  AddOp();
-  ~AddOp();
-  virtual void accept(Visitor *v);
-  virtual AddOp *clone() const;
-  void swap(AddOp &);
+    StmtVRet(const StmtVRet &);
+
+    StmtVRet &operator=(const StmtVRet &);
+
+    StmtVRet();
+
+    ~StmtVRet();
+
+    virtual void accept(Visitor *v);
+
+    virtual StmtVRet *clone() const;
+
+    void swap(StmtVRet &);
 };
 
-class SubOp : public BinOp
-{
+class AtomVar : public Atom {
+public:
+    UIdent uident_;
+
+    AtomVar(const AtomVar &);
+
+    AtomVar &operator=(const AtomVar &);
+
+    AtomVar(UIdent p1);
+
+    ~AtomVar();
+
+    virtual void accept(Visitor *v);
+
+    virtual AtomVar *clone() const;
+
+    void swap(AtomVar &);
+};
+
+class AtomInt : public Atom {
+public:
+    Integer integer_;
+
+    AtomInt(const AtomInt &);
+
+    AtomInt &operator=(const AtomInt &);
+
+    AtomInt(Integer p1);
+
+    ~AtomInt();
+
+    virtual void accept(Visitor *v);
+
+    virtual AtomInt *clone() const;
+
+    void swap(AtomInt &);
+};
+
+class AtomStr : public Atom {
+public:
+    String string_;
+
+    AtomStr(const AtomStr &);
+
+    AtomStr &operator=(const AtomStr &);
+
+    AtomStr(String p1);
+
+    ~AtomStr();
+
+    virtual void accept(Visitor *v);
+
+    virtual AtomStr *clone() const;
+
+    void swap(AtomStr &);
+};
+
+class AddOp : public BinOp {
 public:
 
-  SubOp(const SubOp &);
-  SubOp &operator=(const SubOp &);
-  SubOp();
-  ~SubOp();
-  virtual void accept(Visitor *v);
-  virtual SubOp *clone() const;
-  void swap(SubOp &);
+    AddOp(const AddOp &);
+
+    AddOp &operator=(const AddOp &);
+
+    AddOp();
+
+    ~AddOp();
+
+    virtual void accept(Visitor *v);
+
+    virtual AddOp *clone() const;
+
+    void swap(AddOp &);
 };
 
-class MulOp : public BinOp
-{
+class SubOp : public BinOp {
 public:
 
-  MulOp(const MulOp &);
-  MulOp &operator=(const MulOp &);
-  MulOp();
-  ~MulOp();
-  virtual void accept(Visitor *v);
-  virtual MulOp *clone() const;
-  void swap(MulOp &);
+    SubOp(const SubOp &);
+
+    SubOp &operator=(const SubOp &);
+
+    SubOp();
+
+    ~SubOp();
+
+    virtual void accept(Visitor *v);
+
+    virtual SubOp *clone() const;
+
+    void swap(SubOp &);
 };
 
-class DivOp : public BinOp
-{
+class MulOp : public BinOp {
 public:
 
-  DivOp(const DivOp &);
-  DivOp &operator=(const DivOp &);
-  DivOp();
-  ~DivOp();
-  virtual void accept(Visitor *v);
-  virtual DivOp *clone() const;
-  void swap(DivOp &);
+    MulOp(const MulOp &);
+
+    MulOp &operator=(const MulOp &);
+
+    MulOp();
+
+    ~MulOp();
+
+    virtual void accept(Visitor *v);
+
+    virtual MulOp *clone() const;
+
+    void swap(MulOp &);
 };
 
-class ModOp : public BinOp
-{
+class DivOp : public BinOp {
 public:
 
-  ModOp(const ModOp &);
-  ModOp &operator=(const ModOp &);
-  ModOp();
-  ~ModOp();
-  virtual void accept(Visitor *v);
-  virtual ModOp *clone() const;
-  void swap(ModOp &);
+    DivOp(const DivOp &);
+
+    DivOp &operator=(const DivOp &);
+
+    DivOp();
+
+    ~DivOp();
+
+    virtual void accept(Visitor *v);
+
+    virtual DivOp *clone() const;
+
+    void swap(DivOp &);
 };
 
-class AndOp : public BinOp
-{
+class ModOp : public BinOp {
 public:
 
-  AndOp(const AndOp &);
-  AndOp &operator=(const AndOp &);
-  AndOp();
-  ~AndOp();
-  virtual void accept(Visitor *v);
-  virtual AndOp *clone() const;
-  void swap(AndOp &);
+    ModOp(const ModOp &);
+
+    ModOp &operator=(const ModOp &);
+
+    ModOp();
+
+    ~ModOp();
+
+    virtual void accept(Visitor *v);
+
+    virtual ModOp *clone() const;
+
+    void swap(ModOp &);
 };
 
-class OrOp : public BinOp
-{
+class AndOp : public BinOp {
 public:
 
-  OrOp(const OrOp &);
-  OrOp &operator=(const OrOp &);
-  OrOp();
-  ~OrOp();
-  virtual void accept(Visitor *v);
-  virtual OrOp *clone() const;
-  void swap(OrOp &);
+    AndOp(const AndOp &);
+
+    AndOp &operator=(const AndOp &);
+
+    AndOp();
+
+    ~AndOp();
+
+    virtual void accept(Visitor *v);
+
+    virtual AndOp *clone() const;
+
+    void swap(AndOp &);
 };
 
-class LTH : public BinOp
-{
+class OrOp : public BinOp {
 public:
 
-  LTH(const LTH &);
-  LTH &operator=(const LTH &);
-  LTH();
-  ~LTH();
-  virtual void accept(Visitor *v);
-  virtual LTH *clone() const;
-  void swap(LTH &);
+    OrOp(const OrOp &);
+
+    OrOp &operator=(const OrOp &);
+
+    OrOp();
+
+    ~OrOp();
+
+    virtual void accept(Visitor *v);
+
+    virtual OrOp *clone() const;
+
+    void swap(OrOp &);
 };
 
-class LE : public BinOp
-{
+class LTH : public BinOp {
 public:
 
-  LE(const LE &);
-  LE &operator=(const LE &);
-  LE();
-  ~LE();
-  virtual void accept(Visitor *v);
-  virtual LE *clone() const;
-  void swap(LE &);
+    LTH(const LTH &);
+
+    LTH &operator=(const LTH &);
+
+    LTH();
+
+    ~LTH();
+
+    virtual void accept(Visitor *v);
+
+    virtual LTH *clone() const;
+
+    void swap(LTH &);
 };
 
-class GTH : public BinOp
-{
+class LE : public BinOp {
 public:
 
-  GTH(const GTH &);
-  GTH &operator=(const GTH &);
-  GTH();
-  ~GTH();
-  virtual void accept(Visitor *v);
-  virtual GTH *clone() const;
-  void swap(GTH &);
+    LE(const LE &);
+
+    LE &operator=(const LE &);
+
+    LE();
+
+    ~LE();
+
+    virtual void accept(Visitor *v);
+
+    virtual LE *clone() const;
+
+    void swap(LE &);
 };
 
-class GE : public BinOp
-{
+class GTH : public BinOp {
 public:
 
-  GE(const GE &);
-  GE &operator=(const GE &);
-  GE();
-  ~GE();
-  virtual void accept(Visitor *v);
-  virtual GE *clone() const;
-  void swap(GE &);
+    GTH(const GTH &);
+
+    GTH &operator=(const GTH &);
+
+    GTH();
+
+    ~GTH();
+
+    virtual void accept(Visitor *v);
+
+    virtual GTH *clone() const;
+
+    void swap(GTH &);
 };
 
-class EQU : public BinOp
-{
+class GE : public BinOp {
 public:
 
-  EQU(const EQU &);
-  EQU &operator=(const EQU &);
-  EQU();
-  ~EQU();
-  virtual void accept(Visitor *v);
-  virtual EQU *clone() const;
-  void swap(EQU &);
+    GE(const GE &);
+
+    GE &operator=(const GE &);
+
+    GE();
+
+    ~GE();
+
+    virtual void accept(Visitor *v);
+
+    virtual GE *clone() const;
+
+    void swap(GE &);
 };
 
-class NE : public BinOp
-{
+class EQU : public BinOp {
 public:
 
-  NE(const NE &);
-  NE &operator=(const NE &);
-  NE();
-  ~NE();
-  virtual void accept(Visitor *v);
-  virtual NE *clone() const;
-  void swap(NE &);
+    EQU(const EQU &);
+
+    EQU &operator=(const EQU &);
+
+    EQU();
+
+    ~EQU();
+
+    virtual void accept(Visitor *v);
+
+    virtual EQU *clone() const;
+
+    void swap(EQU &);
 };
 
-
-
-class ListCodeBlock : public Visitable, public std::vector<CodeBlock*>
-{
+class NE : public BinOp {
 public:
-  virtual void accept(Visitor *v);
-  virtual ListCodeBlock *clone() const;
+
+    NE(const NE &);
+
+    NE &operator=(const NE &);
+
+    NE();
+
+    ~NE();
+
+    virtual void accept(Visitor *v);
+
+    virtual NE *clone() const;
+
+    void swap(NE &);
 };
 
-ListCodeBlock* consListCodeBlock(CodeBlock* x, ListCodeBlock* xs);
 
-class ListNonJmpStmt : public Visitable, public std::vector<NonJmpStmt*>
-{
+class ListCodeBlock : public Visitable, public std::vector<CodeBlock *> {
 public:
-  virtual void accept(Visitor *v);
-  virtual ListNonJmpStmt *clone() const;
+    virtual void accept(Visitor *v);
+
+    virtual ListCodeBlock *clone() const;
 };
 
-ListNonJmpStmt* consListNonJmpStmt(NonJmpStmt* x, ListNonJmpStmt* xs);
+ListCodeBlock *consListCodeBlock(CodeBlock *x, ListCodeBlock *xs);
 
-class ListJmpStmt : public Visitable, public std::vector<JmpStmt*>
-{
+class ListNonJmpStmt : public Visitable, public std::vector<NonJmpStmt *> {
 public:
-  virtual void accept(Visitor *v);
-  virtual ListJmpStmt *clone() const;
+    virtual void accept(Visitor *v);
+
+    virtual ListNonJmpStmt *clone() const;
 };
 
-ListJmpStmt* consListJmpStmt(JmpStmt* x, ListJmpStmt* xs);
+ListNonJmpStmt *consListNonJmpStmt(NonJmpStmt *x, ListNonJmpStmt *xs);
 
-class ListAtom : public Visitable, public std::vector<Atom*>
-{
+class ListJmpStmt : public Visitable, public std::vector<JmpStmt *> {
 public:
-  virtual void accept(Visitor *v);
-  virtual ListAtom *clone() const;
+    virtual void accept(Visitor *v);
+
+    virtual ListJmpStmt *clone() const;
 };
 
-ListAtom* consListAtom(Atom* x, ListAtom* xs);
+ListJmpStmt *consListJmpStmt(JmpStmt *x, ListJmpStmt *xs);
 
+class ListAtom : public Visitable, public std::vector<Atom *> {
+public:
+    virtual void accept(Visitor *v);
 
+    virtual ListAtom *clone() const;
+};
 
+ListAtom *consListAtom(Atom *x, ListAtom *xs);
 
 
 #endif

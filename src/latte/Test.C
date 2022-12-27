@@ -65,12 +65,6 @@ int main(int argc, char **argv) {
             PrintAbsyn *p = new PrintAbsyn();
             printf("%s\n\n", p->print(parse_tree));
         }
-
-        auto path = std::filesystem::path(filename);
-        auto four_value_translator = new FourValueTranslatorVisitor(parse_tree, path.replace_extension("fvc"));
-        parse_tree->accept(four_value_translator);
-        four_value_translator->close();
-
         delete (parse_tree);
         return 0;
     }
