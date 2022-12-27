@@ -1,22 +1,24 @@
 entrypoints Program;
 
+token UIdent (( letter | '_') ( letter | digit | '_' | '\'')*) ; -- '_' can be first character
+
 Prog. Program ::= [CodeBlock] ;
 
-Block.        CodeBlock ::= Ident ":" [NonJmpStmt] [JmpStmt]; -- TODO może być np return 0 _go_next, po prostu brać pierwsze resztę wywalić
+Block.        CodeBlock ::= UIdent ":" [NonJmpStmt] [JmpStmt] ; -- TODO może być np return 0 _go_next, po prostu brać pierwsze resztę wywalić
 
-StmtBinOp.      NonJmpStmt ::= Ident ":=" Atom BinOp Atom ;
-StmtNoOp.       NonJmpStmt ::= Ident ":=" Atom ;
-StmtCall.    NonJmpStmt ::= Ident ":=" "_call" Ident [ Atom ] ;
-StmtInc.        NonJmpStmt ::= Ident "++" ;
-StmtDecr.       NonJmpStmt ::= Ident "--" ;
+StmtBinOp.      NonJmpStmt ::= UIdent ":=" Atom BinOp Atom ;
+StmtNoOp.       NonJmpStmt ::= UIdent ":=" Atom ;
+StmtCall.       NonJmpStmt ::= UIdent ":=" "_call" UIdent [Atom] ";" ;
+StmtInc.        NonJmpStmt ::= UIdent "++" ;
+StmtDecr.       NonJmpStmt ::= UIdent "--" ;
 
-StmtGoto.           JmpStmt ::= "_goto" Ident ;
-StmtGoNext.         JmpStmt ::= "_go_next;
-StmtCondJmp.        JmpStmt ::= "if" Atom "then" "_goto" Ident "else" "_goto" Ident;
+StmtGoto.           JmpStmt ::= "_goto" UIdent ;
+StmtGoNext.         JmpStmt ::= "_go_next" ;
+StmtCondJmp.        JmpStmt ::= "if" Atom "then" "_goto" UIdent "else" "_goto" UIdent;
 StmtRet.            JmpStmt ::= "return" Atom ;
 StmtVRet.           JmpStmt ::= "return" ; -- todo konflikt? chyba niegroźny shift/reduce
 
-AtomVar.   Atom ::= Ident ; -- variable or string constant
+AtomVar.   Atom ::= UIdent ;
 AtomInt.   Atom ::= Integer ;
 AtomStr.   Atom ::= String ;
 
@@ -36,7 +38,8 @@ EQU.       BinOp ::= "==" ;
 NE.        BinOp ::= "!=" ;
 
 separator CodeBlock "" ;
-separator nonempty NonJmpStmt "" ;
+separator NonJmpStmt "" ;
+separator nonempty JmpStmt "" ;
 separator Atom "" ;
 
 comment ";" ;

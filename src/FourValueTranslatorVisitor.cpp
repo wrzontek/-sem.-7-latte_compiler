@@ -378,7 +378,7 @@ public:
         current_call++;
         expr->listexpr_->accept(this);
 
-        result = "_call " + expr->ident_ + call_to_args_string[current_call];
+        result = "_call " + expr->ident_ + call_to_args_string[current_call] + " ;";
         call_to_args_string.erase(current_call);
 
         Ident t_var = next_t_var();

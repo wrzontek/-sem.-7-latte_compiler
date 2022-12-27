@@ -43,7 +43,6 @@ int main4() {
     } else {
         return 0;
     }
-    f(1); // tworzy martwy kod, generalnie martwy kod da sie es zrobić u mnie
 }
 
 int main5() {

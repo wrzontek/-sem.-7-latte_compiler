@@ -33,12 +33,8 @@ main4:
 	if 1 then _goto _if_true_1 else _goto _if_false_1
 _if_true_1:
 	return 1
-	_goto _end_if_1
 _if_false_1:
 	return 0
-	_go_next
-_end_if_1:
-	_t1 := _call f 1
 
 main5:
 	a := 123
