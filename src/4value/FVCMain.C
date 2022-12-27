@@ -14,6 +14,7 @@
 #include "Printer.H"
 #include "Absyn.H"
 #include "ParserError.H"
+#include <filesystem>
 
 void usage() {
     printf("usage: Call with one of the following argument combinations:\n");
@@ -67,10 +68,11 @@ int main(int argc, char **argv) {
         }
 
         auto path = std::filesystem::path(filename);
-        auto four_value_translator = new FourValueTranslatorVisitor(parse_tree, path.replace_extension("fvc"));
-        parse_tree->accept(four_value_translator);
-        four_value_translator->close();
+//        auto four_value_translator = new FourValueTranslatorVisitor(parse_tree, path.replace_extension("fvc"));
+//        parse_tree->accept(four_value_translator);
+//        four_value_translator->close();
 
+        // TODO jak będą optymalizajce to tu walnąć flagę (z latc) żeby wyłączyć
         delete (parse_tree);
         return 0;
     }

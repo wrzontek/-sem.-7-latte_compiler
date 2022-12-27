@@ -5,6 +5,6 @@ if [ "$#" -ne 1 ]; then
 fi
 
 ./src/latte/Main -s $1
-./src/4value/Main -s ${1%.*}.fvc
+./src/4value/FVCMain -s ${1%.*}.fvc
 
 

@@ -16,7 +16,6 @@
 #include "ParserError.H"
 #include "TypeChecker.cpp"
 #include "FourValueTranslatorVisitor.cpp"
-#include <filesystem>
 
 void usage() {
     printf("usage: Call with one of the following argument combinations:\n");
