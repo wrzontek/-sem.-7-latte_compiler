@@ -13,17 +13,17 @@ OBJS=Absyn.o Buffer.o Lexer.o Parser.o Printer.o
 
 .PHONY : clean distclean
 
-all : Testfvc
+all : Main
 
 clean :
-	rm -f *.o Testfvc fvc.aux fvc.log fvc.pdf fvc.dvi fvc.ps fvc
+	rm -f *.o Main fvc.aux fvc.log fvc.pdf fvc.dvi fvc.ps fvc
 
 distclean : clean
-	rm -f Absyn.C Absyn.H Buffer.C Buffer.H Test.C Bison.H Parser.C Parser.H ParserError.H fvc.y Lexer.C fvc.l Skeleton.C Skeleton.H Printer.C Printer.H Makefile fvc.tex
+	rm -f Absyn.C Absyn.H Buffer.C Buffer.H Main.C Bison.H Parser.C Parser.H ParserError.H fvc.y Lexer.C fvc.l Skeleton.C Skeleton.H Printer.C Printer.H Makefile fvc.tex
 
-Testfvc : ${OBJS} Test.o
-	@echo "Linking Testfvc..."
-	${CC} ${OBJS} Test.o -o Testfvc
+Main : ${OBJS} Main.o
+	@echo "Linking Main..."
+	${CC} ${OBJS} Main.o -o Main
 
 Absyn.o : Absyn.C Absyn.H
 	${CC} ${CCFLAGS} -c Absyn.C
@@ -49,5 +49,5 @@ Printer.o : Printer.C Printer.H Absyn.H
 Skeleton.o : Skeleton.C Skeleton.H Absyn.H
 	${CC} ${CCFLAGS} -Wno-unused-parameter -c Skeleton.C
 
-Test.o : Test.C Parser.H Printer.H Absyn.H
-	${CC} ${CCFLAGS} -c Test.C
+Main.o : Main.C Parser.H Printer.H Absyn.H
+	${CC} ${CCFLAGS} -c Main.C
