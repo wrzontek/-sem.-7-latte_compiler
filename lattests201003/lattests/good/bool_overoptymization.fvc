@@ -1,0 +1,7 @@
+main:
+	return 0
+
+print:
+	_t1 := _call printString "ahoj" ;
+	return 1
+

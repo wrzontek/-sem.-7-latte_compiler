@@ -60,6 +60,9 @@ private:
     labels_struct labels;
 
     int current_call = 0;
+    int current_depth = 0;
+    std::map <Ident, std::vector<int>> ident_to_declarations;
+
     std::map<int, Ident> call_to_args_string;
 
     Expr *e_1;
@@ -114,6 +117,11 @@ public:
 
         emitRaw(fnDef->ident_ + ":\n");
         fnDef->block_->accept(this);
+
+        if (typeVisitor->getType(fnDef->type_)->name == "void") {
+            emitLine("return"); // can be overkill, but better 2 returns than none
+        }
+
         emitRaw("\n");
     }
 
@@ -134,12 +142,24 @@ public:
         stmt->listitem_->accept(this);
     }
 
+    void add_to_declaration_map(Ident var_name_raw) {
+        std::vector<int> declarations = std::vector<int>();
+        if (ident_to_declarations.find(var_name_raw) != ident_to_declarations.end()) {
+            declarations = ident_to_declarations[var_name_raw];
+        }
+        declarations.push_back(current_depth);
+        ident_to_declarations[var_name_raw] = declarations;
+    }
+
     void visitNoInit(NoInit *stmt) override {
         using_lazy_eval = false;
+        auto var_name = "_d" + std::to_string(current_depth) + "_" + stmt->ident_;
+        add_to_declaration_map(stmt->ident_);
+
         if (current_decl_type == "string") {
-            emitLine(stmt->ident_ + " := \"\"");
+            emitLine(var_name + " := \"\"");
         } else {
-            emitLine(stmt->ident_ + " := 0");
+            emitLine(var_name + " := 0");
         }
     }
 
@@ -172,11 +192,14 @@ public:
         stmt->expr_->accept(boolLazyEvalChecker);
         using_lazy_eval = boolLazyEvalChecker->is_lazy_eval;
 
+        auto var_name = "_d" + std::to_string(current_depth) + "_" + stmt->ident_;
+        add_to_declaration_map(stmt->ident_);
+
         if (!using_lazy_eval) {
             stmt->expr_->accept(this);
-            emitLine(stmt->ident_ + " := " + result);
+            emitLine(var_name + " := " + result);
         } else {
-            lazyEval(stmt->ident_, stmt->expr_);
+            lazyEval(var_name, stmt->expr_);
             using_lazy_eval = false;
         }
     }
@@ -238,6 +261,18 @@ public:
         emitLine("return");
     }
 
+    void clear_deeper_declarations() {
+        for (auto &pair: ident_to_declarations) {
+            auto &depths = pair.second;
+            for (int i = 0; i < depths.size(); i++) {
+                if (depths[i] > current_depth) {
+                    depths.resize(i);
+                    break;
+                }
+            }
+        }
+    }
+
     void visitBStmt(BStmt *stmt) override {
         bool inside_block_backup = inside_block;
         inside_block = true;
@@ -252,8 +287,12 @@ public:
         }
 
         block_emit_labels_and_gotos = true;
+        current_depth++;
         stmt->block_->accept(this);
+        current_depth--;
         block_emit_labels_and_gotos = emit_labels_gotos_backup;
+
+        clear_deeper_declarations();
 
         if (block_emit_labels_and_gotos && !is_last_stmt) {
             emitLine("_go_next");
@@ -289,7 +328,7 @@ public:
         next_t_block_number++;
         auto if_true = "_if_true_" + std::to_string(next_t_block_number);
         auto end_if = "_end_if_" + std::to_string(next_t_block_number);
-        if (!is_last_stmt) {
+        if (!is_last_stmt && !stmt->expr_->isAlwaysTrue()) {
             auto cond_atom = getCondAtom(stmt->expr_);
             emitLine("if " + cond_atom + " then _goto " + if_true + " else _goto " + end_if);
         } else {
@@ -315,27 +354,40 @@ public:
         auto if_false = "_if_false_" + std::to_string(next_t_block_number);
         auto end_if = "_end_if_" + std::to_string(next_t_block_number);
 
+        if (!stmt->expr_->isAlwaysTrue() && !stmt->expr_->isAlwaysFalse()) {
+            emitLine("if " + cond_atom + " then _goto " + if_true + " else _goto " + if_false);
+            emitRaw(if_true + ":\n");
 
-        emitLine("if " + cond_atom + " then _goto " + if_true + " else _goto " + if_false);
-        emitRaw(if_true + ":\n");
+            block_emit_labels_and_gotos = false;
+            stmt->stmt_1->accept(this);
+            block_emit_labels_and_gotos = true;
 
-        block_emit_labels_and_gotos = false;
-        stmt->stmt_1->accept(this);
-        block_emit_labels_and_gotos = true;
+            if (!is_last_stmt) {
+                emitLine("_goto " + end_if);
+            }
 
-        if (!is_last_stmt) {
-            emitLine("_goto " + end_if);
-        }
+            emitRaw(if_false + ":\n");
 
-        emitRaw(if_false + ":\n");
+            block_emit_labels_and_gotos = false;
+            stmt->stmt_2->accept(this);
+            block_emit_labels_and_gotos = true;
 
-        block_emit_labels_and_gotos = false;
-        stmt->stmt_2->accept(this);
-        block_emit_labels_and_gotos = true;
-
-        if (!is_last_stmt) {
-            emitLine("_go_next");
-            emitRaw(end_if + ":\n");
+            if (!is_last_stmt) {
+                emitLine("_go_next");
+                emitRaw(end_if + ":\n");
+            }
+        } else if (stmt->expr_->isAlwaysTrue()) {
+            emitLine("_goto " + if_true); // typeChecker guarantees correctness
+            emitRaw(if_true + ":\n");
+            block_emit_labels_and_gotos = false;
+            stmt->stmt_1->accept(this);
+            block_emit_labels_and_gotos = true;
+        } else if (stmt->expr_->isAlwaysFalse()) {
+            emitLine("_goto " + if_false); // typeChecker guarantees correctness
+            emitRaw(if_false + ":\n");
+            block_emit_labels_and_gotos = false;
+            stmt->stmt_2->accept(this);
+            block_emit_labels_and_gotos = true;
         }
     }
 
@@ -424,7 +476,9 @@ public:
     }
 
     void varCommon(Ident var) {
-        result = var;
+        auto declarations = ident_to_declarations[var];
+        int declaration_depth = declarations[declarations.size() - 1];
+        result = "_d" + std::to_string(declaration_depth) + "_" + var;
         is_result_atomic = true;
 
         if (using_lazy_eval) {

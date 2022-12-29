@@ -1,0 +1,5 @@
+main:
+	_t1 := "a" + "b"
+	_t2 := _call printString _t1 ;
+	return 0
+

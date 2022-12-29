@@ -1,0 +1,22 @@
+main:
+	_d0_lo := 0
+	_d0_hi := 0
+	_d0_mx := 0
+	_d0_lo := 1
+	_d0_hi := _d0_lo
+	_d0_mx := 5000000
+	_t1 := _call printInt _d0_lo ;
+	_goto _while_cond_1
+_while_body_1:
+	_t2 := _call printInt _d0_hi ;
+	_t3 := _d0_lo + _d0_hi
+	_d0_hi := _t3
+	_t4 := _d0_hi - _d0_lo
+	_d0_lo := _t4
+	_go_next
+_while_cond_1:
+	_t5 := _d0_hi < _d0_mx
+	if _t5 then _goto _while_body_1 else _goto _end_while_1
+_end_while_1:
+	return 0
+

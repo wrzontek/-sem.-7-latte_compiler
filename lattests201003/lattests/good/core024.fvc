@@ -1,0 +1,13 @@
+main:
+	_t1 := _call f 1 2 ;
+	return 0
+
+f:
+	_goto _if_true_1
+_if_true_1:
+	_t1 := _call printString "yes" ;
+
+e:
+	_t1 := _call printString "NOOO" ;
+	return 0
+

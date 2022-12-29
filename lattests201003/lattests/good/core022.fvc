@@ -1,0 +1,5 @@
+main:
+	_d0_x := 0
+	_t1 := _call printInt _d0_x ;
+	return 0
+

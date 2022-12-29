@@ -1,0 +1,5 @@
+main:
+	_t1 := _call printString "\a\n
+	b"" ;
+	return 0
+

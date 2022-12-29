@@ -1,0 +1,35 @@
+main:
+	_d0_i := 78
+	_go_next
+_t1:
+	_d1_i := 1
+	_t1 := _call printInt _d1_i ;
+	_go_next
+_after_t1:
+	_t2 := _call printInt _d0_i ;
+	_goto _while_cond_2
+_while_body_2:
+	_d0_i--
+	_t3 := _call printInt _d0_i ;
+	_t4 := _d1_i + 7
+	_d1_i := _t4
+	_t5 := _call printInt _d1_i ;
+	_go_next
+_while_cond_2:
+	_t6 := _d0_i > 76
+	if _t6 then _goto _while_body_2 else _goto _end_while_2
+_end_while_2:
+	_t7 := _call printInt _d0_i ;
+	_t8 := _d0_i > 4
+	if _t8 then _goto _if_true_3 else _goto _if_false_3
+_if_true_3:
+	_d1_i := 4
+	_t9 := _call printInt _d1_i ;
+	_goto _end_if_3
+_if_false_3:
+	_t10 := _call printString "foo" ;
+	_go_next
+_end_if_3:
+	_t11 := _call printInt _d0_i ;
+	return 0
+

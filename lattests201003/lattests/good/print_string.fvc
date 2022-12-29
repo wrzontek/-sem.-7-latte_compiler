@@ -1,0 +1,4 @@
+main:
+	_t1 := _call printString "abc" ;
+	return 0
+

@@ -1,8 +1,8 @@
 main:
-	_t1 := _call foo
+	_t1 := _call foo ;
 	return 0
 
 foo:
-	_t1 := _call printString "foo"
+	_t1 := _call printString "foo" ;
 	return
 
