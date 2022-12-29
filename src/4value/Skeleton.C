@@ -42,6 +42,14 @@ void Skeleton::visitStmtBinOp(StmtBinOp *stmt_bin_op) {
 
 }
 
+void Skeleton::visitStmtNegOp(StmtNegOp *stmt_neg_op) {
+    /* Code For StmtNegOp Goes Here */
+
+    visitUIdent(stmt_neg_op->uident_);
+    if (stmt_neg_op->atom_) stmt_neg_op->atom_->accept(this);
+
+}
+
 void Skeleton::visitStmtNoOp(StmtNoOp *stmt_no_op) {
     /* Code For StmtNoOp Goes Here */
 

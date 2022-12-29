@@ -163,6 +163,20 @@ void PrintAbsyn::visitStmtBinOp(StmtBinOp *p) {
     _i_ = oldi;
 }
 
+void PrintAbsyn::visitStmtNegOp(StmtNegOp *p) {
+    int oldi = _i_;
+    if (oldi > 0) render(_L_PAREN);
+
+    visitUIdent(p->uident_);
+    render(":=");
+    render('-');
+    _i_ = 0;
+    p->atom_->accept(this);
+
+    if (oldi > 0) render(_R_PAREN);
+    _i_ = oldi;
+}
+
 void PrintAbsyn::visitStmtNoOp(StmtNoOp *p) {
     int oldi = _i_;
     if (oldi > 0) render(_L_PAREN);
@@ -584,6 +598,18 @@ void ShowAbsyn::visitStmtBinOp(StmtBinOp *p) {
     bufAppend(']');
     bufAppend(' ');
     p->atom_2->accept(this);
+    bufAppend(')');
+}
+
+void ShowAbsyn::visitStmtNegOp(StmtNegOp *p) {
+    bufAppend('(');
+    bufAppend("StmtNegOp");
+    bufAppend(' ');
+    visitUIdent(p->uident_);
+    bufAppend(' ');
+    bufAppend('[');
+    if (p->atom_) p->atom_->accept(this);
+    bufAppend(']');
     bufAppend(')');
 }
 

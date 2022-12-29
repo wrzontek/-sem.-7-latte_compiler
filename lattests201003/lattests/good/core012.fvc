@@ -30,8 +30,10 @@ printBool:
 _if_true_1:
 	_t1 := _call printString "true" ;
 	return;
+	return;
 _if_false_1:
 	_t2 := _call printString "false" ;
+	return;
 	return;
 	return;
 

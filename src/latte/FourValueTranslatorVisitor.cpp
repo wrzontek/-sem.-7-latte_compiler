@@ -58,6 +58,7 @@ private:
     bool block_emit_labels_and_gotos = true;
 
     bool using_lazy_eval = false;
+    bool negating = false;
     labels_struct labels;
 
     int current_call = 0;
@@ -112,6 +113,7 @@ public:
     }
 
     void visitFnDef(FnDef *fnDef) override {
+        ident_to_declarations = std::map<Ident, std::vector<int>>();
         using_lazy_eval = false;
         next_t_var_number = 0;
         next_t_block_number = 0;
@@ -253,8 +255,18 @@ public:
     }
 
     void visitRet(Ret *stmt) override {
-        using_lazy_eval = false;
-        stmt->expr_->accept(this);
+        boolLazyEvalChecker->is_lazy_eval = false;
+        boolLazyEvalChecker->has_call = false;
+        stmt->expr_->accept(boolLazyEvalChecker);
+        using_lazy_eval = boolLazyEvalChecker->is_lazy_eval;
+
+        if (!using_lazy_eval) {
+            stmt->expr_->accept(this);
+        } else {
+            lazyEval("_res", stmt->expr_);
+            result = "_res";
+            using_lazy_eval = false;
+        }
         emitLine("return " + result);
     }
 
@@ -269,11 +281,6 @@ public:
             depths.erase(std::remove_if(depths.begin(), depths.end(),
                                         [this](int value) { return value > this->current_depth; }),
                          depths.end());
-//            for (auto depth = depths.begin(); depth != depths.end(); depth++) {
-//                if (*depth > current_depth) {
-//                    depths.erase(depth);
-//                }
-//            }
         }
     }
 
@@ -368,6 +375,8 @@ public:
 
             if (!is_last_stmt) {
                 emitLine("_goto " + end_if);
+            } else {
+                emitLine("return;");
             }
 
             emitRaw(if_false + ":\n");
@@ -379,6 +388,8 @@ public:
             if (!is_last_stmt) {
                 emitLine("_go_next");
                 emitRaw(end_if + ":\n");
+            } else {
+                emitLine("return;");
             }
         } else if (stmt->expr_->isAlwaysTrue()) {
             emitLine("_goto " + if_true); // typeChecker guarantees correctness
@@ -430,6 +441,7 @@ public:
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void visitCFunction(CFunction *expr) override {
+        auto using_lazy_eval_backup = using_lazy_eval;
         auto labels_backup = labels;
         current_call++;
         expr->listexpr_->accept(this);
@@ -445,6 +457,7 @@ public:
         current_call--;
 
         labels = labels_backup;
+        using_lazy_eval = using_lazy_eval_backup;
         if (using_lazy_eval) {
             emitLine("if " + result + " then _goto " + labels.label_true + " else _goto " + labels.label_false);
         }
@@ -491,6 +504,11 @@ public:
         is_result_atomic = true;
 
         if (using_lazy_eval) {
+            if (negating) {
+                Ident t_var = next_t_var();
+                emitLine(t_var + " := - " + result);
+                result = t_var;
+            }
             emitLine("if " + result + " then _goto " + labels.label_true + " else _goto " + labels.label_false);
         }
     }
@@ -547,11 +565,15 @@ public:
         labels.label_true = labels.label_false;
         labels.label_false = t;
 
+        negating = true;
         expr->expr_->accept(this);
+        negating = false;
         Ident t_var = next_t_var();
-        emitLine(t_var + " := ! " + result);
-        result = t_var;
-        is_result_atomic = true;
+        if (!using_lazy_eval) {
+            emitLine(t_var + " := 1 - " + result); // todo co jak !is_result_atomic
+            result = t_var;
+            is_result_atomic = true;
+        }
 
         labels = labels_backup;
     }
@@ -668,6 +690,8 @@ public:
 
     void visitBinOpp(Expr *e1, Expr *e2) {
         auto labels_backup = labels;
+        auto using_lazy_eval_backup = using_lazy_eval;
+        using_lazy_eval = false;
         Ident operator_ = current_operator;
         e1->accept(this);
         labels = labels_backup;
@@ -690,6 +714,8 @@ public:
         emitLine(t_var + " := " + left + operator_ + right);
         result = t_var;
         is_result_atomic = true;
+
+        using_lazy_eval = using_lazy_eval_backup;
         if (using_lazy_eval) {
             emitLine("if " + result + " then _goto " + labels.label_true + " else _goto " + labels.label_false);
         }

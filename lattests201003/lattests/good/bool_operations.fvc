@@ -2,8 +2,10 @@ main:
 	_t1 := _call f 1 ;
 	_t2 := _call b _t1 ;
 	_t4 := _call t 1 ;
+	if _t4 then _goto _middle_l3 else _goto _false_l2
 _middle_l3:
 	_t5 := _call f 2 ;
+	if _t5 then _goto _true_l1 else _goto _false_l2
 _true_l1:
 	_t3 := 1
 	_goto _end_l4
@@ -13,8 +15,10 @@ _false_l2:
 _end_l4:
 	_t6 := _call b _t3 ;
 	_t8 := _call t 3 ;
+	if _t8 then _goto _middle_l7 else _goto _false_l6
 _middle_l7:
 	_t9 := _call t 4 ;
+	if _t9 then _goto _true_l5 else _goto _false_l6
 _true_l5:
 	_t7 := 1
 	_goto _end_l8
@@ -24,8 +28,10 @@ _false_l6:
 _end_l8:
 	_t10 := _call b _t7 ;
 	_t12 := _call t 5 ;
+	if _t12 then _goto _true_l9 else _goto _middle_l11
 _middle_l11:
 	_t13 := _call t 6 ;
+	if _t13 then _goto _true_l9 else _goto _false_l10
 _true_l9:
 	_t11 := 1
 	_goto _end_l12
@@ -35,8 +41,10 @@ _false_l10:
 _end_l12:
 	_t14 := _call b _t11 ;
 	_t16 := _call f 7 ;
+	if _t16 then _goto _middle_l15 else _goto _false_l14
 _middle_l15:
 	_t17 := _call t 8 ;
+	if _t17 then _goto _true_l13 else _goto _false_l14
 _true_l13:
 	_t15 := 1
 	_goto _end_l16
@@ -46,10 +54,13 @@ _false_l14:
 _end_l16:
 	_t18 := _call b _t15 ;
 	_t20 := _call t 9 ;
+	if _t20 then _goto _middle_l19 else _goto _false_l18
 _middle_l19:
 	_t21 := _call t 10 ;
+	if _t21 then _goto _middle_l20 else _goto _false_l18
 _middle_l20:
 	_t22 := _call t 11 ;
+	if _t22 then _goto _true_l17 else _goto _false_l18
 _true_l17:
 	_t19 := 1
 	_goto _end_l21
@@ -59,10 +70,13 @@ _false_l18:
 _end_l21:
 	_t23 := _call b _t19 ;
 	_t25 := _call f 12 ;
+	if _t25 then _goto _true_l22 else _goto _middle_l24
 _middle_l24:
 	_t26 := _call f 13 ;
+	if _t26 then _goto _middle_l25 else _goto _false_l23
 _middle_l25:
 	_t27 := _call t 14 ;
+	if _t27 then _goto _true_l22 else _goto _false_l23
 _true_l22:
 	_t24 := 1
 	_goto _end_l26
@@ -79,14 +93,16 @@ f:
 
 t:
 	_t1 := _call f _d0_a ;
-	_t2 := ! _t1
+	_t2 := 1 - _t1
 	return _t2
 
 b:
 	if _d0_a then _goto _if_true_1 else _goto _if_false_1
 _if_true_1:
 	_t1 := _call printString "true" ;
+	return;
 _if_false_1:
 	_t2 := _call printString "false" ;
+	return;
 	return;
 

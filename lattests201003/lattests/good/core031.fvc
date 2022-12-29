@@ -5,19 +5,15 @@ main:
 	return 0
 
 f:
-	if _d0_a then _goto _middle_l4 else _goto _middle_l3
 	_t2 := _d0_a > 0
 	if _t2 then _goto _middle_l4 else _goto _middle_l3
 _middle_l4:
-	if _d0_b then _goto _true_l1 else _goto _middle_l3
 	_t3 := _d0_b > 0
 	if _t3 then _goto _true_l1 else _goto _middle_l3
 _middle_l3:
-	if _d0_a then _goto _middle_l5 else _goto _false_l2
 	_t4 := _d0_a < 0
 	if _t4 then _goto _middle_l5 else _goto _false_l2
 _middle_l5:
-	if _d0_b then _goto _true_l1 else _goto _false_l2
 	_t5 := _d0_b < 0
 	if _t5 then _goto _true_l1 else _goto _false_l2
 _true_l1:
@@ -30,6 +26,8 @@ _end_l6:
 	if _t1 then _goto _if_true_1 else _goto _if_false_1
 _if_true_1:
 	return 7
+	return;
 _if_false_1:
 	return 42
+	return;
 

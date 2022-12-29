@@ -586,13 +586,13 @@ static const flex_int16_t yy_accept[89] =
     {   0,
         0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
         0,    0,   44,   42,   41,   41,   42,   29,   14,   42,
-       12,   10,   11,   13,   40,    1,    4,   17,   42,   19,
+       12,   11,    3,   13,   40,    1,    5,   17,   42,   19,
        28,   28,   28,   28,   28,   28,   42,   43,   32,   31,
        30,   39,   37,   38,   33,   34,   35,   36,   22,   15,
-        5,    6,   40,    2,   27,   18,   21,   20,   28,   28,
+        6,    7,   40,    2,   27,   18,   21,   20,   28,   28,
        28,   28,   28,   24,   28,   28,   16,   28,   28,   28,
-       28,   28,   28,   28,   28,   23,   28,   26,    3,   28,
-        7,   28,   28,   25,   28,    9,    8,    0
+       28,   28,   28,   28,   28,   23,   28,   26,    4,   28,
+        8,   28,   28,   25,   28,   10,    9,    0
     } ;
 
 static const YY_CHAR yy_ec[256] =
@@ -1146,27 +1146,27 @@ return _COLONEQ;
 case 3:
 YY_RULE_SETUP
 #line 73 "fvc.l"
-return _SYMB_2;
+return _MINUS;
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
 #line 74 "fvc.l"
-return _SEMI;
+return _SYMB_3;
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
 #line 75 "fvc.l"
-return _DPLUS;
+return _SEMI;
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
 #line 76 "fvc.l"
-return _DMINUS;
+return _DPLUS;
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
 #line 77 "fvc.l"
-return _SYMB_6;
+return _DMINUS;
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
@@ -1181,12 +1181,12 @@ return _SYMB_8;
 case 10:
 YY_RULE_SETUP
 #line 80 "fvc.l"
-return _PLUS;
+return _SYMB_9;
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
 #line 81 "fvc.l"
-return _MINUS;
+return _PLUS;
 	YY_BREAK
 case 12:
 YY_RULE_SETUP

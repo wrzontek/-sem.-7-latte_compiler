@@ -166,13 +166,13 @@ extern int fvc_debug;
     _DEQ = 273,
     _GT = 274,
     _GTEQ = 275,
-    _SYMB_2 = 276,
-    _SYMB_7 = 277,
-    _SYMB_6 = 278,
+    _SYMB_3 = 276,
+    _SYMB_8 = 277,
+    _SYMB_7 = 278,
     _KW_else = 279,
     _KW_if = 280,
     _KW_return = 281,
-    _SYMB_8 = 282,
+    _SYMB_9 = 282,
     _KW_then = 283,
     _DBAR = 284,
     T_UIdent = 285,
@@ -551,16 +551,16 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  3
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   57
+#define YYLAST   55
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  33
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  11
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  37
+#define YYNRULES  38
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  54
+#define YYNSTATES  56
 
 #define YYUNDEFTOK  2
 #define YYMAXUTOK   287
@@ -610,10 +610,10 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,   125,   125,   127,   129,   130,   131,   132,   133,   135,
-     136,   137,   138,   139,   141,   142,   143,   145,   146,   147,
+       0,   125,   125,   127,   129,   130,   131,   132,   133,   134,
+     136,   137,   138,   139,   140,   142,   143,   144,   146,   147,
      148,   149,   150,   151,   152,   153,   154,   155,   156,   157,
-     159,   160,   162,   163,   165,   166,   168,   169
+     158,   160,   161,   163,   164,   166,   167,   169,   170
 };
 #endif
 
@@ -625,8 +625,8 @@ static const char *const yytname[] =
   "$end", "error", "$undefined", "_ERROR_", "_BANGEQ", "_PERCENT",
   "_DAMP", "_STAR", "_PLUS", "_DPLUS", "_MINUS", "_DMINUS", "_SLASH",
   "_COLON", "_COLONEQ", "_SEMI", "_LT", "_LDARROW", "_DEQ", "_GT", "_GTEQ",
-  "_SYMB_2", "_SYMB_7", "_SYMB_6", "_KW_else", "_KW_if", "_KW_return",
-  "_SYMB_8", "_KW_then", "_DBAR", "T_UIdent", "_STRING_", "_INTEGER_",
+  "_SYMB_3", "_SYMB_8", "_SYMB_7", "_KW_else", "_KW_if", "_KW_return",
+  "_SYMB_9", "_KW_then", "_DBAR", "T_UIdent", "_STRING_", "_INTEGER_",
   "$accept", "Program", "CodeBlock", "NonJmpStmt", "JmpStmt", "Atom",
   "BinOp", "ListCodeBlock", "ListNonJmpStmt", "ListJmpStmt", "ListAtom", YY_NULLPTR
 };
@@ -644,7 +644,7 @@ static const yytype_int16 yytoknum[] =
 };
 # endif
 
-#define YYPACT_NINF (-29)
+#define YYPACT_NINF (-27)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
@@ -658,12 +658,12 @@ static const yytype_int16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-     -29,     1,   -28,   -29,    -3,   -29,   -29,    15,   -29,   -18,
-      25,    25,   -29,    40,   -29,    21,   -29,   -29,   -29,   -29,
-     -29,   -15,   -29,   -29,   -29,     0,   -29,     3,   -10,    -1,
-      -8,   -29,   -29,   -29,   -29,   -29,   -29,   -29,   -29,   -29,
-     -29,   -29,   -29,   -29,   -29,    25,     5,    -7,   -29,     4,
-     -29,   -29,     9,   -29
+     -27,     2,   -26,   -27,    -1,   -27,   -27,    20,   -27,   -12,
+      21,    21,   -27,    -8,   -27,     8,   -27,   -27,   -27,   -27,
+     -27,     0,   -27,   -27,   -27,    -5,   -27,     6,    21,     7,
+       3,    14,   -27,   -27,   -27,   -27,   -27,   -27,   -27,   -27,
+     -27,   -27,   -27,   -27,   -27,   -27,   -27,    21,    24,     9,
+     -27,    26,   -27,   -27,    25,   -27
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -671,26 +671,26 @@ static const yytype_int8 yypact[] =
      means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-      30,     0,     2,     1,     0,    31,    32,     0,    10,     0,
-       0,     0,    13,     0,    33,    34,     3,     9,    14,    16,
-      15,     0,    12,     7,     8,     0,    35,     0,     0,     5,
-       0,    36,    29,    21,    22,    19,    17,    18,    20,    24,
-      25,    28,    26,    27,    23,     0,     0,     0,     4,     0,
-       6,    37,     0,    11
+      31,     0,     2,     1,     0,    32,    33,     0,    11,     0,
+       0,     0,    14,     0,    34,    35,     3,    10,    15,    17,
+      16,     0,    13,     8,     9,     0,    36,     0,     0,     0,
+       6,     0,     5,    37,    30,    22,    23,    20,    18,    19,
+      21,    25,    26,    29,    27,    28,    24,     0,     0,     0,
+       4,     0,     7,    38,     0,    12
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -29,   -29,   -29,   -29,   -29,   -11,   -29,   -29,   -29,    18,
-     -29
+     -27,   -27,   -27,   -27,   -27,   -11,   -27,   -27,   -27,    39,
+     -27
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     1,     5,    14,    15,    21,    45,     2,     7,    16,
-      47
+      -1,     1,     5,    14,    15,    21,    47,     2,     7,    16,
+      49
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -698,22 +698,22 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-      22,     3,     4,    32,    33,    34,    35,    36,    50,    37,
-       6,    38,    17,    27,    29,    39,    40,    41,    42,    43,
-      31,    28,    46,    18,    19,    20,    30,    52,    44,    49,
-      18,    19,    20,    26,    48,     0,    51,     8,     9,    53,
-      10,    11,    12,     8,     9,    13,    10,    11,    12,    23,
-       0,    24,     0,     0,    25,    18,    19,    20
+      22,    23,     3,    24,     4,    28,    25,    34,    35,    36,
+      37,    38,     6,    39,    30,    40,    29,    32,    17,    41,
+      42,    43,    44,    45,    52,    18,    19,    20,    27,    31,
+       8,     9,    46,    10,    11,    12,    50,    33,    53,    18,
+      19,    20,     8,     9,    48,    10,    11,    12,    51,    54,
+      13,    18,    19,    20,    26,    55
 };
 
 static const yytype_int8 yycheck[] =
 {
-      11,     0,    30,     4,     5,     6,     7,     8,    15,    10,
-      13,    12,    30,    28,    25,    16,    17,    18,    19,    20,
-      30,    21,    30,    30,    31,    32,    23,    23,    29,    24,
-      30,    31,    32,    15,    45,    -1,    47,    22,    23,    30,
-      25,    26,    27,    22,    23,    30,    25,    26,    27,     9,
-      -1,    11,    -1,    -1,    14,    30,    31,    32
+      11,     9,     0,    11,    30,    10,    14,     4,     5,     6,
+       7,     8,    13,    10,    25,    12,    21,    28,    30,    16,
+      17,    18,    19,    20,    15,    30,    31,    32,    28,    23,
+      22,    23,    29,    25,    26,    27,    47,    30,    49,    30,
+      31,    32,    22,    23,    30,    25,    26,    27,    24,    23,
+      30,    30,    31,    32,    15,    30
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
@@ -722,28 +722,28 @@ static const yytype_int8 yystos[] =
 {
        0,    34,    40,     0,    30,    35,    13,    41,    22,    23,
       25,    26,    27,    30,    36,    37,    42,    30,    30,    31,
-      32,    38,    38,     9,    11,    14,    42,    28,    21,    38,
-      23,    30,     4,     5,     6,     7,     8,    10,    12,    16,
-      17,    18,    19,    20,    29,    39,    30,    43,    38,    24,
-      15,    38,    23,    30
+      32,    38,    38,     9,    11,    14,    42,    28,    10,    21,
+      38,    23,    38,    30,     4,     5,     6,     7,     8,    10,
+      12,    16,    17,    18,    19,    20,    29,    39,    30,    43,
+      38,    24,    15,    38,    23,    30
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_int8 yyr1[] =
 {
-       0,    33,    34,    35,    36,    36,    36,    36,    36,    37,
-      37,    37,    37,    37,    38,    38,    38,    39,    39,    39,
+       0,    33,    34,    35,    36,    36,    36,    36,    36,    36,
+      37,    37,    37,    37,    37,    38,    38,    38,    39,    39,
       39,    39,    39,    39,    39,    39,    39,    39,    39,    39,
-      40,    40,    41,    41,    42,    42,    43,    43
+      39,    40,    40,    41,    41,    42,    42,    43,    43
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_int8 yyr2[] =
 {
-       0,     2,     1,     4,     5,     3,     6,     2,     2,     2,
-       1,     8,     2,     1,     1,     1,     1,     1,     1,     1,
+       0,     2,     1,     4,     5,     4,     3,     6,     2,     2,
+       2,     1,     8,     2,     1,     1,     1,     1,     1,     1,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       0,     2,     0,     2,     1,     2,     0,     2
+       1,     0,     2,     0,     2,     1,     2,     0,     2
 };
 
 
@@ -1563,204 +1563,210 @@ yyreduce:
 
   case 5:
 #line 130 "fvc.y"
-                           { (yyval.nonjmpstmt_) = new StmtNoOp((yyvsp[-2]._string), (yyvsp[0].atom_)); }
+                                  { (yyval.nonjmpstmt_) = new StmtNegOp((yyvsp[-3]._string), (yyvsp[0].atom_)); }
 #line 1568 "Parser.C"
     break;
 
   case 6:
 #line 131 "fvc.y"
-                                                      { (yyval.nonjmpstmt_) = new StmtCall((yyvsp[-5]._string), (yyvsp[-2]._string), (yyvsp[-1].listatom_)); }
+                           { (yyval.nonjmpstmt_) = new StmtNoOp((yyvsp[-2]._string), (yyvsp[0].atom_)); }
 #line 1574 "Parser.C"
     break;
 
   case 7:
 #line 132 "fvc.y"
-                    { (yyval.nonjmpstmt_) = new StmtInc((yyvsp[-1]._string)); }
+                                                      { (yyval.nonjmpstmt_) = new StmtCall((yyvsp[-5]._string), (yyvsp[-2]._string), (yyvsp[-1].listatom_)); }
 #line 1580 "Parser.C"
     break;
 
   case 8:
 #line 133 "fvc.y"
-                     { (yyval.nonjmpstmt_) = new StmtDecr((yyvsp[-1]._string)); }
+                    { (yyval.nonjmpstmt_) = new StmtInc((yyvsp[-1]._string)); }
 #line 1586 "Parser.C"
     break;
 
   case 9:
-#line 135 "fvc.y"
-                           { (yyval.jmpstmt_) = new StmtGoto((yyvsp[0]._string)); }
+#line 134 "fvc.y"
+                     { (yyval.nonjmpstmt_) = new StmtDecr((yyvsp[-1]._string)); }
 #line 1592 "Parser.C"
     break;
 
   case 10:
 #line 136 "fvc.y"
-            { (yyval.jmpstmt_) = new StmtGoNext(); }
+                           { (yyval.jmpstmt_) = new StmtGoto((yyvsp[0]._string)); }
 #line 1598 "Parser.C"
     break;
 
   case 11:
 #line 137 "fvc.y"
-                                                                    { (yyval.jmpstmt_) = new StmtCondJmp((yyvsp[-6].atom_), (yyvsp[-3]._string), (yyvsp[0]._string)); }
+            { (yyval.jmpstmt_) = new StmtGoNext(); }
 #line 1604 "Parser.C"
     break;
 
   case 12:
 #line 138 "fvc.y"
-                    { (yyval.jmpstmt_) = new StmtRet((yyvsp[0].atom_)); }
+                                                                    { (yyval.jmpstmt_) = new StmtCondJmp((yyvsp[-6].atom_), (yyvsp[-3]._string), (yyvsp[0]._string)); }
 #line 1610 "Parser.C"
     break;
 
   case 13:
 #line 139 "fvc.y"
-            { (yyval.jmpstmt_) = new StmtVRet(); }
+                    { (yyval.jmpstmt_) = new StmtRet((yyvsp[0].atom_)); }
 #line 1616 "Parser.C"
     break;
 
   case 14:
-#line 141 "fvc.y"
-                { (yyval.atom_) = new AtomVar((yyvsp[0]._string)); }
+#line 140 "fvc.y"
+            { (yyval.jmpstmt_) = new StmtVRet(); }
 #line 1622 "Parser.C"
     break;
 
   case 15:
 #line 142 "fvc.y"
-              { (yyval.atom_) = new AtomInt((yyvsp[0]._int)); }
+                { (yyval.atom_) = new AtomVar((yyvsp[0]._string)); }
 #line 1628 "Parser.C"
     break;
 
   case 16:
 #line 143 "fvc.y"
-             { (yyval.atom_) = new AtomStr((yyvsp[0]._string)); }
+              { (yyval.atom_) = new AtomInt((yyvsp[0]._int)); }
 #line 1634 "Parser.C"
     break;
 
   case 17:
-#line 145 "fvc.y"
-              { (yyval.binop_) = new AddOp(); }
+#line 144 "fvc.y"
+             { (yyval.atom_) = new AtomStr((yyvsp[0]._string)); }
 #line 1640 "Parser.C"
     break;
 
   case 18:
 #line 146 "fvc.y"
-           { (yyval.binop_) = new SubOp(); }
+              { (yyval.binop_) = new AddOp(); }
 #line 1646 "Parser.C"
     break;
 
   case 19:
 #line 147 "fvc.y"
-          { (yyval.binop_) = new MulOp(); }
+           { (yyval.binop_) = new SubOp(); }
 #line 1652 "Parser.C"
     break;
 
   case 20:
 #line 148 "fvc.y"
-           { (yyval.binop_) = new DivOp(); }
+          { (yyval.binop_) = new MulOp(); }
 #line 1658 "Parser.C"
     break;
 
   case 21:
 #line 149 "fvc.y"
-             { (yyval.binop_) = new ModOp(); }
+           { (yyval.binop_) = new DivOp(); }
 #line 1664 "Parser.C"
     break;
 
   case 22:
 #line 150 "fvc.y"
-          { (yyval.binop_) = new AndOp(); }
+             { (yyval.binop_) = new ModOp(); }
 #line 1670 "Parser.C"
     break;
 
   case 23:
 #line 151 "fvc.y"
-          { (yyval.binop_) = new OrOp(); }
+          { (yyval.binop_) = new AndOp(); }
 #line 1676 "Parser.C"
     break;
 
   case 24:
 #line 152 "fvc.y"
-        { (yyval.binop_) = new LTH(); }
+          { (yyval.binop_) = new OrOp(); }
 #line 1682 "Parser.C"
     break;
 
   case 25:
 #line 153 "fvc.y"
-             { (yyval.binop_) = new LE(); }
+        { (yyval.binop_) = new LTH(); }
 #line 1688 "Parser.C"
     break;
 
   case 26:
 #line 154 "fvc.y"
-        { (yyval.binop_) = new GTH(); }
+             { (yyval.binop_) = new LE(); }
 #line 1694 "Parser.C"
     break;
 
   case 27:
 #line 155 "fvc.y"
-          { (yyval.binop_) = new GE(); }
+        { (yyval.binop_) = new GTH(); }
 #line 1700 "Parser.C"
     break;
 
   case 28:
 #line 156 "fvc.y"
-         { (yyval.binop_) = new EQU(); }
+          { (yyval.binop_) = new GE(); }
 #line 1706 "Parser.C"
     break;
 
   case 29:
 #line 157 "fvc.y"
-            { (yyval.binop_) = new NE(); }
+         { (yyval.binop_) = new EQU(); }
 #line 1712 "Parser.C"
     break;
 
   case 30:
-#line 159 "fvc.y"
-                            { (yyval.listcodeblock_) = new ListCodeBlock(); }
+#line 158 "fvc.y"
+            { (yyval.binop_) = new NE(); }
 #line 1718 "Parser.C"
     break;
 
   case 31:
 #line 160 "fvc.y"
-                            { (yyvsp[-1].listcodeblock_)->push_back((yyvsp[0].codeblock_)); (yyval.listcodeblock_) = (yyvsp[-1].listcodeblock_); }
+                            { (yyval.listcodeblock_) = new ListCodeBlock(); }
 #line 1724 "Parser.C"
     break;
 
   case 32:
-#line 162 "fvc.y"
-                             { (yyval.listnonjmpstmt_) = new ListNonJmpStmt(); }
+#line 161 "fvc.y"
+                            { (yyvsp[-1].listcodeblock_)->push_back((yyvsp[0].codeblock_)); (yyval.listcodeblock_) = (yyvsp[-1].listcodeblock_); }
 #line 1730 "Parser.C"
     break;
 
   case 33:
 #line 163 "fvc.y"
-                              { (yyvsp[-1].listnonjmpstmt_)->push_back((yyvsp[0].nonjmpstmt_)); (yyval.listnonjmpstmt_) = (yyvsp[-1].listnonjmpstmt_); }
+                             { (yyval.listnonjmpstmt_) = new ListNonJmpStmt(); }
 #line 1736 "Parser.C"
     break;
 
   case 34:
-#line 165 "fvc.y"
-                      { (yyval.listjmpstmt_) = new ListJmpStmt(); (yyval.listjmpstmt_)->push_back((yyvsp[0].jmpstmt_)); }
+#line 164 "fvc.y"
+                              { (yyvsp[-1].listnonjmpstmt_)->push_back((yyvsp[0].nonjmpstmt_)); (yyval.listnonjmpstmt_) = (yyvsp[-1].listnonjmpstmt_); }
 #line 1742 "Parser.C"
     break;
 
   case 35:
 #line 166 "fvc.y"
-                        { (yyvsp[0].listjmpstmt_)->push_back((yyvsp[-1].jmpstmt_)); (yyval.listjmpstmt_) = (yyvsp[0].listjmpstmt_); }
+                      { (yyval.listjmpstmt_) = new ListJmpStmt(); (yyval.listjmpstmt_)->push_back((yyvsp[0].jmpstmt_)); }
 #line 1748 "Parser.C"
     break;
 
   case 36:
-#line 168 "fvc.y"
-                       { (yyval.listatom_) = new ListAtom(); }
+#line 167 "fvc.y"
+                        { (yyvsp[0].listjmpstmt_)->push_back((yyvsp[-1].jmpstmt_)); (yyval.listjmpstmt_) = (yyvsp[0].listjmpstmt_); }
 #line 1754 "Parser.C"
     break;
 
   case 37:
 #line 169 "fvc.y"
-                  { (yyvsp[-1].listatom_)->push_back((yyvsp[0].atom_)); (yyval.listatom_) = (yyvsp[-1].listatom_); }
+                       { (yyval.listatom_) = new ListAtom(); }
 #line 1760 "Parser.C"
     break;
 
+  case 38:
+#line 170 "fvc.y"
+                  { (yyvsp[-1].listatom_)->push_back((yyvsp[0].atom_)); (yyval.listatom_) = (yyvsp[-1].listatom_); }
+#line 1766 "Parser.C"
+    break;
 
-#line 1764 "Parser.C"
+
+#line 1770 "Parser.C"
 
       default: break;
     }
@@ -1998,7 +2004,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 172 "fvc.y"
+#line 173 "fvc.y"
 
 
 

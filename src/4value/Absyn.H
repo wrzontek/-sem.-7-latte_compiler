@@ -40,6 +40,8 @@ class Block;
 
 class StmtBinOp;
 
+class StmtNegOp;
+
 class StmtNoOp;
 
 class StmtCall;
@@ -121,6 +123,8 @@ public:
     virtual void visitBlock(Block *p) = 0;
 
     virtual void visitStmtBinOp(StmtBinOp *p) = 0;
+
+    virtual void visitStmtNegOp(StmtNegOp *p) = 0;
 
     virtual void visitStmtNoOp(StmtNoOp *p) = 0;
 
@@ -303,6 +307,26 @@ public:
     virtual StmtBinOp *clone() const;
 
     void swap(StmtBinOp &);
+};
+
+class StmtNegOp : public NonJmpStmt {
+public:
+    UIdent uident_;
+    Atom *atom_;
+
+    StmtNegOp(const StmtNegOp &);
+
+    StmtNegOp &operator=(const StmtNegOp &);
+
+    StmtNegOp(UIdent p1, Atom *p2);
+
+    ~StmtNegOp();
+
+    virtual void accept(Visitor *v);
+
+    virtual StmtNegOp *clone() const;
+
+    void swap(StmtNegOp &);
 };
 
 class StmtNoOp : public NonJmpStmt {

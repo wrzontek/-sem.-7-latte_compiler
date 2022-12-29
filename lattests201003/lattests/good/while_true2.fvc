@@ -8,6 +8,8 @@ _while_body_1:
 	if _t2 then _goto _if_true_2 else _goto _if_false_2
 _if_true_2:
 	return 0
+	return;
 _if_false_2:
 	_t3 := _call printString "jeszcze raz" ;
+	return;
 

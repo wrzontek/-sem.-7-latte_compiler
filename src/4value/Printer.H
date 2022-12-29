@@ -52,6 +52,8 @@ public:
     void visitNonJmpStmt(NonJmpStmt *p); /* abstract class */
     void visitStmtBinOp(StmtBinOp *p);
 
+    void visitStmtNegOp(StmtNegOp *p);
+
     void visitStmtNoOp(StmtNoOp *p);
 
     void visitStmtCall(StmtCall *p);
@@ -205,6 +207,8 @@ public:
 
     void visitNonJmpStmt(NonJmpStmt *p); /* abstract class */
     void visitStmtBinOp(StmtBinOp *p);
+
+    void visitStmtNegOp(StmtNegOp *p);
 
     void visitStmtNoOp(StmtNoOp *p);
 

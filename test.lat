@@ -1,62 +1,10 @@
-//int f(int a, string s, int c, int d) {
-//    return 123;
-//}
+/* Test boolean operators. */
 
-//int g(int a) {
-//    return a * a;
-//}
 int main() {
-    boolean a;
-    if (true) {
-
-    }
     return 0;
 }
 
-//boolean b(boolean b, boolean d) {
-//    return b;
-//}
-//
-//int f(int a) {
-//    return 1;
-//}
-//
-//int main() {
-//    int a = 123;
-//    if (true) {
-//        return 1;
-//    }
-//    return 0;
-//}
-//
-//int main2() {
-//    int a = 123;
-//    if (true) {
-//        return 1;
-//    }
-//}
-//
-//int main3() {
-//    int a = 123;
-//    {
-//        return 1;
-//    }
-//    return 0;
-//}
-//
-//int main4() {
-//    int a = 125;
-//    if (true) {
-//        return 1;
-//    } else {
-//        return 0;
-//    }
-//}
-//
-//int main5() {
-//    int a = 123;
-//    while (5 > 1) {
-//        return 0;
-//    }
-//}
-//
+boolean b() {
+    boolean x, y;
+    return !x || x == y;
+}

@@ -27,6 +27,8 @@ public:
 
     void visitStmtBinOp(StmtBinOp *p);
 
+    void visitStmtNegOp(StmtNegOp *p);
+
     void visitStmtNoOp(StmtNoOp *p);
 
     void visitStmtCall(StmtCall *p);

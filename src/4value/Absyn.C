@@ -132,6 +132,45 @@ StmtBinOp *StmtBinOp::clone() const {
 }
 
 
+/********************   StmtNegOp    ********************/
+StmtNegOp::StmtNegOp(UIdent p1, Atom *p2) {
+    uident_ = p1;
+    atom_ = p2;
+
+}
+
+StmtNegOp::StmtNegOp(const StmtNegOp &other) {
+    uident_ = other.uident_;
+    atom_ = other.atom_->clone();
+
+}
+
+StmtNegOp &StmtNegOp::operator=(const StmtNegOp &other) {
+    StmtNegOp tmp(other);
+    swap(tmp);
+    return *this;
+}
+
+void StmtNegOp::swap(StmtNegOp &other) {
+    std::swap(uident_, other.uident_);
+    std::swap(atom_, other.atom_);
+
+}
+
+StmtNegOp::~StmtNegOp() {
+    delete (atom_);
+
+}
+
+void StmtNegOp::accept(Visitor *v) {
+    v->visitStmtNegOp(this);
+}
+
+StmtNegOp *StmtNegOp::clone() const {
+    return new StmtNegOp(*this);
+}
+
+
 /********************   StmtNoOp    ********************/
 StmtNoOp::StmtNoOp(UIdent p1, Atom *p2) {
     uident_ = p1;

@@ -94,13 +94,13 @@ extern int yylex(YYSTYPE *lvalp, YYLTYPE *llocp, yyscan_t scanner);
 %token          _DEQ        /* == */
 %token          _GT         /* > */
 %token          _GTEQ       /* >= */
-%token          _SYMB_2     /* _call */
-%token          _SYMB_7     /* _go_next */
-%token          _SYMB_6     /* _goto */
+%token          _SYMB_3     /* _call */
+%token          _SYMB_8     /* _go_next */
+%token          _SYMB_7     /* _goto */
 %token          _KW_else    /* else */
 %token          _KW_if      /* if */
 %token          _KW_return  /* return */
-%token          _SYMB_8     /* return; */
+%token          _SYMB_9     /* return; */
 %token          _KW_then    /* then */
 %token          _DBAR       /* || */
 %token<_string> T_UIdent    /* UIdent */
@@ -127,16 +127,17 @@ Program : ListCodeBlock { $$ = new Prog($1); result->program_ = $$; }
 CodeBlock : T_UIdent _COLON ListNonJmpStmt ListJmpStmt { std::reverse($4->begin(),$4->end()) ;$$ = new Block($1, $3, $4); }
 ;
 NonJmpStmt : T_UIdent _COLONEQ Atom BinOp Atom { $$ = new StmtBinOp($1, $3, $4, $5); }
+  | T_UIdent _COLONEQ _MINUS Atom { $$ = new StmtNegOp($1, $4); }
   | T_UIdent _COLONEQ Atom { $$ = new StmtNoOp($1, $3); }
-  | T_UIdent _COLONEQ _SYMB_2 T_UIdent ListAtom _SEMI { $$ = new StmtCall($1, $4, $5); }
+  | T_UIdent _COLONEQ _SYMB_3 T_UIdent ListAtom _SEMI { $$ = new StmtCall($1, $4, $5); }
   | T_UIdent _DPLUS { $$ = new StmtInc($1); }
   | T_UIdent _DMINUS { $$ = new StmtDecr($1); }
 ;
-JmpStmt : _SYMB_6 T_UIdent { $$ = new StmtGoto($2); }
-  | _SYMB_7 { $$ = new StmtGoNext(); }
-  | _KW_if Atom _KW_then _SYMB_6 T_UIdent _KW_else _SYMB_6 T_UIdent { $$ = new StmtCondJmp($2, $5, $8); }
+JmpStmt : _SYMB_7 T_UIdent { $$ = new StmtGoto($2); }
+  | _SYMB_8 { $$ = new StmtGoNext(); }
+  | _KW_if Atom _KW_then _SYMB_7 T_UIdent _KW_else _SYMB_7 T_UIdent { $$ = new StmtCondJmp($2, $5, $8); }
   | _KW_return Atom { $$ = new StmtRet($2); }
-  | _SYMB_8 { $$ = new StmtVRet(); }
+  | _SYMB_9 { $$ = new StmtVRet(); }
 ;
 Atom : T_UIdent { $$ = new AtomVar($1); }
   | _INTEGER_ { $$ = new AtomInt($1); }

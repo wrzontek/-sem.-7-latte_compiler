@@ -2,8 +2,10 @@ main:
 	_t1 := _call printString "&&" ;
 	_t3 := - 1
 	_t4 := _call test _t3 ;
+	if _t4 then _goto _middle_l3 else _goto _false_l2
 _middle_l3:
 	_t5 := _call test 0 ;
+	if _t5 then _goto _true_l1 else _goto _false_l2
 _true_l1:
 	_t2 := 1
 	_goto _end_l4
@@ -14,8 +16,10 @@ _end_l4:
 	_t6 := _call printBool _t2 ;
 	_t8 := - 2
 	_t9 := _call test _t8 ;
+	if _t9 then _goto _middle_l7 else _goto _false_l6
 _middle_l7:
 	_t10 := _call test 1 ;
+	if _t10 then _goto _true_l5 else _goto _false_l6
 _true_l5:
 	_t7 := 1
 	_goto _end_l8
@@ -25,9 +29,11 @@ _false_l6:
 _end_l8:
 	_t11 := _call printBool _t7 ;
 	_t13 := _call test 3 ;
+	if _t13 then _goto _middle_l11 else _goto _false_l10
 _middle_l11:
 	_t14 := - 5
 	_t15 := _call test _t14 ;
+	if _t15 then _goto _true_l9 else _goto _false_l10
 _true_l9:
 	_t12 := 1
 	_goto _end_l12
@@ -37,8 +43,10 @@ _false_l10:
 _end_l12:
 	_t16 := _call printBool _t12 ;
 	_t18 := _call test 234234 ;
+	if _t18 then _goto _middle_l15 else _goto _false_l14
 _middle_l15:
 	_t19 := _call test 21321 ;
+	if _t19 then _goto _true_l13 else _goto _false_l14
 _true_l13:
 	_t17 := 1
 	_goto _end_l16
@@ -50,8 +58,10 @@ _end_l16:
 	_t21 := _call printString "||" ;
 	_t23 := - 1
 	_t24 := _call test _t23 ;
+	if _t24 then _goto _true_l17 else _goto _middle_l19
 _middle_l19:
 	_t25 := _call test 0 ;
+	if _t25 then _goto _true_l17 else _goto _false_l18
 _true_l17:
 	_t22 := 1
 	_goto _end_l20
@@ -62,8 +72,10 @@ _end_l20:
 	_t26 := _call printBool _t22 ;
 	_t28 := - 2
 	_t29 := _call test _t28 ;
+	if _t29 then _goto _true_l21 else _goto _middle_l23
 _middle_l23:
 	_t30 := _call test 1 ;
+	if _t30 then _goto _true_l21 else _goto _false_l22
 _true_l21:
 	_t27 := 1
 	_goto _end_l24
@@ -73,9 +85,11 @@ _false_l22:
 _end_l24:
 	_t31 := _call printBool _t27 ;
 	_t33 := _call test 3 ;
+	if _t33 then _goto _true_l25 else _goto _middle_l27
 _middle_l27:
 	_t34 := - 5
 	_t35 := _call test _t34 ;
+	if _t35 then _goto _true_l25 else _goto _false_l26
 _true_l25:
 	_t32 := 1
 	_goto _end_l28
@@ -85,8 +99,10 @@ _false_l26:
 _end_l28:
 	_t36 := _call printBool _t32 ;
 	_t38 := _call test 234234 ;
+	if _t38 then _goto _true_l29 else _goto _middle_l31
 _middle_l31:
 	_t39 := _call test 21321 ;
+	if _t39 then _goto _true_l29 else _goto _false_l30
 _true_l29:
 	_t37 := 1
 	_goto _end_l32
@@ -101,7 +117,7 @@ _end_l32:
 	return 0
 
 printBool:
-	_t1 := ! _d0_b
+	_t1 := 1 - _d0_b
 	if _t1 then _goto _if_true_1 else _goto _if_false_1
 _if_true_1:
 	_t2 := _call printString "false" ;

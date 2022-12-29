@@ -32,8 +32,10 @@ _if_true_1:
 	_t3 := _call fibonacci _d0_i ;
 	_t4 := _call printInt _t3 ;
 	return 0
+	return;
 _if_false_1:
 	_t5 := _call printString "Expected a non-negative integer, but got:" ;
 	_t6 := _call printInt _d0_i ;
 	return 1
+	return;
 

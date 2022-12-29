@@ -10,11 +10,15 @@ _if_true_1:
 	_t2 := _d0_y - 2
 	_t3 := _call ev _t2 ;
 	return _t3
+	return;
 _if_false_1:
 	_t4 := _d0_y < 0
 	if _t4 then _goto _if_true_2 else _goto _if_false_2
 _if_true_2:
 	return 0
+	return;
 _if_false_2:
 	return 1
+	return;
+	return;
 
