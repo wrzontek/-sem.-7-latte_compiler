@@ -547,7 +547,48 @@ public:
     }
 
     void visitEString(EString *expr) override {
-        result = "\"" + expr->string_ + "\"";
+        result = expr->string_;
+        std::string new_str;
+        for ( auto ch : result ) {
+            switch (ch) {
+                case '\'':
+                    new_str += "\\'";
+                    break;
+                case '\"':
+                    new_str += "\\\"";
+                    break;
+                case '\?':
+                    new_str += "\\?";
+                    break;
+                case '\\':
+                    new_str += "\\\\";
+                    break;
+                case '\a':
+                    new_str += "\\a";
+                    break;
+                case '\b':
+                    new_str += "\\b";
+                    break;
+                case '\f':
+                    new_str += "\\f";
+                    break;
+                case '\n':
+                    new_str += "\\n";
+                    break;
+                case '\r':
+                    new_str += "\\r";
+                    break;
+                case '\t':
+                    new_str += "\\t";
+                    break;
+                case '\v':
+                    new_str += "\\v";
+                    break;
+                default:
+                    new_str += ch;
+            }
+        }
+        result = "\"" + new_str + "\"";
         is_result_atomic = true;
     }
 
