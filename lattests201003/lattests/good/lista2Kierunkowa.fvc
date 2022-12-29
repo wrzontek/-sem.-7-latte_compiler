@@ -1,0 +1,91 @@
+main:
+	_d0_dlugoscListy := 30
+	_t1 := _call listaTest _d0_dlugoscListy ;
+	return 0
+
+listaTest:
+	_t1 := _call zwrocListeDlugosci _d0_dlugoscListy ;
+	_d0_lista := _t1
+	_t2 := _call przejdzSieNaKoniecIWypisuj _d0_lista _d0_dlugoscListy ;
+	_d0_odKonca := _t2
+	_t3 := _call wrocNaPoczatekIWypisuj _d0_odKonca _d0_dlugoscListy ;
+	_d0_lista := _t3
+	_t4 := _call printString "po spacerku wartosc pierwszego elementu:" ;
+	_t5 := _call printInt _t4 ;
+	_t6 := _d0_dlugoscListy >= 5
+	if _t6 then _goto _if_true_1 else _goto _if_false_1
+_if_true_1:
+	_d1_drugi := _t6
+	_t7 := _call printString "po spacerku wartosc drugiego elementu:" ;
+	_t8 := _call printInt _t7 ;
+_if_false_1:
+	return;
+	return;
+
+przejdzSieNaKoniecIWypisuj:
+	_d0_a := _d0_start
+	_d0_b := _d0_start
+	_t1 := _call printString "idziemy na koniec listy: " ;
+	_d0_i := 0
+	_goto _while_cond_1
+_while_body_1:
+	_t2 := _call printInt 0 ;
+	_d0_b := _d0_a
+	_d0_a := _d0_a
+	_d0_i++
+	_go_next
+_while_cond_1:
+	_t3 := _d0_i < _d0_dl
+	if _t3 then _goto _while_body_1 else _goto _end_while_1
+_end_while_1:
+	return _d0_b
+
+wrocNaPoczatekIWypisuj:
+	_d0_a := _d0_odKonca
+	_d0_b := 0
+	_t1 := _call printString "wracamy na poczatek listy: " ;
+	_d0_w := _d0_dl
+	_goto _while_cond_1
+_while_body_1:
+	_t2 := _call printInt _d0_dl ;
+	_d0_b := _d0_a
+	_d0_a := _d0_a
+	_d0_w--
+	_go_next
+_while_cond_1:
+	_t3 := _d0_w > 0
+	if _t3 then _goto _while_body_1 else _goto _end_while_1
+_end_while_1:
+	return _d0_b
+
+	_d0_poprzedni := 0
+	_d0_nastepny := 0
+	_d0_wartosc := 0
+zwrocListeDlugosci:
+	_t1 := _call printString "Krotki test listy:" ;
+	_d0_start := _t1
+	_d0_a := 0
+	_d0_n := 0
+	_d0_a := _d0_start
+	_d0_wsk := 1
+	1 := 0
+	_goto _while_cond_1
+_while_body_1:
+	0 := 0
+	0 := 0
+	_d0_n := _d0_a
+	_d0_a := _d0_a
+	_d0_a := _d0_wsk
+	_d0_wsk := _d0_n
+	_d0_wsk++
+	_go_next
+_while_cond_1:
+	_t2 := _d0_wsk != _d0_dlugoscListy
+	if _t2 then _goto _while_body_1 else _goto _end_while_1
+_end_while_1:
+	_t2 := _t2
+	_t3 := _call printString "wygenerowal liste 2kierunkowa dlugosci :" ;
+	_t4 := _call printInt _d0_dlugoscListy ;
+	_t5 := _call printString "__________" ;
+	return _d0_start
+

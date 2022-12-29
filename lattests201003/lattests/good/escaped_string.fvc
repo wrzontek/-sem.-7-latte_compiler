@@ -1,0 +1,19 @@
+f:
+	_t1 := 2 * _d0_p
+	_t2 := _d0_p + _t1
+	_d0_c := _t2
+	_t3 := _call printString ""
+pop
+powrot:
+getstatic java/lang/System/out Ljava/io/PrintStream;
+ldc "zle "
+invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V
+goto powrot
+ldc "" ;
+	return _d0_c
+
+main:
+	_t1 := _call f 1 ;
+	_t2 := _t1 - 3
+	return _t2
+

@@ -1,50 +1,46 @@
 main:
-	_t1 := 1 <= 1
-	if _t1 then _goto _if_true_1 else _goto _end_if_1
+	_goto _if_true_1
 _if_true_1:
-	_t2 := _call printString "4" ;
+	_t1 := _call printString "4" ;
 	_go_next
 _end_if_1:
-	_t3 := 1 >= 1
-	if _t3 then _goto _if_true_2 else _goto _end_if_2
+	_goto _if_true_2
 _if_true_2:
-	_t4 := _call printString "4" ;
+	_t2 := _call printString "4" ;
 	_go_next
 _end_if_2:
-	_t5 := 1 > 1
-	if _t5 then _goto _if_true_3 else _goto _end_if_3
+	_t3 := 1 > 1
+	if _t3 then _goto _if_true_3 else _goto _end_if_3
 _if_true_3:
-	_t6 := _call printString "5" ;
+	_t4 := _call printString "5" ;
 	_go_next
 _end_if_3:
-	_t7 := 1 < 1
-	if _t7 then _goto _if_true_4 else _goto _end_if_4
+	_t5 := 1 < 1
+	if _t5 then _goto _if_true_4 else _goto _end_if_4
 _if_true_4:
-	_t8 := _call printString "5" ;
+	_t6 := _call printString "5" ;
 	_go_next
 _end_if_4:
-	_t9 := 1 < 2
-	if _t9 then _goto _if_true_5 else _goto _end_if_5
+	_goto _if_true_5
 _if_true_5:
-	_t10 := _call printString "6" ;
+	_t7 := _call printString "6" ;
 	_go_next
 _end_if_5:
-	_t11 := 2 > 1
-	if _t11 then _goto _if_true_6 else _goto _end_if_6
+	_goto _if_true_6
 _if_true_6:
-	_t12 := _call printString "6" ;
+	_t8 := _call printString "6" ;
 	_go_next
 _end_if_6:
-	_t13 := 1 > 2
-	if _t13 then _goto _if_true_7 else _goto _end_if_7
+	_t9 := 1 > 2
+	if _t9 then _goto _if_true_7 else _goto _end_if_7
 _if_true_7:
-	_t14 := _call printString "7" ;
+	_t10 := _call printString "7" ;
 	_go_next
 _end_if_7:
-	_t15 := 2 < 1
-	if _t15 then _goto _if_true_8 else _goto _end_if_8
+	_t11 := 2 < 1
+	if _t11 then _goto _if_true_8 else _goto _end_if_8
 _if_true_8:
-	_t16 := _call printString "7" ;
+	_t12 := _call printString "7" ;
 	_go_next
 _end_if_8:
 	return 0

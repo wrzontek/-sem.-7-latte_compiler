@@ -7,5 +7,5 @@ main:
 
 	_d0_val := 0
 	_d0_val++
-	return
+	return;
 	return _d0_val

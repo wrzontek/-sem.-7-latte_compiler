@@ -100,6 +100,7 @@ extern int yylex(YYSTYPE *lvalp, YYLTYPE *llocp, yyscan_t scanner);
 %token          _KW_else    /* else */
 %token          _KW_if      /* if */
 %token          _KW_return  /* return */
+%token          _SYMB_8     /* return; */
 %token          _KW_then    /* then */
 %token          _DBAR       /* || */
 %token<_string> T_UIdent    /* UIdent */
@@ -135,7 +136,7 @@ JmpStmt : _SYMB_6 T_UIdent { $$ = new StmtGoto($2); }
   | _SYMB_7 { $$ = new StmtGoNext(); }
   | _KW_if Atom _KW_then _SYMB_6 T_UIdent _KW_else _SYMB_6 T_UIdent { $$ = new StmtCondJmp($2, $5, $8); }
   | _KW_return Atom { $$ = new StmtRet($2); }
-  | _KW_return { $$ = new StmtVRet(); }
+  | _SYMB_8 { $$ = new StmtVRet(); }
 ;
 Atom : T_UIdent { $$ = new AtomVar($1); }
   | _INTEGER_ { $$ = new AtomInt($1); }

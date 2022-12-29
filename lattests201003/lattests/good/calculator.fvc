@@ -1,0 +1,60 @@
+main:
+	_t1 := _call liczba 4 ;
+	_t2 := _call liczba 3 ;
+	_t3 := _call minus _t1 _t2 ;
+	_t4 := _call liczba 2 ;
+	_t5 := _call liczba 4 ;
+	_t6 := _call liczba 2 ;
+	_t7 := _call podziel _t5 _t6 ;
+	_t8 := _call razy _t4 _t7 ;
+	_t9 := _call plus _t3 _t8 ;
+	_d0_w := _t9
+	_t10 := _call printInt _t9 ;
+	return 0
+
+plus:
+	_d0_res := 0
+	0 := _d0_n1
+	_d0_n1 := _d0_n2
+	return _d0_res
+
+razy:
+	_d0_res := _d0_res
+	_d0_res := _d0_n1
+	_d0_n1 := _d0_n2
+	return _d0_res
+
+podziel:
+	_d0_res := _d0_res
+	_d0_res := _d0_n1
+	_d0_n1 := _d0_n2
+	return _d0_res
+
+minus:
+	_d0_res := _d0_res
+	_d0_res := _d0_n1
+	_d0_n1 := _d0_n2
+	return _d0_res
+
+liczba:
+	_d0_res := _d0_res
+	_d0_res := _d0_l
+	return _d0_res
+
+	_t1 := _call error ;
+	return 0
+	_d0_v := 0
+	return _d0_v
+	_d0_left := 0
+	_d0_right := 0
+	_t2 := _call error ;
+	return 0
+	return 0
+	_t3 := _d0_a + _d0_b
+	return _t3
+	_t4 := _d0_a - _d0_b
+	return _t4
+	_t5 := _d0_a * _d0_b
+	return _t5
+	_t6 := _d0_a / _d0_b
+	return _t6

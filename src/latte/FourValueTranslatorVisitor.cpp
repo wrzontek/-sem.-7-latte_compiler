@@ -3,6 +3,7 @@
 #include <fstream>
 #include <filesystem>
 #include <map>
+#include <algorithm>
 #include "Absyn.H"
 #include "Skeleton.C"
 #include "Common.cpp"
@@ -114,12 +115,13 @@ public:
         using_lazy_eval = false;
         next_t_var_number = 0;
         next_t_block_number = 0;
+        current_depth = 0;
 
         emitRaw(fnDef->ident_ + ":\n");
         fnDef->block_->accept(this);
 
         if (typeVisitor->getType(fnDef->type_)->name == "void") {
-            emitLine("return"); // can be overkill, but better 2 returns than none
+            emitLine("return;"); // can be overkill, but better 2 returns than none
         }
 
         emitRaw("\n");
@@ -258,18 +260,20 @@ public:
 
     void visitVRet(VRet *stmt) override {
         using_lazy_eval = false;
-        emitLine("return");
+        emitLine("return;");
     }
 
     void clear_deeper_declarations() {
         for (auto &pair: ident_to_declarations) {
             auto &depths = pair.second;
-            for (int i = 0; i < depths.size(); i++) {
-                if (depths[i] > current_depth) {
-                    depths.resize(i);
-                    break;
-                }
-            }
+            depths.erase(std::remove_if(depths.begin(), depths.end(),
+                                        [this](int value) { return value > this->current_depth; }),
+                         depths.end());
+//            for (auto depth = depths.begin(); depth != depths.end(); depth++) {
+//                if (*depth > current_depth) {
+//                    depths.erase(depth);
+//                }
+//            }
         }
     }
 
@@ -476,9 +480,14 @@ public:
     }
 
     void varCommon(Ident var) {
-        auto declarations = ident_to_declarations[var];
-        int declaration_depth = declarations[declarations.size() - 1];
-        result = "_d" + std::to_string(declaration_depth) + "_" + var;
+        if (ident_to_declarations.find(var) == ident_to_declarations.end()) {
+            // declaration not found - can only happen if var is function argument
+            result = "_d0_" + var;
+        } else {
+            auto declarations = ident_to_declarations[var];
+            int declaration_depth = declarations[declarations.size() - 1];
+            result = "_d" + std::to_string(declaration_depth) + "_" + var;
+        }
         is_result_atomic = true;
 
         if (using_lazy_eval) {

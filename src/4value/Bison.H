@@ -47,7 +47,8 @@ extern int fvc_debug;
 /* Token type.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
-enum yytokentype {
+  enum yytokentype
+  {
     _ERROR_ = 258,
     _BANGEQ = 259,
     _PERCENT = 260,
@@ -72,35 +73,37 @@ enum yytokentype {
     _KW_else = 279,
     _KW_if = 280,
     _KW_return = 281,
-    _KW_then = 282,
-    _DBAR = 283,
-    T_UIdent = 284,
-    _STRING_ = 285,
-    _INTEGER_ = 286
-};
+    _SYMB_8 = 282,
+    _KW_then = 283,
+    _DBAR = 284,
+    T_UIdent = 285,
+    _STRING_ = 286,
+    _INTEGER_ = 287
+  };
 #endif
 
 /* Value type.  */
-#if !defined YYSTYPE && !defined YYSTYPE_IS_DECLARED
-union YYSTYPE {
+#if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
+union YYSTYPE
+{
 #line 50 "fvc.y"
 
-    int _int;
-    char _char;
-    double _double;
-    char *_string;
-    Program *program_;
-    CodeBlock *codeblock_;
-    NonJmpStmt *nonjmpstmt_;
-    JmpStmt *jmpstmt_;
-    Atom *atom_;
-    BinOp *binop_;
-    ListCodeBlock *listcodeblock_;
-    ListNonJmpStmt *listnonjmpstmt_;
-    ListJmpStmt *listjmpstmt_;
-    ListAtom *listatom_;
+  int    _int;
+  char   _char;
+  double _double;
+  char*  _string;
+  Program* program_;
+  CodeBlock* codeblock_;
+  NonJmpStmt* nonjmpstmt_;
+  JmpStmt* jmpstmt_;
+  Atom* atom_;
+  BinOp* binop_;
+  ListCodeBlock* listcodeblock_;
+  ListNonJmpStmt* listnonjmpstmt_;
+  ListJmpStmt* listjmpstmt_;
+  ListAtom* listatom_;
 
-#line 106 "Bison.H"
+#line 107 "Bison.H"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -109,19 +112,21 @@ typedef union YYSTYPE YYSTYPE;
 #endif
 
 /* Location type.  */
-#if !defined YYLTYPE && !defined YYLTYPE_IS_DECLARED
+#if ! defined YYLTYPE && ! defined YYLTYPE_IS_DECLARED
 typedef struct YYLTYPE YYLTYPE;
-struct YYLTYPE {
-    int first_line;
-    int first_column;
-    int last_line;
-    int last_column;
+struct YYLTYPE
+{
+  int first_line;
+  int first_column;
+  int last_line;
+  int last_column;
 };
 # define YYLTYPE_IS_DECLARED 1
 # define YYLTYPE_IS_TRIVIAL 1
 #endif
 
 
-int fvc_parse(yyscan_t scanner, YYSTYPE *result);
+
+int fvc_parse (yyscan_t scanner, YYSTYPE *result);
 
 #endif /* !YY_FVC_BISON_H_INCLUDED  */

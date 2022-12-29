@@ -4,10 +4,11 @@ main:
 
 run:
 	_t1 := _call printInt 0 ;
-	if 1 then _goto _if_true_1 else _goto _end_if_1
+	_goto _if_true_1
 _if_true_1:
-	return
+	return;
 	_go_next
 _end_if_1:
 	_t2 := _call printInt 1 ;
+	return;
 

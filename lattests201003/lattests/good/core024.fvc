@@ -6,6 +6,7 @@ f:
 	_goto _if_true_1
 _if_true_1:
 	_t1 := _call printString "yes" ;
+	return;
 
 e:
 	_t1 := _call printString "NOOO" ;

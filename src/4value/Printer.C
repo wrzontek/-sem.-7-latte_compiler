@@ -271,7 +271,7 @@ void PrintAbsyn::visitStmtVRet(StmtVRet *p) {
     int oldi = _i_;
     if (oldi > 0) render(_L_PAREN);
 
-    render("return");
+    render("return;");
 
     if (oldi > 0) render(_R_PAREN);
     _i_ = oldi;

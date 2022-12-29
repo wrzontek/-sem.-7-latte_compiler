@@ -1,0 +1,9 @@
+main:
+	_t1 := _call f "bad" ;
+	return 0
+
+f:
+	_d0_arg := "good"
+	_t1 := _call printString _d0_arg ;
+	return;
+

@@ -1,0 +1,92 @@
+main:
+	_t1 := _call f 1 ;
+	_t2 := _call b _t1 ;
+	_t4 := _call t 1 ;
+_middle_l3:
+	_t5 := _call f 2 ;
+_true_l1:
+	_t3 := 1
+	_goto _end_l4
+_false_l2:
+	_t3 := 0
+	_go_next
+_end_l4:
+	_t6 := _call b _t3 ;
+	_t8 := _call t 3 ;
+_middle_l7:
+	_t9 := _call t 4 ;
+_true_l5:
+	_t7 := 1
+	_goto _end_l8
+_false_l6:
+	_t7 := 0
+	_go_next
+_end_l8:
+	_t10 := _call b _t7 ;
+	_t12 := _call t 5 ;
+_middle_l11:
+	_t13 := _call t 6 ;
+_true_l9:
+	_t11 := 1
+	_goto _end_l12
+_false_l10:
+	_t11 := 0
+	_go_next
+_end_l12:
+	_t14 := _call b _t11 ;
+	_t16 := _call f 7 ;
+_middle_l15:
+	_t17 := _call t 8 ;
+_true_l13:
+	_t15 := 1
+	_goto _end_l16
+_false_l14:
+	_t15 := 0
+	_go_next
+_end_l16:
+	_t18 := _call b _t15 ;
+	_t20 := _call t 9 ;
+_middle_l19:
+	_t21 := _call t 10 ;
+_middle_l20:
+	_t22 := _call t 11 ;
+_true_l17:
+	_t19 := 1
+	_goto _end_l21
+_false_l18:
+	_t19 := 0
+	_go_next
+_end_l21:
+	_t23 := _call b _t19 ;
+	_t25 := _call f 12 ;
+_middle_l24:
+	_t26 := _call f 13 ;
+_middle_l25:
+	_t27 := _call t 14 ;
+_true_l22:
+	_t24 := 1
+	_goto _end_l26
+_false_l23:
+	_t24 := 0
+	_go_next
+_end_l26:
+	_t28 := _call b _t24 ;
+	return 0
+
+f:
+	_t1 := _call printInt _d0_a ;
+	return 0
+
+t:
+	_t1 := _call f _d0_a ;
+	_t2 := ! _t1
+	return _t2
+
+b:
+	if _d0_a then _goto _if_true_1 else _goto _if_false_1
+_if_true_1:
+	_t1 := _call printString "true" ;
+_if_false_1:
+	_t2 := _call printString "false" ;
+	return;
+

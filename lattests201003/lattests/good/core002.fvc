@@ -4,5 +4,6 @@ main:
 
 foo:
 	_t1 := _call printString "foo" ;
-	return
+	return;
+	return;
 
