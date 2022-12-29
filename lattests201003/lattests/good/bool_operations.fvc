@@ -11,7 +11,7 @@ _true_l1:
 	_goto _end_l4
 _false_l2:
 	_t3 := 0
-	_go_next
+	_go_next _end_l4
 _end_l4:
 	_t6 := _call b _t3 ;
 	_t8 := _call t 3 ;
@@ -24,7 +24,7 @@ _true_l5:
 	_goto _end_l8
 _false_l6:
 	_t7 := 0
-	_go_next
+	_go_next _end_l8
 _end_l8:
 	_t10 := _call b _t7 ;
 	_t12 := _call t 5 ;
@@ -37,7 +37,7 @@ _true_l9:
 	_goto _end_l12
 _false_l10:
 	_t11 := 0
-	_go_next
+	_go_next _end_l12
 _end_l12:
 	_t14 := _call b _t11 ;
 	_t16 := _call f 7 ;
@@ -50,7 +50,7 @@ _true_l13:
 	_goto _end_l16
 _false_l14:
 	_t15 := 0
-	_go_next
+	_go_next _end_l16
 _end_l16:
 	_t18 := _call b _t15 ;
 	_t20 := _call t 9 ;
@@ -66,7 +66,7 @@ _true_l17:
 	_goto _end_l21
 _false_l18:
 	_t19 := 0
-	_go_next
+	_go_next _end_l21
 _end_l21:
 	_t23 := _call b _t19 ;
 	_t25 := _call f 12 ;
@@ -82,7 +82,7 @@ _true_l22:
 	_goto _end_l26
 _false_l23:
 	_t24 := 0
-	_go_next
+	_go_next _end_l26
 _end_l26:
 	_t28 := _call b _t24 ;
 	return 0

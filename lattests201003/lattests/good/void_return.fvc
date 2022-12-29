@@ -7,7 +7,7 @@ run:
 	_goto _if_true_1
 _if_true_1:
 	return;
-	_go_next
+	_go_next _end_if_1
 _end_if_1:
 	_t2 := _call printInt 1 ;
 	return;

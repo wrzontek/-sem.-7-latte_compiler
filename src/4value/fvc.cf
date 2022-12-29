@@ -14,7 +14,7 @@ StmtInc.        NonJmpStmt ::= UIdent "++" ;
 StmtDecr.       NonJmpStmt ::= UIdent "--" ;
 
 StmtGoto.           JmpStmt ::= "_goto" UIdent ;
-StmtGoNext.         JmpStmt ::= "_go_next" ;
+StmtGoNext.         JmpStmt ::= "_go_next" UIdent ;
 StmtCondJmp.        JmpStmt ::= "if" Atom "then" "_goto" UIdent "else" "_goto" UIdent;
 StmtRet.            JmpStmt ::= "return" Atom ;
 StmtVRet.           JmpStmt ::= "return;" ;

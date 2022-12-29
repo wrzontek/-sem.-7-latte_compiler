@@ -91,6 +91,7 @@ void Skeleton::visitStmtGoto(StmtGoto *stmt_goto) {
 void Skeleton::visitStmtGoNext(StmtGoNext *stmt_go_next) {
     /* Code For StmtGoNext Goes Here */
 
+    visitUIdent(stmt_go_next->uident_);
 
 }
 

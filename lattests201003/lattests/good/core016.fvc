@@ -4,7 +4,7 @@ main:
 _while_body_1:
 	_t1 := _d0_y - 2
 	_d0_y := _t1
-	_go_next
+	_go_next _while_cond_1
 _while_cond_1:
 	_t2 := _d0_y > 0
 	if _t2 then _goto _while_body_1 else _goto _end_while_1

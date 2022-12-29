@@ -1,7 +1,7 @@
 main:
 	_goto _while_cond_1
 _while_body_1:
-	_go_next
+	_go_next _while_cond_1
 _while_cond_1:
 	if 0 then _goto _while_body_1 else _goto _end_while_1
 _end_while_1:

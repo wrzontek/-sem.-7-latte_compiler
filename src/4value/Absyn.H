@@ -429,12 +429,13 @@ public:
 
 class StmtGoNext : public JmpStmt {
 public:
+    UIdent uident_;
 
     StmtGoNext(const StmtGoNext &);
 
     StmtGoNext &operator=(const StmtGoNext &);
 
-    StmtGoNext();
+    StmtGoNext(UIdent p1);
 
     ~StmtGoNext();
 

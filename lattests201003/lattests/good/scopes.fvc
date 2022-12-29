@@ -1,18 +1,18 @@
 main:
 	_d0_i := 0
 	_t1 := _call printInt _d0_i ;
-	_go_next
+	_go_next _t1
 _t1:
 	_d1_i := 1
 	_t2 := _call printInt _d1_i ;
-	_go_next
+	_go_next _after_t1
 _after_t1:
 	_t3 := _call printInt _d0_i ;
-	_go_next
+	_go_next _t2
 _t2:
 	_d1_i := 2
 	_t4 := _call printInt _d1_i ;
-	_go_next
+	_go_next _after_t2
 _after_t2:
 	_t5 := _call printInt _d0_i ;
 	return 0

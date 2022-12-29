@@ -1,10 +1,5 @@
-/* Test boolean operators. */
-
+// Autor: Tomasz Wysocki 277696
 int main() {
+    printString("\\");
     return 0;
-}
-
-boolean b() {
-    boolean x, y;
-    return !x || x == y;
 }

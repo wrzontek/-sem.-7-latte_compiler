@@ -21,7 +21,7 @@ _true_l1:
 	_goto _end_l6
 _false_l2:
 	_t1 := 0
-	_go_next
+	_go_next _end_l6
 _end_l6:
 	if _t1 then _goto _if_true_1 else _goto _if_false_1
 _if_true_1:

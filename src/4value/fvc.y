@@ -134,7 +134,7 @@ NonJmpStmt : T_UIdent _COLONEQ Atom BinOp Atom { $$ = new StmtBinOp($1, $3, $4, 
   | T_UIdent _DMINUS { $$ = new StmtDecr($1); }
 ;
 JmpStmt : _SYMB_7 T_UIdent { $$ = new StmtGoto($2); }
-  | _SYMB_8 { $$ = new StmtGoNext(); }
+  | _SYMB_8 T_UIdent { $$ = new StmtGoNext($2); }
   | _KW_if Atom _KW_then _SYMB_7 T_UIdent _KW_else _SYMB_7 T_UIdent { $$ = new StmtCondJmp($2, $5, $8); }
   | _KW_return Atom { $$ = new StmtRet($2); }
   | _SYMB_9 { $$ = new StmtVRet(); }

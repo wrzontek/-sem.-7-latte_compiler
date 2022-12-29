@@ -14,7 +14,7 @@ _while_body_1:
 	_d0_r := _t1
 	_t2 := _d0_n - 1
 	_d0_n := _t2
-	_go_next
+	_go_next _while_cond_1
 _while_cond_1:
 	_t3 := _d0_n > 0
 	if _t3 then _goto _while_body_1 else _goto _end_while_1

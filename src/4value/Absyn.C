@@ -358,11 +358,13 @@ StmtGoto *StmtGoto::clone() const {
 
 
 /********************   StmtGoNext    ********************/
-StmtGoNext::StmtGoNext() {
+StmtGoNext::StmtGoNext(UIdent p1) {
+    uident_ = p1;
 
 }
 
 StmtGoNext::StmtGoNext(const StmtGoNext &other) {
+    uident_ = other.uident_;
 
 }
 
@@ -373,6 +375,7 @@ StmtGoNext &StmtGoNext::operator=(const StmtGoNext &other) {
 }
 
 void StmtGoNext::swap(StmtGoNext &other) {
+    std::swap(uident_, other.uident_);
 
 }
 

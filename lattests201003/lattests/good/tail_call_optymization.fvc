@@ -7,7 +7,7 @@ sum:
 	if _t1 then _goto _if_true_1 else _goto _end_if_1
 _if_true_1:
 	return _d0_a
-	_go_next
+	_go_next _end_if_1
 _end_if_1:
 	_d0_y := _d0_z
 	_t2 := _d0_y % 2
@@ -17,7 +17,7 @@ _if_true_2:
 	_t4 := - 1
 	_t5 := _t4 * _d0_z
 	_d0_y := _t5
-	_go_next
+	_go_next _end_if_2
 _end_if_2:
 	_t6 := _d0_z - 1
 	_t7 := _d0_a + _d0_y

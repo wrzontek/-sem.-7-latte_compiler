@@ -246,6 +246,7 @@ void PrintAbsyn::visitStmtGoNext(StmtGoNext *p) {
     if (oldi > 0) render(_L_PAREN);
 
     render("_go_next");
+    visitUIdent(p->uident_);
 
     if (oldi > 0) render(_R_PAREN);
     _i_ = oldi;
@@ -669,7 +670,11 @@ void ShowAbsyn::visitStmtGoto(StmtGoto *p) {
 }
 
 void ShowAbsyn::visitStmtGoNext(StmtGoNext *p) {
+    bufAppend('(');
     bufAppend("StmtGoNext");
+    bufAppend(' ');
+    visitUIdent(p->uident_);
+    bufAppend(')');
 }
 
 void ShowAbsyn::visitStmtCondJmp(StmtCondJmp *p) {

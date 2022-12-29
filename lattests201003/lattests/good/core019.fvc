@@ -1,10 +1,10 @@
 main:
 	_d0_i := 78
-	_go_next
+	_go_next _t1
 _t1:
 	_d1_i := 1
 	_t1 := _call printInt _d1_i ;
-	_go_next
+	_go_next _after_t1
 _after_t1:
 	_t2 := _call printInt _d0_i ;
 	_goto _while_cond_2
@@ -14,7 +14,7 @@ _while_body_2:
 	_t4 := _d1_i + 7
 	_d1_i := _t4
 	_t5 := _call printInt _d1_i ;
-	_go_next
+	_go_next _while_cond_2
 _while_cond_2:
 	_t6 := _d0_i > 76
 	if _t6 then _goto _while_body_2 else _goto _end_while_2
@@ -28,7 +28,7 @@ _if_true_3:
 	_goto _end_if_3
 _if_false_3:
 	_t10 := _call printString "foo" ;
-	_go_next
+	_go_next _end_if_3
 _end_if_3:
 	_t11 := _call printInt _d0_i ;
 	return 0

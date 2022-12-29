@@ -184,7 +184,7 @@ public:
         emitLine("_goto " + labels.label_end);
         emitRaw(labels.label_false + ":\n");
         if (!result_register.empty()) emitLine(result_register + " := 0");
-        emitLine("_go_next");
+        emitLine("_go_next " + labels.label_end);
 
         emitRaw(labels.label_end + ":\n");
 
@@ -293,7 +293,7 @@ public:
         if (block_emit_labels_and_gotos) {
             t_block = next_t_block();
             after_t_block = "_after" + t_block;
-            emitLine("_go_next");
+            emitLine("_go_next " + t_block);
             emitRaw(t_block + ":\n");
         }
 
@@ -306,7 +306,7 @@ public:
         clear_deeper_declarations();
 
         if (block_emit_labels_and_gotos && !is_last_stmt) {
-            emitLine("_go_next");
+            emitLine("_go_next " + after_t_block);
             emitRaw(after_t_block + ":\n");
         }
 
@@ -352,7 +352,7 @@ public:
         block_emit_labels_and_gotos = true;
 
         if (!is_last_stmt) {
-            emitLine("_go_next");
+            emitLine("_go_next " + end_if);
             emitRaw(end_if + ":\n");
         }
     }
@@ -386,7 +386,7 @@ public:
             block_emit_labels_and_gotos = true;
 
             if (!is_last_stmt) {
-                emitLine("_go_next");
+                emitLine("_go_next " + end_if);
                 emitRaw(end_if + ":\n");
             } else {
                 emitLine("return;");
@@ -415,7 +415,7 @@ public:
         if (!is_last_stmt) {
             emitLine("_goto " + while_cond);
         } else {
-            emitLine("_go_next");
+            emitLine("_go_next " + while_body);
         }
 
         emitRaw(while_body + ":\n");
@@ -424,7 +424,7 @@ public:
         block_emit_labels_and_gotos = true;
 
         if (!is_last_stmt) {
-            emitLine("_go_next");
+            emitLine("_go_next " + while_cond);
             emitRaw(while_cond + ":\n");
             auto cond_atom = getCondAtom(stmt->expr_);
             emitLine("if " + cond_atom + " then _goto " + while_body + " else _goto " + end_while);

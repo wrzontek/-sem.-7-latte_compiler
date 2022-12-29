@@ -1,20 +1,4 @@
 main:
+	_t1 := _call printString "\" ;
 	return 0
-
-b:
-	_d0_x := 0
-	_d0_y := 0
-	_t1 := - _d0_x
-	if _t1 then _goto _middle_l3 else _goto _true_l1
-_middle_l3:
-	_t3 := _d0_x == _d0_y
-	if _t3 then _goto _true_l1 else _goto _false_l2
-_true_l1:
-	_res := 1
-	_goto _end_l4
-_false_l2:
-	_res := 0
-	_go_next
-_end_l4:
-	return _res
 
