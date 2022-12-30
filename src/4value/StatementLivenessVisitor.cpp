@@ -12,6 +12,7 @@ public:
     UIdent atom_var_name;
 
     void visitBlock(Block *block) override {
+        std::cout << "BLOCK: " + block->uident_ << std::endl;
         block->listnonjmpstmt_->accept(this);
         block->listjmpstmt_->accept(this);
     }
@@ -68,28 +69,28 @@ public:
 
 class Statement_Liveness_Visitor : public Skeleton {
 public:
-    UIdent current_block;
-
     std::set <UIdent> current_stmt_out_vars;
     UIdent atom_var_name;
     StmtCall *current_call_stmt;
+    std::set <UIdent> block_in_vars;
 
     void visitBlock(Block *block) override {
-        current_block = block->uident_;
 //        current_stmt_out_vars = std::set<UIdent>();
         block->listjmpstmt_->accept(this);
-        block->listnonjmpstmt_->accept(this);
+        if (!block->listnonjmpstmt_->empty()) block->listnonjmpstmt_->accept(this);
     }
 
     void visitListJmpStmt(ListJmpStmt *list_jmp_stmt) override {
         ListJmpStmt::iterator i = list_jmp_stmt->begin();
         (*i)->accept(this); // we only use the first jump stmt
+        block_in_vars = (*(list_jmp_stmt->begin()))->in_vars;
     }
 
     void visitListNonJmpStmt(ListNonJmpStmt *list_stmt) override {
         for (ListNonJmpStmt::reverse_iterator i = list_stmt->rbegin(); i != list_stmt->rend(); ++i) {
             (*i)->accept(this);
         }
+        block_in_vars = (*(list_stmt->begin()))->in_vars;
     }
 
     void calc_in_vars(JmpStmt *stmt) {

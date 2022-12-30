@@ -7,17 +7,17 @@ fac:
 	_d0_r := 0
 	_d0_n := 0
 	_d0_r := 1
-	_d0_n := _d0_a
+	_d0_n := _arg0_a
 	_goto _while_cond_1
 _while_body_1:
-	_t1 := _d0_r * _d0_n
-	_d0_r := _t1
-	_t2 := _d0_n - 1
-	_d0_n := _t2
+	_t3 := _d0_r * _d0_n
+	_d0_r := _t3
+	_t4 := _d0_n - 1
+	_d0_n := _t4
 	_go_next _while_cond_1
 _while_cond_1:
-	_t3 := _d0_n > 0
-	if _t3 then _goto _while_body_1 else _goto _end_while_1
+	_t5 := _d0_n > 0
+	if _t5 then _goto _while_body_1 else _goto _end_while_1
 _end_while_1:
 	return _d0_r
 

@@ -9,16 +9,11 @@
 //}
 
 int main() {
-    int a, b, c, t, u, v, d;
-
-    t = a;
-    a = b;
-    b = t;
-    t = a - b;
-    u = a - c;
-    v = t + u;
-    d = v + u;
-    return d;
+    int a, b;
+    {
+        int c = a;
+    }
+    return a;
 }
 
 

@@ -75,7 +75,8 @@ int main(int argc, char **argv) {
 //        cfg_visitor->printSucc();
 //        cfg_visitor->printPred();
 
-        auto liveness_Visitor = new Liveness_Visitor(parse_tree, cfg_visitor->succ, cfg_visitor->pred);
+        auto liveness_Visitor = new Liveness_Visitor(parse_tree, cfg_visitor->succ, cfg_visitor->pred,
+                                                     cfg_visitor->block_code);
         liveness_Visitor->analyze_liveness();
 
         // TODO jak będą optymalizajce to tu walnąć flagę (z latc) żeby wyłączyć

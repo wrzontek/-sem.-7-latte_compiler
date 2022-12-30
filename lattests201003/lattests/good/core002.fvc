@@ -3,7 +3,7 @@ main:
 	return 0
 
 foo:
-	_t1 := _call printString "foo" ;
+	_t2 := _call printString "foo" ;
 	return;
 	return;
 

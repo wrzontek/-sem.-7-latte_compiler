@@ -31,6 +31,17 @@ public:
         statementLivenessPrinter = new Statement_Liveness_Printer();
     }
 
+    void printSet(const std::set <UIdent> &set) {
+        std::cout << "{";
+        for (auto it = set.begin(); it != set.end(); ++it) {
+            if (it != set.begin()) {
+                std::cout << ", ";
+            }
+            std::cout << *it;
+        }
+        std::cout << "}" << std::endl;
+    }
+
     void analyze_liveness() {
 //        program->accept(statementLivenessVisitor);
 //        program->accept(statementLivenessPrinter);
@@ -40,16 +51,48 @@ public:
             block_in_vars[block_name] = std::set<UIdent>();
             block_out_vars[block_name] = std::set<UIdent>();
         }
+        while (true) {
+            int equal_count = 0;
+            for (auto pair: block_code) {
+                auto block_name = pair.first;
+                auto block_code = pair.second;
+                auto block_in_vars_before = block_in_vars[block_name];
+                auto block_out_vars_before = block_out_vars[block_name];
+
+                statementLivenessVisitor->current_stmt_out_vars = block_out_vars_before;
+                block_code->accept(statementLivenessVisitor);
+                block_in_vars[block_name] = statementLivenessVisitor->block_in_vars;
+
+                std::set <UIdent> out_vars;
+                for (auto successor: succ[block_name]) {
+                    out_vars.insert(block_in_vars[successor].begin(), block_in_vars[successor].end());
+                }
+                block_out_vars[block_name] = out_vars;
+
+                if (block_in_vars_before == block_in_vars[block_name] &&
+                    block_out_vars_before == block_out_vars[block_name]) {
+                    equal_count++;
+                }
+            }
+            if (equal_count == block_code.size())
+                break;
+        }
+
+        program->accept(statementLivenessPrinter);
+        std::cout << "\n\n\n";
+
         for (auto pair: block_code) {
             auto block_name = pair.first;
-            auto block_code = pair.second;
-            auto block_in_vars_before = block_in_vars[block_name];
-            auto block_out_vars_before = block_out_vars[block_name];
+            auto block_in_vars_set = block_in_vars[block_name];
+            auto block_out_vars_set = block_out_vars[block_name];
 
-            statementLivenessVisitor->current_stmt_out_vars = block_out_vars_before;
-            block_code->accept(statementLivenessVisitor);
+            std::cout << "\n\nBLOCK: " + block_name << std::endl;
+            std::cout << "IN: ";
+            printSet(block_in_vars_set);
+
+            std::cout << "OUT: ";
+            printSet(block_out_vars_set);
         }
+
     }
-
-
 };
