@@ -14,7 +14,8 @@
 #include "Printer.H"
 #include "Absyn.H"
 #include "ParserError.H"
-#include <filesystem>
+#include "CFGVisitor.cpp"
+#include "LivenessVisitor.cpp"
 
 void usage() {
     printf("usage: Call with one of the following argument combinations:\n");
@@ -68,9 +69,14 @@ int main(int argc, char **argv) {
         }
 
 //        auto path = std::filesystem::path(filename);
-//        auto four_value_translator = new FourValueTranslatorVisitor(parse_tree, path.replace_extension("fvc"));
-//        parse_tree->accept(four_value_translator);
-//        four_value_translator->close();
+        auto cfg_visitor = new CFG_Visitor(parse_tree);
+        parse_tree->accept(cfg_visitor);
+        cfg_visitor->setPred();
+//        cfg_visitor->printSucc();
+//        cfg_visitor->printPred();
+
+        auto liveness_Visitor = new Liveness_Visitor(parse_tree, cfg_visitor->succ, cfg_visitor->pred);
+        liveness_Visitor->analyze_liveness();
 
         // TODO jak będą optymalizajce to tu walnąć flagę (z latc) żeby wyłączyć
         delete (parse_tree);

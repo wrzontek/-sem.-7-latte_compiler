@@ -49,5 +49,6 @@ Printer.o : Printer.C Printer.H Absyn.H
 Skeleton.o : Skeleton.C Skeleton.H Absyn.H
 	${CXX} ${CXXFLAGS} -Wno-unused-parameter -c Skeleton.C
 
-FVCMain.o : FVCMain.C Parser.H Printer.H Absyn.H
+FVCMain.o : FVCMain.C Parser.H Printer.H Absyn.H \
+			CFGVisitor.cpp LivenessVisitor.cpp
 	${CXX} ${CXXFLAGS} -c FVCMain.C

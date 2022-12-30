@@ -113,10 +113,8 @@ public:
     }
 
     void visitFnDef(FnDef *fnDef) override {
-        ident_to_declarations = std::map<Ident, std::vector<int>>();
+        ident_to_declarations = std::map < Ident, std::vector < int >> ();
         using_lazy_eval = false;
-        next_t_var_number = 0;
-        next_t_block_number = 0;
         current_depth = 0;
 
         emitRaw(fnDef->ident_ + ":\n");
@@ -549,7 +547,7 @@ public:
     void visitEString(EString *expr) override {
         result = expr->string_;
         std::string new_str;
-        for ( auto ch : result ) {
+        for (auto ch: result) {
             switch (ch) {
                 case '\'':
                     new_str += "\\'";

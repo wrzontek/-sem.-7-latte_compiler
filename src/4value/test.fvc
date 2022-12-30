@@ -1,3 +1,0 @@
-block:
-    c := _call f "baba" b 13
-    return a

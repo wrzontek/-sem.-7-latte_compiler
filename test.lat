@@ -1,4 +1,25 @@
+//int main() {
+//    int a;
+//    int b;
+//
+//    int t = a;
+//    a = b;
+//    b = t;
+//    return 0;
+//}
+
 int main() {
-    printString("\\a\\n\n\tb\"");
-    return 0;
+    int a, b, c, t, u, v, d;
+
+    t = a;
+    a = b;
+    b = t;
+    t = a - b;
+    u = a - c;
+    v = t + u;
+    d = v + u;
+    return d;
 }
+
+
+

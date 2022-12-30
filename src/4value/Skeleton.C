@@ -5,6 +5,7 @@
    Note that this method uses Visitor-traversal of lists, so
    List->accept() does NOT traverse the list. This allows different
    algorithms to use context information differently. */
+#pragma once
 
 #include "Skeleton.H"
 

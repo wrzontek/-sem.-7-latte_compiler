@@ -5,6 +5,7 @@
 
 #include<string>
 #include<vector>
+#include<set>
 
 //C++ Abstract Syntax Interface.
 
@@ -224,12 +225,24 @@ public:
 
 class NonJmpStmt : public Visitable {
 public:
+    std::set <UIdent> in_vars;
+    std::set <UIdent> out_vars;
+    std::set <UIdent> gen_vars;
+    std::set <UIdent> use_vars;
+    std::set <UIdent> kill_vars;
+
     virtual NonJmpStmt *clone() const = 0;
 
 };
 
 class JmpStmt : public Visitable {
 public:
+    std::set <UIdent> in_vars;
+    std::set <UIdent> out_vars;
+    std::set <UIdent> gen_vars;
+    std::set <UIdent> use_vars;
+    std::set <UIdent> kill_vars;
+
     virtual JmpStmt *clone() const = 0;
 
 };
