@@ -10,6 +10,7 @@ class CFG_Visitor : public Skeleton {
 public:
     Program *program;
 
+    std::map<UIdent, Block *> block_code;
     std::map <UIdent, std::set<UIdent >> succ;
     std::map <UIdent, std::set<UIdent >> pred;
 
@@ -19,6 +20,7 @@ public:
 
     void visitBlock(Block *block) override {
         current_block = block->uident_;
+        block_code[current_block] = block;
         block->listjmpstmt_->accept(this);
     }
 
