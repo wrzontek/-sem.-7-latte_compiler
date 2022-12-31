@@ -251,12 +251,17 @@ class Atom : public Visitable {
 public:
     virtual Atom *clone() const = 0;
 
+    virtual UIdent var_name() { return ""; }
+
+    virtual UIdent constant() { return ""; }
+
 };
 
 class BinOp : public Visitable {
 public:
     virtual BinOp *clone() const = 0;
 
+    virtual std::string instruction() { return "TODO"; };
 };
 
 
@@ -521,6 +526,10 @@ class AtomVar : public Atom {
 public:
     UIdent uident_;
 
+    UIdent var_name() override {
+        return uident_;
+    }
+
     AtomVar(const AtomVar &);
 
     AtomVar &operator=(const AtomVar &);
@@ -539,6 +548,10 @@ public:
 class AtomInt : public Atom {
 public:
     Integer integer_;
+
+    UIdent constant() override {
+        return std::to_string(integer_);
+    }
 
     AtomInt(const AtomInt &);
 
@@ -576,6 +589,7 @@ public:
 
 class AddOp : public BinOp {
 public:
+    std::string instruction() override { return "ADD "; };
 
     AddOp(const AddOp &);
 

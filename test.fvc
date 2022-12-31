@@ -1,10 +1,6 @@
 main:
 	_d0_a := 0
-	_d0_b := 0
-	_go_next _t1
-_t1:
-	_d1_c := _d0_a
-	_go_next _after_t1
-_after_t1:
+	_t1 := _d0_a + 3
+	_d0_a := _t1
 	return _d0_a
 

@@ -7,7 +7,7 @@
 #include "Skeleton.C"
 #include "StatementLivenessVisitor.cpp"
 
-class Liveness_Visitor : public Skeleton {
+class Liveness_Visitor {
 public:
     Program *program;
 

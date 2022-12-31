@@ -16,6 +16,8 @@
 #include "ParserError.H"
 #include "CFGVisitor.cpp"
 #include "LivenessVisitor.cpp"
+#include "CodeGenerator.cpp"
+#include <filesystem>
 
 void usage() {
     printf("usage: Call with one of the following argument combinations:\n");
@@ -67,8 +69,9 @@ int main(int argc, char **argv) {
             PrintAbsyn *p = new PrintAbsyn();
             printf("%s\n\n", p->print(parse_tree));
         }
+        // TODO jak będą optymalizajce to walnąć flagę (z latc) żeby wyłączyć
 
-//        auto path = std::filesystem::path(filename);
+        auto path = std::filesystem::path(filename);
         auto cfg_visitor = new CFG_Visitor(parse_tree);
         parse_tree->accept(cfg_visitor);
         cfg_visitor->setPred();
@@ -79,7 +82,11 @@ int main(int argc, char **argv) {
                                                      cfg_visitor->block_code);
         liveness_Visitor->analyze_liveness();
 
-        // TODO jak będą optymalizajce to tu walnąć flagę (z latc) żeby wyłączyć
+        auto code_generator = new Code_Generator(parse_tree, path.replace_extension("s"),
+                                                 liveness_Visitor->block_out_vars, liveness_Visitor->block_in_vars);
+        code_generator->generate();
+        code_generator->close();
+
         delete (parse_tree);
         return 0;
     }

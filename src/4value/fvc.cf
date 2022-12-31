@@ -27,9 +27,6 @@ AddOp.      BinOp ::= "+" ;
 SubOp.      BinOp ::= "-" ;
 MulOp.      BinOp ::= "*" ;
 DivOp.      BinOp ::= "/" ;
-ModOp.      BinOp ::= "%" ;
-AndOp.      BinOp ::= "&&" ;
-OrOp.       BinOp ::= "||" ;
 
 LTH.       BinOp ::= "<" ;
 LE.        BinOp ::= "<=" ;

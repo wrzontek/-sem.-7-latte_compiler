@@ -493,7 +493,7 @@ public:
     void varCommon(Ident var) {
         if (ident_to_declarations.find(var) == ident_to_declarations.end()) {
             // declaration not found - can only happen if var is function argument
-            result = "_arg0_" + var;
+            result = "__arg_" + var;
         } else {
             auto declarations = ident_to_declarations[var];
             int declaration_depth = declarations[declarations.size() - 1];

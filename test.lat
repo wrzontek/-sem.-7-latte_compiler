@@ -1,20 +1,9 @@
-//int main() {
-//    int a;
-//    int b;
-//
-//    int t = a;
-//    a = b;
-//    b = t;
-//    return 0;
-//}
-
 int main() {
-    int a, b;
-    {
-        int c = a;
-    }
+    int a;
+    a = a + 3;
     return a;
 }
-
-
-
+//
+//int f(int a) {
+//    return a * a;
+//}

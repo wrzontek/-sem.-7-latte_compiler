@@ -70,7 +70,6 @@ public:
 class Statement_Liveness_Visitor : public Skeleton {
 public:
     std::set <UIdent> current_stmt_out_vars;
-    UIdent atom_var_name;
     StmtCall *current_call_stmt;
     std::set <UIdent> block_in_vars;
 
@@ -116,8 +115,7 @@ public:
     void visitStmtCondJmp(StmtCondJmp *stmt) override {
         stmt->out_vars = current_stmt_out_vars;
 
-        atom_var_name = "";
-        stmt->atom_->accept(this);
+        auto atom_var_name = stmt->atom_->var_name();
         if (!atom_var_name.empty()) {
             stmt->use_vars.insert(atom_var_name);
         }
@@ -128,8 +126,7 @@ public:
     void visitStmtRet(StmtRet *stmt) override {
         stmt->out_vars = current_stmt_out_vars;
 
-        atom_var_name = "";
-        stmt->atom_->accept(this);
+        auto atom_var_name = stmt->atom_->var_name();
         if (!atom_var_name.empty()) {
             stmt->use_vars.insert(atom_var_name);
         }
@@ -151,17 +148,12 @@ public:
         calc_in_vars(stmt);
     }
 
-    void visitAtomVar(AtomVar *var) override {
-        atom_var_name = var->uident_;
-    }
-
     void visitStmtNoOp(StmtNoOp *stmt) override {
         stmt->out_vars = current_stmt_out_vars;
 
         stmt->kill_vars.insert(stmt->uident_);
 
-        atom_var_name = "";
-        stmt->atom_->accept(this);
+        auto atom_var_name = stmt->atom_->var_name();
         if (!atom_var_name.empty()) {
             stmt->use_vars.insert(atom_var_name);
         }
@@ -174,8 +166,7 @@ public:
 
         stmt->kill_vars.insert(stmt->uident_);
 
-        atom_var_name = "";
-        stmt->atom_->accept(this);
+        auto atom_var_name = stmt->atom_->var_name();
         if (!atom_var_name.empty()) {
             stmt->use_vars.insert(atom_var_name);
         }
@@ -188,14 +179,12 @@ public:
 
         stmt->kill_vars.insert(stmt->uident_);
 
-        atom_var_name = "";
-        stmt->atom_1->accept(this);
+        auto atom_var_name = stmt->atom_1->var_name();
         if (!atom_var_name.empty()) {
             stmt->use_vars.insert(atom_var_name);
         }
 
-        atom_var_name = "";
-        stmt->atom_2->accept(this);
+        atom_var_name = stmt->atom_2->var_name();
         if (!atom_var_name.empty()) {
             stmt->use_vars.insert(atom_var_name);
         }
@@ -205,8 +194,7 @@ public:
 
     void visitListAtom(ListAtom *list_atom) override {
         for (ListAtom::iterator i = list_atom->begin(); i != list_atom->end(); ++i) {
-            atom_var_name = "";
-            (*i)->accept(this);
+            auto atom_var_name = (*i)->var_name();
             if (!atom_var_name.empty()) {
                 current_call_stmt->use_vars.insert(atom_var_name);
             }

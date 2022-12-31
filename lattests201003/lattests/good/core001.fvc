@@ -1,0 +1,132 @@
+main:
+	_t1 := _call fac 10 ;
+	_t2 := _call printInt _t1 ;
+	_t3 := _call rfac 10 ;
+	_t4 := _call printInt _t3 ;
+	_t5 := _call mfac 10 ;
+	_t6 := _call printInt _t5 ;
+	_t7 := _call ifac 10 ;
+	_t8 := _call printInt _t7 ;
+	_d0_r := ""
+	_go_next _t1
+_t1:
+	_d1_n := 10
+	_d1_r := 1
+	_goto _while_cond_2
+_while_body_2:
+	_t9 := _d1_r * _d1_n
+	_d1_r := _t9
+	_d1_n--
+	_go_next _while_cond_2
+_while_cond_2:
+	_t10 := _d1_n > 0
+	if _t10 then _goto _while_body_2 else _goto _end_while_2
+_end_while_2:
+	_t11 := _call printInt _d1_r ;
+	_go_next _after_t1
+_after_t1:
+	_t12 := _call repStr "=" 60 ;
+	_t13 := _call printString _t12 ;
+	_t14 := _call printString "hello */" ;
+	_t15 := _call printString "/* world" ;
+	return 0
+
+fac:
+	_d0_r := 0
+	_d0_n := 0
+	_d0_r := 1
+	_d0_n := _arg0_a
+	_goto _while_cond_3
+_while_body_3:
+	_t16 := _d0_r * _d0_n
+	_d0_r := _t16
+	_t17 := _d0_n - 1
+	_d0_n := _t17
+	_go_next _while_cond_3
+_while_cond_3:
+	_t18 := _d0_n > 0
+	if _t18 then _goto _while_body_3 else _goto _end_while_3
+_end_while_3:
+	return _d0_r
+
+rfac:
+	_t19 := _arg0_n == 0
+	if _t19 then _goto _if_true_4 else _goto _if_false_4
+_if_true_4:
+	return 1
+	return;
+_if_false_4:
+	_t20 := _arg0_n - 1
+	_t21 := _call rfac _t20 ;
+	_t22 := _arg0_n * _t21
+	return _t22
+	return;
+
+mfac:
+	_t23 := _arg0_n == 0
+	if _t23 then _goto _if_true_5 else _goto _if_false_5
+_if_true_5:
+	return 1
+	return;
+_if_false_5:
+	_t24 := _arg0_n - 1
+	_t25 := _call nfac _t24 ;
+	_t26 := _arg0_n * _t25
+	return _t26
+	return;
+
+nfac:
+	_t27 := _arg0_n != 0
+	if _t27 then _goto _if_true_6 else _goto _if_false_6
+_if_true_6:
+	_t28 := _arg0_n - 1
+	_t29 := _call mfac _t28 ;
+	_t30 := _t29 * _arg0_n
+	return _t30
+	return;
+_if_false_6:
+	return 1
+	return;
+
+ifac:
+	_t31 := _call ifac2f 1 _arg0_n ;
+	return _t31
+
+ifac2f:
+	_t32 := _arg0_l == _arg0_h
+	if _t32 then _goto _if_true_7 else _goto _end_if_7
+_if_true_7:
+	return _arg0_l
+	_go_next _end_if_7
+_end_if_7:
+	_t33 := _arg0_l > _arg0_h
+	if _t33 then _goto _if_true_8 else _goto _end_if_8
+_if_true_8:
+	return 1
+	_go_next _end_if_8
+_end_if_8:
+	_d0_m := 0
+	_t34 := _arg0_l + _arg0_h
+	_t35 := _t34 / 2
+	_d0_m := _t35
+	_t36 := _call ifac2f _arg0_l _d0_m ;
+	_t37 := _d0_m + 1
+	_t38 := _call ifac2f _t37 _arg0_h ;
+	_t39 := _t36 * _t38
+	return _t39
+
+repStr:
+	_d0_r := ""
+	_d0_i := 0
+	_goto _while_cond_9
+_while_body_9:
+	_t40 := _d0_r + _arg0_s
+	_d0_r := _t40
+	_d0_i++
+	_go_next _while_cond_9
+_while_cond_9:
+	_t41 := _d0_i < _arg0_n
+	if _t41 then _goto _while_body_9 else _goto _end_while_9
+_end_while_9:
+	return _d0_r
+
