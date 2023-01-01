@@ -78,12 +78,16 @@ int main(int argc, char **argv) {
 //        cfg_visitor->printSucc();
 //        cfg_visitor->printPred();
 
-        auto liveness_Visitor = new Liveness_Visitor(parse_tree, cfg_visitor->succ, cfg_visitor->pred,
+        auto liveness_visitor = new Liveness_Visitor(parse_tree, cfg_visitor->succ, cfg_visitor->pred,
                                                      cfg_visitor->block_code);
-        liveness_Visitor->analyze_liveness();
+        liveness_visitor->analyze_liveness();
+
+        auto function_local_vars_visitor = new Function_Local_Vars_Visitor(liveness_visitor->block_out_vars);
+        parse_tree->accept(function_local_vars_visitor);
 
         auto code_generator = new Code_Generator(parse_tree, path.replace_extension("s"),
-                                                 liveness_Visitor->block_out_vars, liveness_Visitor->block_in_vars);
+                                                 liveness_visitor->block_out_vars, liveness_visitor->block_in_vars,
+                                                 function_local_vars_visitor->function_local_vars);
         code_generator->generate();
         code_generator->close();
 

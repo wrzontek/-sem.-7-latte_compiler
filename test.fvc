@@ -1,18 +1,23 @@
 main:
-	_d0_a := 0
-	_d0_b := 0
-	_d0_c := 0
+	_d0_a := 1
+	_d0_b := 2
+	_d0_c := 3
 	_d0_t := _d0_a
 	_d0_a := _d0_b
 	_d0_b := _d0_t
 	_t1 := _d0_a - _d0_b
 	_d0_t := _t1
-	_t2 := _d0_a - _d0_c
-	_d0_u := _t2
-	_t3 := _d0_t + _d0_u
-	_d0_v := _t3
-	_t4 := _d0_v + _d0_u
-	_d0_d := _t4
+	_go_next _t1
+_t1:
+	_t2 := _call printInt _d0_a ;
+	_go_next _after_t1
+_after_t1:
+	_t3 := _d0_a - _d0_c
+	_d0_u := _t3
+	_t4 := _d0_t + _d0_u
+	_d0_v := _t4
+	_t5 := _d0_v + _d0_u
+	_d0_d := _t5
 	return _d0_d
 
 f:

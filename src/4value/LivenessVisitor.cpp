@@ -96,3 +96,27 @@ public:
 
     }
 };
+
+class Function_Local_Vars_Visitor : public Skeleton {
+    // determines the variables that need stack allocation in each function
+public:
+    UIdent current_function;
+    std::map <UIdent, std::set<UIdent >> function_local_vars;
+    std::map <UIdent, std::set<UIdent >> &block_out_vars;
+
+    bool is_function(UIdent ident) {
+        return ident[0] != '_';
+    }
+
+    explicit Function_Local_Vars_Visitor(std::map <UIdent, std::set<UIdent >> &block_out_vars)
+            : block_out_vars(block_out_vars) {}
+
+    void visitBlock(Block *block) override {
+        if (is_function(block->uident_)) {
+            current_function = block->uident_;
+        }
+
+        function_local_vars[current_function].insert(block_out_vars[current_function].begin(),
+                                                     block_out_vars[current_function].end());
+    }
+};
