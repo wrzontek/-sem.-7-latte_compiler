@@ -26,11 +26,11 @@ public:
             "_reg_r15"};
 */
 
-    UIdent result_register = "_reg_eax";
-    UIdent stack_pointer = "_reg_esp";
-    UIdent base_pointer = "_reg_ebp";
-    std::set <UIdent> general_registers = {"_reg_eax", "_reg_ecx", "_reg_edx",
-                                           "_reg_ebx", "_reg_esi", "_reg_edi"};
+    UIdent const result_register = "_reg_eax";
+    UIdent const stack_pointer = "_reg_esp";
+    UIdent const base_pointer = "_reg_ebp";
+    std::set <UIdent> const general_registers = {"_reg_eax", "_reg_ecx", "_reg_edx",
+                                                 "_reg_ebx", "_reg_esi", "_reg_edi"};
 
 
     // register to {variable}
@@ -89,6 +89,9 @@ public:
     }
 
     void visitBlock(Block *block) override {
+        emitRaw(block->uident_ + ":\n");
+
+        // TODO jak block się nie zaczyna "_" to jest funkcją, trzeba prolog, epilog, argumenty
         current_block_name = block->uident_;
         // na start bloku in_vars są w pamięci, rejestry wolne
         register_values.clear();
@@ -118,7 +121,22 @@ public:
 
     void visitStmtCondJmp(StmtCondJmp *stmt) override {}
 
-    void visitStmtRet(StmtRet *stmt) override {}
+    void visitStmtRet(StmtRet *stmt) override {
+        auto result_locs = get_atom_locations(stmt->atom_);
+        for (auto &loc: result_locs) {
+            if (loc == result_register) // wynik jest w EAX, nic nie ma do roboty
+                return;
+        }
+        auto best_loc = get_best_location(result_locs);
+
+        if (is_variable(best_loc)) {
+            emitLine("MOV " + result_register + ", [" + best_loc + "]");
+        } else {
+            emitLine("MOV " + result_register + ", " + best_loc);
+        }
+    }
+
+    void visitStmtVRet(StmtVRet *stmt) override {}
 
     std::set <UIdent> get_atom_locations(Atom *atom) {
         if (!atom->var_name().empty()) { // atom is variable
@@ -144,7 +162,6 @@ public:
     UIdent get_best_location(std::set <UIdent> locations) {
         UIdent register_;
         UIdent memory;
-
         for (UIdent loc: locations) {
             if (is_register(loc)) {
                 register_ = loc;
@@ -227,43 +244,45 @@ public:
                 std::cout << "\nTODO push variable_name to memory\n";
                 exit(123);
             }
-        } else if (!is_live_variable(variable_name, out_vars)) {
-            forget_dead_variable(variable_name, out_vars);
         }
     }
 
     void visitStmtNoOp(StmtNoOp *stmt) override { // A := B
-        UIdent result_register;
+        if (stmt->uident_ == stmt->atom_->var_name()) { return; }
+        UIdent R_register;
 
         auto B_location = get_best_location(get_atom_locations(stmt->atom_));
         auto B_variable_name = stmt->atom_->var_name();
 //        std::cout << "LOCATION B " + B_location + " for " + B_variable_name << std::endl;
+//        std::cout << "LOCS FOR: " + stmt->atom_->var_name() << std::endl;
+//        printSet(get_atom_locations(stmt->atom_));
 
         if (is_register(B_location)) {
-            result_register = B_location;
+            R_register = B_location;
             value_locations[B_variable_name].erase(B_location);
 
             save_live_variable(B_variable_name, B_location, stmt->out_vars);
 
-            register_values[result_register].erase(B_variable_name);
+
+            register_values[R_register].erase(B_variable_name);
         } else {
-            result_register = get_free_register();
+            R_register = get_free_register();
             if (is_variable(B_location)) {
                 save_live_variable(B_variable_name, "[" + B_location + "]", stmt->out_vars);
                 B_location = get_best_location(get_atom_locations(stmt->atom_));
 
                 if (is_variable(B_location)) {
-                    emitLine("MOV " + result_register + ", [" + B_location + "]");
+                    emitLine("MOV " + R_register + ", [" + B_location + "]");
                 } else {
-                    emitLine("MOV " + result_register + ", " + B_location);
+                    emitLine("MOV " + R_register + ", " + B_location);
                 }
             } else {
-                emitLine("MOV " + result_register + ", " + B_location);
+                emitLine("MOV " + R_register + ", " + B_location);
             }
         }
 
-        value_locations[stmt->uident_] = {result_register};
-        register_values[result_register].insert(stmt->uident_);
+        value_locations[stmt->uident_] = {R_register};
+        register_values[R_register].insert(stmt->uident_);
 
         forget_dead_variable(stmt->atom_->var_name(), stmt->out_vars);
         forget_dead_variable(stmt->uident_, stmt->out_vars); // ??
@@ -278,7 +297,7 @@ public:
         }
 
         if (instruction == "ADD " || instruction == "SUB ") {
-            UIdent result_register;
+            UIdent R_register;
 //            std::cout << "LOCS FOR: " + stmt->atom_1->var_name() << std::endl;
 //            printSet(get_atom_locations(stmt->atom_1));
 
@@ -287,40 +306,46 @@ public:
 //            std::cout << "LOCATION L " + lhs_location + " for " + b_variable_name << std::endl;
 
             if (is_register(lhs_location)) {
-                result_register = lhs_location;
+                R_register = lhs_location;
                 value_locations[b_variable_name].erase(lhs_location);
 
-                save_live_variable(b_variable_name, lhs_location, stmt->out_vars);
+                if (stmt->uident_ != b_variable_name) {
+                    save_live_variable(b_variable_name, lhs_location, stmt->out_vars);
+                }
             } else {
-                result_register = get_free_register();
+                R_register = get_free_register();
                 if (is_variable(lhs_location)) {
-                    save_live_variable(b_variable_name, "[" + lhs_location + "]", stmt->out_vars);
+                    if (stmt->uident_ != b_variable_name) {
+                        save_live_variable(b_variable_name, "[" + lhs_location + "]", stmt->out_vars);
+                    }
                     lhs_location = get_best_location(get_atom_locations(stmt->atom_1));
 
                     if (is_variable(lhs_location)) {
-                        emitLine("MOV " + result_register + ", [" + lhs_location + "]");
+                        emitLine("MOV " + R_register + ", [" + lhs_location + "]");
                     } else {
-                        emitLine("MOV " + result_register + ", " + lhs_location);
+                        emitLine("MOV " + R_register + ", " + lhs_location);
                     }
                 } else {
-                    emitLine("MOV " + result_register + ", " + lhs_location);
+                    emitLine("MOV " + R_register + ", " + lhs_location);
                 }
             }
 
-            // dodajemy RHS do result_register
+            // dodajemy RHS do R_register
             auto rhs_location = get_best_location(get_atom_locations(stmt->atom_2));
 //            std::cout << "LOCATION R " + rhs_location + " for " + stmt->atom_2->var_name() << std::endl;
 //            std::cout << std::endl;
 
             if (is_variable(rhs_location)) {
-                emitLine(instruction + result_register + ", [" + rhs_location + "]");
+                emitLine(instruction + R_register + ", [" + rhs_location + "]");
             } else {
-                emitLine(instruction + result_register + ", " + rhs_location);
+                emitLine(instruction + R_register + ", " + rhs_location);
             }
-            value_locations[stmt->uident_] = {result_register};
-            register_values[result_register] = {stmt->uident_};
+            value_locations[stmt->uident_] = {R_register};
+            register_values[R_register] = {stmt->uident_};
 
+            forget_dead_variable(stmt->atom_1->var_name(), stmt->out_vars);
             forget_dead_variable(stmt->atom_2->var_name(), stmt->out_vars);
+            forget_dead_variable(stmt->uident_, stmt->out_vars);
             return;
         }
 

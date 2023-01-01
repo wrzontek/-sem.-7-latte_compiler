@@ -1,8 +1,6 @@
 int main() {
     int a, b, c;
-    a = a + 1;
-    b = b + 1;
-    c = c + 1;
+
     int t = a;
     a = b;
     b = t;
@@ -15,8 +13,13 @@ int main() {
 //    d = v + u;
 
     return d;
+//    return 0;
 }
-//
-//int f(int a) {
-//    return a * a;
-//}
+
+int f(int e) {
+    int f = e;
+    f = f;
+    f++;
+
+    return f;
+}
