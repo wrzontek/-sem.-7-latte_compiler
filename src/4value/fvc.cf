@@ -7,11 +7,8 @@ Prog. Program ::= [CodeBlock] ;
 Block.        CodeBlock ::= UIdent ":" [NonJmpStmt] [JmpStmt] ; -- TODO może być np return 0 _go_next, po prostu brać pierwsze resztę wywalić
 
 StmtBinOp.      NonJmpStmt ::= UIdent ":=" Atom BinOp Atom ;
-StmtNegOp.      NonJmpStmt ::= UIdent ":=" "-" Atom ;
 StmtNoOp.       NonJmpStmt ::= UIdent ":=" Atom ;
 StmtCall.       NonJmpStmt ::= UIdent ":=" "_call" UIdent [Atom] ";" ;
-StmtInc.        NonJmpStmt ::= UIdent "++" ;
-StmtDecr.       NonJmpStmt ::= UIdent "--" ;
 
 StmtGoto.           JmpStmt ::= "_goto" UIdent ;
 StmtGoNext.         JmpStmt ::= "_go_next" UIdent ;
@@ -27,6 +24,7 @@ AddOp.      BinOp ::= "+" ;
 SubOp.      BinOp ::= "-" ;
 MulOp.      BinOp ::= "*" ;
 DivOp.      BinOp ::= "/" ;
+ModOp.      BinOp ::= "%" ;
 
 LTH.       BinOp ::= "<" ;
 LE.        BinOp ::= "<=" ;

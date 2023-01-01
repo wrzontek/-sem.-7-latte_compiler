@@ -249,6 +249,8 @@ public:
 
 class Atom : public Visitable {
 public:
+    virtual bool is_string() { return false; }
+
     virtual Atom *clone() const = 0;
 
     virtual UIdent var_name() { return ""; }
@@ -570,6 +572,8 @@ public:
 
 class AtomStr : public Atom {
 public:
+    bool is_string() override { return true; }
+
     String string_;
 
     AtomStr(const AtomStr &);
@@ -608,6 +612,7 @@ public:
 
 class SubOp : public BinOp {
 public:
+    std::string instruction() override { return "SUB "; };
 
     SubOp(const SubOp &);
 
@@ -716,6 +721,7 @@ public:
 
 class LTH : public BinOp {
 public:
+    std::string instruction() override { return "CMP "; };
 
     LTH(const LTH &);
 
@@ -734,6 +740,7 @@ public:
 
 class LE : public BinOp {
 public:
+    std::string instruction() override { return "CMP "; };
 
     LE(const LE &);
 
@@ -752,6 +759,7 @@ public:
 
 class GTH : public BinOp {
 public:
+    std::string instruction() override { return "CMP "; };
 
     GTH(const GTH &);
 
@@ -770,6 +778,7 @@ public:
 
 class GE : public BinOp {
 public:
+    std::string instruction() override { return "CMP "; };
 
     GE(const GE &);
 
@@ -788,6 +797,7 @@ public:
 
 class EQU : public BinOp {
 public:
+    std::string instruction() override { return "CMP "; };
 
     EQU(const EQU &);
 
@@ -806,6 +816,7 @@ public:
 
 class NE : public BinOp {
 public:
+    std::string instruction() override { return "CMP "; };
 
     NE(const NE &);
 
