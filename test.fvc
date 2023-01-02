@@ -1,28 +1,8 @@
-v:
-	_t1 := __arg__0 * __arg__0
-	__arg__0 := _t1
-	_goto _if_false_1
-_if_false_1:
-	__arg__0 := __arg__0 - 1
-	_go_next _end_if_1
-_end_if_1:
-	_t2 := __arg__0 + 5
-	__arg__0 := _t2
-	return __arg__0
-
 main:
-	_d0_a := 1
-	_d0_b := 2
-	_d0_c := 1
-	if _d0_c then _goto _if_true_2 else _goto _if_false_2
-_if_true_2:
+	_d0_a := 123
+	_d0_a := _d0_a
 	return _d0_a
-	return;
-_if_false_2:
-	return _d0_b
-	return;
 
 f:
-	_t3 := __arg__0 % __arg__1
-	return _t3
+	return __arg__0
 

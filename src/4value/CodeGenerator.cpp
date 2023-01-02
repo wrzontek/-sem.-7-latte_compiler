@@ -36,6 +36,25 @@ public:
 //    std::set <UIdent> const general_registers = {"_reg_eax", "_reg_ebx"};
     std::set <UIdent> const general_registers = {"_reg_eax", "_reg_ecx", "_reg_edx",
                                                  "_reg_ebx", "_reg_esi", "_reg_edi"};
+    std::set <UIdent> const preserved_registers = {"_reg_ebx", "_reg_esi", "_reg_edi"};
+    std::set <UIdent> const volatile_registers = {"_reg_eax", "_reg_ecx", "_reg_edx"};
+
+    UIdent register_lowest_byte(UIdent reg) {
+        if (reg == "_reg_eax") {
+            return "_reg_al";
+        } else if (reg == "_reg_ecx") {
+            return "_reg_cl";
+        } else if (reg == "_reg_edx") {
+            return "_reg_dl";
+        } else if (reg == "_reg_ebx") {
+            return "_reg_bl";
+        } else if (reg == "_reg_esi") {
+            return "_reg_sil";
+        } else {
+//            if (reg == "_reg_edi") {
+            return "_reg_dil";
+        }
+    }
 
     // register to {variable}
     std::map <UIdent, std::set<UIdent>> register_values; // chyba jednoelementowy ten secik hehe
@@ -60,6 +79,9 @@ public:
 
     int offset_up;
     int offset_down;
+
+    bool visiting_to_push_args;
+    std::set <UIdent> call_out_vars;
 
     explicit Code_Generator(Program *program, const std::filesystem::path &file_path,
                             std::map <UIdent, std::set<UIdent >> &block_out_vars,
@@ -86,6 +108,7 @@ public:
     }
 
     void generate() {
+        // todo extern funkcje, global main, string stałe i takie tam
         program->accept(this);
         if (!current_function_name.empty()) {
             emitRaw("\n");
@@ -97,11 +120,20 @@ public:
     }
 
     void standardProlog() {
+        for (auto preserved_register: preserved_registers) {
+            emitLine("push " + preserved_register);
+            offset_down += 4;
+        }
         output_file << "\tpush ebp\n\tmov ebp, esp\n";
     }
 
     void standardEpilogue() {
-        output_file << "\tleave\n\tret\n";
+        // restore preserved_registers
+        output_file << "\tmov esp, ebp\n\tpop ebp\n";
+        for (auto rit = preserved_registers.rbegin(); rit != preserved_registers.rend(); ++rit) {
+            emitLine("pop " + (*rit));
+            offset_down -= 4;
+        }
     }
 
     void emitRaw(std::string content) {
@@ -141,11 +173,11 @@ public:
         emitRaw(block->uident_ + ":\n");
 
         if (block_is_function(current_block_name)) {
+            offset_down = 4;
             standardProlog();
             if (!function_local_vars[current_block_name].empty()) {
                 emitLine("sub esp, " + std::to_string(
                         function_local_vars[current_block_name].size() * 4));
-                offset_down = 4;
                 for (auto var: function_local_vars[current_block_name]) {
                     virtual_memory_to_real[var] = "[ebp - " + std::to_string(offset_down) + "]" + " (" + var + ")";
                     offset_down += 4;
@@ -199,6 +231,7 @@ public:
                 }
             }
         }
+
         block->listjmpstmt_->accept(this);
     }
 
@@ -242,7 +275,7 @@ public:
     std::set <UIdent> get_atom_locations(Atom *atom) {
         if (!atom->var_name().empty()) { // atom is variable
             return value_locations[atom->var_name()];
-        } else { // atom is constant TODO FOR NOW ONLY INTEGER
+        } else { // atom is constant TODO FOR NOW ONLY INTEGER string constant powinny dawać zadeklarowane miejsca w pamięci, slajd 26 https://moodle.mimuw.edu.pl/pluginfile.php/216349/mod_resource/content/6/04x86.pdf
             return {atom->constant()};
         }
     }
@@ -346,7 +379,7 @@ public:
 
     void spill_to_memory(UIdent value, UIdent value_current_loc) {
         auto free_memory_slot = get_free_memory_slot();
-        if (!free_memory_slot.empty()) {
+        if (!free_memory_slot.empty()) { // TODO to jest untested, może głupota
             value_locations[value] = {free_memory_slot};
             emitLine("MOV [" + free_memory_slot + "], " + value_current_loc);
         } else {
@@ -363,6 +396,7 @@ public:
             value_locations[value] = {pushed_loc};
             virtual_memory_to_real[pushed_loc] =
                     "[ebp + " + std::to_string(offset_down) + "]" + " (" + pushed_loc + ")";
+            memory_slots.insert(pushed_loc);
         }
     }
 
@@ -521,12 +555,15 @@ public:
 
         auto rhs_location = get_best_location(get_atom_locations(stmt->atom_2));
         UIdent R_register;
+        bool lhs_rhs_are_same = lhs_location == rhs_location;
 
-        if (instruction == "ADD " && stmt->atom_1->is_string()) {
-            // TODO kontatenacja
+        if (stmt->atom_1->is_string()) {
+            // TODO konkatenacja i porównywanie
+            if (instruction == "ADD ") {}
+            if (instruction == "CMP ") {}
             exit(444);
         }
-        if (instruction == "IMUL " && (get_power_of_two(stmt->atom_1) != -1 || get_power_of_two(stmt->atom_2) != -1)) {
+/*        if (instruction == "IMUL " && (get_power_of_two(stmt->atom_1) != -1 || get_power_of_two(stmt->atom_2) != -1)) {
             // optymalizacja shiftleft
             // mov eax, A         ; Load A into eax
             // shl eax, B         ; Multiply eax by 2^B by shifting the bits to the left
@@ -543,9 +580,9 @@ public:
             // mov eax, A         ; Load A into eax
             // and eax, B - 1     ; Mask out the bits that are not relevant to the result
             //return;
-        }
-        if (instruction == "ADD " || instruction == "SUB " || instruction == "IMUL ") {
-
+        }*/
+        if (instruction == "ADD " || instruction == "SUB "
+            || instruction == "IMUL " || instruction == "CMP ") {
             if (is_register(lhs_location)) {
                 R_register = lhs_location;
                 value_locations[lhs_variable_name].erase(lhs_location);
@@ -571,14 +608,14 @@ public:
                 }
             }
 
-            // dodajemy RHS do R_register
-//            std::cout << "LOCATION R " + rhs_location + " for " + stmt->atom_2->var_name() << std::endl;
-//            std::cout << std::endl;
-
+            if (lhs_rhs_are_same) { rhs_location = R_register; }
             if (is_variable(rhs_location)) {
                 emitLine(instruction + R_register + ", " + virtual_memory_to_real[rhs_location]);
             } else {
                 emitLine(instruction + R_register + ", " + rhs_location);
+            }
+            if (instruction == "CMP ") {
+                setCompareValue(stmt->binop_, R_register);
             }
             value_locations[stmt->uident_] = {R_register};
             register_values[R_register] = {stmt->uident_};
@@ -618,14 +655,79 @@ public:
             forget_dead_variable(stmt->uident_, stmt->out_vars);
             return;
         }
+    }
 
-        if (instruction == "CMP ") {
-            //TODO
-            exit(124);
+    void setCompareValue(BinOp *binOp, UIdent R_register) {
+        emitLine("MOV " + R_register + ", 0");
+        emitLine(binOp->cond_set_instruction() + register_lowest_byte(R_register));
+    }
+
+    bool spillToFreePreservedRegister(UIdent value, UIdent current_register) {
+        for (auto preserved_register: preserved_registers) {
+            if (register_values.find(preserved_register) == register_values.end()
+                || register_values[preserved_register].empty()) {
+                emitLine("MOV " + preserved_register + ", " + current_register);
+                register_values[preserved_register] = {value};
+                value_locations[value].insert(preserved_register);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    void saveVolatileRegisters() {
+        for (auto volatile_register: volatile_registers) {
+            for (auto value: register_values[volatile_register]) {
+                // prefer spilling to preserved registers, otherwise to memory
+                if (value_locations[value].size() <= 1) {
+                    if (!spillToFreePreservedRegister(value, volatile_register)) {
+                        spill_to_memory(value, volatile_register);
+                    }
+                }
+                value_locations[value].erase(volatile_register);
+            }
+            register_values[volatile_register].clear();
         }
     }
 
-    void visitStmtCall(StmtCall *stmt) override {}
+    void visitListAtom(ListAtom *list) override {
+        for (auto i = list->rbegin(); i != list->rend(); ++i) {
+            if (visiting_to_push_args) {
+                auto best_loc = get_best_location(get_atom_locations(*i));
+                if (is_variable(best_loc)) {
+                    emitLine("PUSH " + virtual_memory_to_real[best_loc] + " ; argument"); // TODO może DWORD czy coś
+                } else {
+                    emitLine("PUSH " + best_loc + " ; argument");
+                }
+            } else { // visiting_to_clear_dead
+                forget_dead_variable((*i)->var_name(), call_out_vars);
+            }
+        }
+    }
+
+    void visitStmtCall(StmtCall *stmt) override {
+        auto value_locations_before_save = value_locations;
+        saveVolatileRegisters();
+        auto value_locations_after_save = value_locations;
+
+        // to let pushes happen from better locations
+        value_locations = value_locations_before_save;
+        // push arguments to stack in reverse order
+        visiting_to_push_args = true;
+        stmt->listatom_->accept(this);
+
+        value_locations = value_locations_after_save;
+
+        // call function
+        emitLine("CALL " + stmt->uident_2);
+        value_locations[stmt->uident_1] = {"_reg_eax"};
+        register_values["_reg_eax"] = {stmt->uident_1};
+
+        // clean dead variables
+        call_out_vars = stmt->out_vars;
+        visiting_to_push_args = false;
+        stmt->listatom_->accept(this);
+    }
 
     void visitStmtGoto(StmtGoto *stmt) override {
         emitLine("GOTO " + stmt->uident_);

@@ -269,6 +269,8 @@ public:
 
     virtual std::string instruction() { return "TODO"; };
 
+    virtual std::string cond_set_instruction() { return "BOZO"; };
+
     virtual bool isModOp() { return false; };
 
 };
@@ -739,6 +741,8 @@ class LTH : public BinOp {
 public:
     std::string instruction() override { return "CMP "; };
 
+    std::string cond_set_instruction() override { return "SETL "; };
+
     LTH(const LTH &);
 
     LTH &operator=(const LTH &);
@@ -757,6 +761,8 @@ public:
 class LE : public BinOp {
 public:
     std::string instruction() override { return "CMP "; };
+
+    std::string cond_set_instruction() override { return "SETLE "; };
 
     LE(const LE &);
 
@@ -777,6 +783,8 @@ class GTH : public BinOp {
 public:
     std::string instruction() override { return "CMP "; };
 
+    std::string cond_set_instruction() override { return "SETG "; };
+
     GTH(const GTH &);
 
     GTH &operator=(const GTH &);
@@ -795,6 +803,8 @@ public:
 class GE : public BinOp {
 public:
     std::string instruction() override { return "CMP "; };
+
+    std::string cond_set_instruction() override { return "SETGE "; };
 
     GE(const GE &);
 
@@ -815,6 +825,8 @@ class EQU : public BinOp {
 public:
     std::string instruction() override { return "CMP "; };
 
+    std::string cond_set_instruction() override { return "SETE "; };
+
     EQU(const EQU &);
 
     EQU &operator=(const EQU &);
@@ -833,6 +845,8 @@ public:
 class NE : public BinOp {
 public:
     std::string instruction() override { return "CMP "; };
+
+    std::string cond_set_instruction() override { return "SETNE "; };
 
     NE(const NE &);
 
