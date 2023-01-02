@@ -1,16 +1,23 @@
 main:
 	_d0_a := 1
+	_d0_b := 2
+	_d0_c := 3
+	_d0_d := 4
+	_d0_e := 1
+	_d0_f := 2
+	_d0_g := 3
+	_d0_h := 4
 	_go_next _t1
 _t1:
-	_t1 := _d0_a + 1
-	_d1_b := _t1
+	_d1_e := 123
 	_go_next _after_t1
 _after_t1:
-	return _d0_a
-
-f:
-	_t2 := __arg__0 + __arg__0
-	_t3 := __arg__0 * __arg__1
-	_t4 := _t2 + _t3
-	return _t4
+	_t1 := _d0_a + _d0_b
+	_t2 := _t1 + _d0_c
+	_t3 := _t2 + _d0_d
+	_t4 := _t3 + _d0_e
+	_t5 := _t4 + _d0_f
+	_t6 := _t5 + _d0_g
+	_t7 := _t6 + _d0_h
+	return _t7
 

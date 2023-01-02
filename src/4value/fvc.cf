@@ -4,7 +4,7 @@ token UIdent (( letter | '_') ( letter | digit | '_' | '\'')*) ; -- '_' can be f
 
 Prog. Program ::= [CodeBlock] ;
 
-Block.        CodeBlock ::= UIdent ":" [NonJmpStmt] [JmpStmt] ; -- TODO może być np return 0 _go_next, po prostu brać pierwsze resztę wywalić
+Block.        CodeBlock ::= UIdent ":" [NonJmpStmt] [JmpStmt] ; -- może być np return 0 _go_next, po prostu brać pierwsze resztę ignore
 
 StmtBinOp.      NonJmpStmt ::= UIdent ":=" Atom BinOp Atom ;
 StmtNoOp.       NonJmpStmt ::= UIdent ":=" Atom ;

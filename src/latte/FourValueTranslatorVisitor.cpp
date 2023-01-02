@@ -622,7 +622,7 @@ public:
     void visitNeg(Neg *expr) override {
         expr->expr_->accept(this);
         Ident t_var = next_t_var();
-        emitLine(t_var + " :=  0 - " + result); // todo co jak !is_result_atomic
+        emitLine(t_var + " :=  0 - " + result);
         result = t_var;
         is_result_atomic = true;
     }
@@ -638,7 +638,7 @@ public:
         negating = false;
         Ident t_var = next_t_var();
         if (!using_lazy_eval) {
-            emitLine(t_var + " := 1 - " + result); // todo co jak !is_result_atomic
+            emitLine(t_var + " := 1 - " + result);
             result = t_var;
             is_result_atomic = true;
         }

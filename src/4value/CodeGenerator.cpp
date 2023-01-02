@@ -32,6 +32,7 @@ public:
     UIdent const result_register = "_reg_eax";
     UIdent const stack_pointer = "_reg_esp";
     UIdent const base_pointer = "_reg_ebp";
+//    std::set <UIdent> const general_registers = {"_reg_eax", "_reg_ebx"};
     std::set <UIdent> const general_registers = {"_reg_eax", "_reg_ecx", "_reg_edx",
                                                  "_reg_ebx", "_reg_esi", "_reg_edi"};
 
@@ -44,15 +45,20 @@ public:
     //      or constant (123) TODO FOR NOW ONLY INTEGER
     // }
     std::map <UIdent, std::set<UIdent>> value_locations;
+    std::set <UIdent> memory_slots;
 
     std::map <UIdent, UIdent> virtual_memory_to_real;
 
     ListNonJmpStmt::iterator block_stmt_iterator;
     ListNonJmpStmt::iterator list_stmt_end;
 
+    int extra_stack_pushes;
     UIdent atom_var_name;
     std::ofstream output_file;
     Program *program;
+
+    int offset_up;
+    int offset_down;
 
     explicit Code_Generator(Program *program, const std::filesystem::path &file_path,
                             std::map <UIdent, std::set<UIdent >> &block_out_vars,
@@ -122,6 +128,7 @@ public:
     }
 
     void visitBlock(Block *block) override {
+        extra_stack_pushes = 0;
         current_block_name = block->uident_;
         if (block_is_function(current_block_name)) {
             if (!current_function_name.empty()) {
@@ -139,25 +146,25 @@ public:
             if (!function_local_vars[current_block_name].empty()) {
                 emitLine("sub esp, " + std::to_string(
                         function_local_vars[current_block_name].size() * 4));
-                int offset = 4;
+                offset_down = 4;
                 for (auto var: function_local_vars[current_block_name]) {
-                    virtual_memory_to_real[var] = "[ebp - " + std::to_string(offset) + "]" + " (" + var + ")";
-                    offset += 4;
+                    virtual_memory_to_real[var] = "[ebp - " + std::to_string(offset_down) + "]" + " (" + var + ")";
+                    offset_down += 4;
                 }
             }
 
             if (!block_in_vars[current_block_name].empty()) {
-                int offset = 8;
                 std::set<int> arg_nums;
                 std::string arg_prefix = "__arg__";
                 for (auto arg: block_in_vars[current_block_name]) {
                     arg_nums.insert(std::stoi(arg.substr(arg_prefix.length())));
                 }
 
+                offset_up = 8;
                 for (auto arg_num: arg_nums) {
                     UIdent arg = arg_prefix + std::to_string(arg_num);
-                    virtual_memory_to_real[arg] = "[ebp + " + std::to_string(offset) + "]" + " (" + arg + ")";
-                    offset += 4;
+                    virtual_memory_to_real[arg] = "[ebp + " + std::to_string(offset_up) + "]" + " (" + arg + ")";
+                    offset_up += 4;
                 }
             }
         }
@@ -165,8 +172,10 @@ public:
         // na start bloku in_vars są w pamięci, rejestry wolne
         register_values.clear();
         value_locations.clear();
+        memory_slots.clear();
         for (auto &in_var: block_in_vars[current_block_name]) {
             value_locations[in_var] = {in_var};
+            memory_slots.insert(in_var);
         }
 
         if (!block->listnonjmpstmt_->empty()) block->listnonjmpstmt_->accept(this);
@@ -176,7 +185,14 @@ public:
             if (locs.find(out_var) == locs.end()) { // unwritten
                 auto best_loc = get_best_location(locs);
 
-                // TODO TO MOŻE ZAMAZAĆ WARTOŚĆ INNĄ KTÓRA JEST W TYM MIEJSCU W PAMIĘCI - SPILL
+                for (auto pair: value_locations) {
+                    if (pair.first != out_var && pair.second.size() == 1 &&
+                        pair.second.find(best_loc) != pair.second.end()) {
+                        // żeby nie zamazało wartości które jest trzymana tylko tu
+                        spill_to_memory(pair.first, best_loc);
+                    }
+                }
+
                 if (is_variable(best_loc)) {
                     emitLine("MOV " + virtual_memory_to_real[out_var] + ", " + virtual_memory_to_real[best_loc]);
                 } else {
@@ -309,18 +325,42 @@ public:
         return *values_in_registers.begin();
     }
 
-    void spill_to_memory(UIdent value, UIdent value_current_loc) { // trzeba z value_current_loc przenieść gdzie indziej
-        // TODO może po prostu push stosu i tam wsadzić
-//        for (auto &pair: value_locations) {
-//            if (pair.first != value) {
-//                for (auto &loc: pair.second) {
-//                    if (loc == value && pair.second.size() == 1) { // b jest tylko w [a], trzeba ją odesłać do [b]
-//
-//                    }
-//                    pair.second.erase(value);
-//                }
-//            }
-//        }
+    UIdent get_free_memory_slot() {
+        for (auto memory_slot: memory_slots) {
+            bool used = false;
+            for (auto pair: value_locations) {
+                if (pair.second.find(memory_slot) != pair.second.end()) {
+                    used = true;
+                    break;
+                }
+            }
+            if (!used) {
+                return memory_slot;
+            }
+        }
+        return ""; // don't have free slot
+    }
+
+    void spill_to_memory(UIdent value, UIdent value_current_loc) {
+        auto free_memory_slot = get_free_memory_slot();
+        if (!free_memory_slot.empty()) {
+            value_locations[value] = {free_memory_slot};
+            emitLine("MOV [" + free_memory_slot + "], " + value_current_loc);
+        } else {
+            extra_stack_pushes += 1;
+            offset_down += 4;
+
+            if (is_variable(value_current_loc)) {
+                emitLine("PUSH " + virtual_memory_to_real[value_current_loc]);
+            } else {
+                emitLine("PUSH " + value_current_loc);
+            }
+
+            auto pushed_loc = value + "_p" + std::to_string(extra_stack_pushes);
+            value_locations[value] = {pushed_loc};
+            virtual_memory_to_real[pushed_loc] =
+                    "[ebp + " + std::to_string(offset_down) + "]" + " (" + pushed_loc + ")";
+        }
     }
 
     UIdent get_register_with_value(UIdent value) {
@@ -510,7 +550,7 @@ public:
             return;
         }
 
-        //TODO "CMP " , mulop, divop, modop
+        //TODO "CMP ", divop, modop
         exit(124);
     }
 

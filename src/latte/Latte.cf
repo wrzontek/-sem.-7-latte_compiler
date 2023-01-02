@@ -64,7 +64,7 @@ SExp.      Stmt ::= Expr  ";" ;
 
 -------------------------------------------------
 
-CBracketed.   ComplexStart ::= "(" ComplexStart ")" ; -- TODO może wystąpić (bez ComplexPart po nim)
+CBracketed.   ComplexStart ::= "(" ComplexStart ")" ;
 
 CMember.      ComplexStart ::= Ident "." Ident ;
 
@@ -74,7 +74,7 @@ CArray.       ComplexStart ::= TypeName "[" Expr "]" ; -- sztuczne, musi być Id
 
 CArrayB.      ComplexStart ::= "(" Ident ")" "[" Expr "]" ;
 
-CFunction.    ComplexStart ::= Ident "(" [Expr] ")" ; -- TODO może wystąpić (bez ComplexPart po nim)
+CFunction.    ComplexStart ::= Ident "(" [Expr] ")" ;
 
 NewObject.    ComplexStart ::= "new" TypeName ; -- sztuczne, musi być Ident tak naprawde
 
@@ -107,7 +107,7 @@ NotArr.    Type ::= TypeName ;
 
 EVar.      Expr6 ::= Ident ;
 
-EBracketVar. Expr6 ::= "(" Ident ")" ; -- TODO CZY TO SIĘ NIE KŁOCI Z COMPLEXSTART?
+EBracketVar. Expr6 ::= "(" Ident ")" ;
 
 EComplex.  Expr6 ::= ComplexStart [ ComplexPart ] ;
 
