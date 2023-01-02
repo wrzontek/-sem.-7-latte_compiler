@@ -45,7 +45,7 @@ public:
     // }
     std::map <UIdent, std::set<UIdent>> value_locations;
 
-    std::map <UIdent, UIdent> virtual_memory_to_real; // TODO używać tego (np zamiast [a] robi [rbp-4])
+    std::map <UIdent, UIdent> virtual_memory_to_real;
 
     ListNonJmpStmt::iterator block_stmt_iterator;
     ListNonJmpStmt::iterator list_stmt_end;
@@ -134,9 +134,6 @@ public:
 
         emitRaw(block->uident_ + ":\n");
 
-        // TODO jak block się nie zaczyna "_" to jest funkcją, trzeba prolog, epilog, argumenty
-        // TODO to jest tak, że na początku funkcji alokujesz na stosie miejsce na wszystkie zmienne, które przechodzą między blokami
-        // czyli virtual_memory_to_real jest wypełniane
         if (block_is_function(current_block_name)) {
             standardProlog();
             if (!function_local_vars[current_block_name].empty()) {
@@ -145,6 +142,21 @@ public:
                 int offset = 4;
                 for (auto var: function_local_vars[current_block_name]) {
                     virtual_memory_to_real[var] = "[ebp - " + std::to_string(offset) + "]" + " (" + var + ")";
+                    offset += 4;
+                }
+            }
+
+            if (!block_in_vars[current_block_name].empty()) {
+                int offset = 8;
+                std::set<int> arg_nums;
+                std::string arg_prefix = "__arg__";
+                for (auto arg: block_in_vars[current_block_name]) {
+                    arg_nums.insert(std::stoi(arg.substr(arg_prefix.length())));
+                }
+
+                for (auto arg_num: arg_nums) {
+                    UIdent arg = arg_prefix + std::to_string(arg_num);
+                    virtual_memory_to_real[arg] = "[ebp + " + std::to_string(offset) + "]" + " (" + arg + ")";
                     offset += 4;
                 }
             }
@@ -159,7 +171,6 @@ public:
 
         if (!block->listnonjmpstmt_->empty()) block->listnonjmpstmt_->accept(this);
 
-        // TODO At the end of the block write all live, but yet unwritten values
         for (auto &out_var: block_out_vars[current_block_name]) {
             auto &locs = value_locations[out_var];
             if (locs.find(out_var) == locs.end()) { // unwritten
@@ -382,7 +393,7 @@ public:
     void save_live_variable(UIdent variable_name, UIdent variable_location, std::set <UIdent> &out_vars) {
 //        if (variable_name != stmt->uident_) {
         if (is_live_variable(variable_name, out_vars) &&
-            value_locations[variable_name].empty()) { // todo to potencjalnie można lepiej?
+            value_locations[variable_name].empty()) {
             if (have_free_register()) { // save B to some free register
                 UIdent free_register = get_free_register();
                 if (is_variable(variable_location)) {
@@ -446,7 +457,7 @@ public:
             exit(444);
         }
 
-        if (instruction == "ADD " || instruction == "SUB ") {
+        if (instruction == "ADD " || instruction == "SUB " || instruction == "IMUL ") {
             UIdent R_register;
 //            std::cout << "LOCS FOR: " + stmt->atom_1->var_name() << std::endl;
 //            printSet(get_atom_locations(stmt->atom_1));

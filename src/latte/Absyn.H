@@ -423,6 +423,8 @@ public:
 
 class Arg : public Visitable {
 public:
+    virtual Ident ident() = 0;
+
     virtual Arg *clone() const = 0;
 
     int line_number;
@@ -439,6 +441,8 @@ public:
 
 class Block : public Visitable {
 public:
+    virtual bool isEmpty() = 0;
+
     virtual Block *clone() const = 0;
 
     int line_number;
@@ -642,6 +646,10 @@ public:
     Type *type_;
     Ident ident_;
 
+    Ident ident() override {
+        return ident_;
+    }
+
     Ar(const Ar &);
 
     Ar &operator=(const Ar &);
@@ -699,9 +707,20 @@ public:
     void swap(MethodMember &);
 };
 
+class ListStmt : public Visitable, public std::vector<Stmt *> {
+public:
+    virtual void accept(Visitor *v);
+
+    virtual ListStmt *clone() const;
+
+    virtual ~ListStmt();
+};
+
 class Blk : public Block {
 public:
     ListStmt *liststmt_;
+
+    bool isEmpty() override { return this->liststmt_->empty(); }
 
     Blk(const Blk &);
 
@@ -2048,15 +2067,6 @@ public:
 };
 
 ListArg *consListArg(Arg *x, ListArg *xs);
-
-class ListStmt : public Visitable, public std::vector<Stmt *> {
-public:
-    virtual void accept(Visitor *v);
-
-    virtual ListStmt *clone() const;
-
-    virtual ~ListStmt();
-};
 
 ListStmt *consListStmt(Stmt *x, ListStmt *xs);
 

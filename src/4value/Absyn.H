@@ -631,6 +631,7 @@ public:
 
 class MulOp : public BinOp {
 public:
+    std::string instruction() override { return "IMUL "; };
 
     MulOp(const MulOp &);
 

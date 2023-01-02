@@ -66,6 +66,7 @@ private:
     std::map <Ident, std::vector<int>> ident_to_declarations;
 
     std::map<int, Ident> call_to_args_string;
+    std::map<Ident, Ident> current_function_arg_order;
 
     Expr *e_1;
     Expr *e_2;
@@ -114,10 +115,12 @@ public:
 
     void visitFnDef(FnDef *fnDef) override {
         ident_to_declarations = std::map < Ident, std::vector < int >> ();
+        current_function_arg_order.clear();
         using_lazy_eval = false;
         current_depth = 0;
 
         emitRaw(fnDef->ident_ + ":\n");
+        fnDef->listarg_->accept(this);
         fnDef->block_->accept(this);
 
         if (typeVisitor->getType(fnDef->type_)->name == "void") {
@@ -125,6 +128,14 @@ public:
         }
 
         emitRaw("\n");
+    }
+
+    void visitListArg(ListArg *listArg) override {
+        int arg_num = 0;
+        for (auto arg = listArg->begin(); arg != listArg->end(); ++arg) {
+            current_function_arg_order[(*arg)->ident()] = std::to_string(arg_num);
+            arg_num++;
+        }
     }
 
     void visitListStmt(ListStmt *list_stmt) override {
@@ -299,32 +310,34 @@ public:
     }
 
     void visitBStmt(BStmt *stmt) override {
-        bool inside_block_backup = inside_block;
-        inside_block = true;
-        bool emit_labels_gotos_backup = block_emit_labels_and_gotos;
-        using_lazy_eval = false;
-        Ident t_block, after_t_block;
-        if (block_emit_labels_and_gotos) {
-            t_block = next_t_block();
-            after_t_block = "_after" + t_block;
-            emitLine("_go_next " + t_block);
-            emitRaw(t_block + ":\n");
+        if (!stmt->block_->isEmpty()) { // do nothing for empty block
+            bool inside_block_backup = inside_block;
+            inside_block = true;
+            bool emit_labels_gotos_backup = block_emit_labels_and_gotos;
+            using_lazy_eval = false;
+            Ident t_block, after_t_block;
+            if (block_emit_labels_and_gotos) {
+                t_block = next_t_block();
+                after_t_block = "_after" + t_block;
+                emitLine("_go_next " + t_block);
+                emitRaw(t_block + ":\n");
+            }
+
+            block_emit_labels_and_gotos = true;
+            current_depth++;
+            stmt->block_->accept(this);
+            current_depth--;
+            block_emit_labels_and_gotos = emit_labels_gotos_backup;
+
+            clear_deeper_declarations();
+
+            if (block_emit_labels_and_gotos && !is_last_stmt) {
+                emitLine("_go_next " + after_t_block);
+                emitRaw(after_t_block + ":\n");
+            }
+
+            inside_block = inside_block_backup;
         }
-
-        block_emit_labels_and_gotos = true;
-        current_depth++;
-        stmt->block_->accept(this);
-        current_depth--;
-        block_emit_labels_and_gotos = emit_labels_gotos_backup;
-
-        clear_deeper_declarations();
-
-        if (block_emit_labels_and_gotos && !is_last_stmt) {
-            emitLine("_go_next " + after_t_block);
-            emitRaw(after_t_block + ":\n");
-        }
-
-        inside_block = inside_block_backup;
     }
 
     Ident getCondAtom(Expr *expr_) {
@@ -509,7 +522,7 @@ public:
     void varCommon(Ident var) {
         if (ident_to_declarations.find(var) == ident_to_declarations.end()) {
             // declaration not found - can only happen if var is function argument
-            result = "__arg_" + var;
+            result = "__arg__" + current_function_arg_order[var];
         } else {
             auto declarations = ident_to_declarations[var];
             int declaration_depth = declarations[declarations.size() - 1];
