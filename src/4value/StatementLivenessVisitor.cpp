@@ -112,6 +112,16 @@ public:
         current_stmt_out_vars = stmt->in_vars;
     }
 
+    void visitStmtGoNext(StmtGoNext *stmt) override {
+        stmt->out_vars = current_stmt_out_vars;
+        calc_in_vars(stmt);
+    }
+
+    void visitStmtGoto(StmtGoto *stmt) override {
+        stmt->out_vars = current_stmt_out_vars;
+        calc_in_vars(stmt);
+    }
+
     void visitStmtCondJmp(StmtCondJmp *stmt) override {
         stmt->out_vars = current_stmt_out_vars;
 

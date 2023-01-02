@@ -4,6 +4,7 @@
 #include <set>
 #include <map>
 #include <vector>
+#include <cmath>
 #include "Skeleton.C"
 #include "Printer.H"
 #include <filesystem>
@@ -87,7 +88,6 @@ public:
     void generate() {
         program->accept(this);
         if (!current_function_name.empty()) {
-            standardEpilogue();
             emitRaw("\n");
         }
     }
@@ -132,7 +132,6 @@ public:
         current_block_name = block->uident_;
         if (block_is_function(current_block_name)) {
             if (!current_function_name.empty()) {
-                standardEpilogue();
                 emitRaw("\n");
             }
 
@@ -217,13 +216,14 @@ public:
         }
     }
 
-    void visitStmtCondJmp(StmtCondJmp *stmt) override {}
-
     void visitStmtRet(StmtRet *stmt) override {
         auto result_locs = get_atom_locations(stmt->atom_);
         for (auto &loc: result_locs) {
-            if (loc == result_register) // wynik jest w EAX, nic nie ma do roboty
+            if (loc == result_register) {
+                // wynik jest w EAX, nic nie ma do roboty
+                standardEpilogue();
                 return;
+            }
         }
         auto best_loc = get_best_location(result_locs);
 
@@ -232,9 +232,12 @@ public:
         } else {
             emitLine("MOV " + result_register + ", " + best_loc);
         }
+        standardEpilogue();
     }
 
-    void visitStmtVRet(StmtVRet *stmt) override {}
+    void visitStmtVRet(StmtVRet *stmt) override {
+        standardEpilogue();
+    }
 
     std::set <UIdent> get_atom_locations(Atom *atom) {
         if (!atom->var_name().empty()) { // atom is variable
@@ -403,6 +406,16 @@ public:
         return *cleared_registers.begin();
     }
 
+    void force_clean_register(UIdent register_to_clean) {
+        for (auto value: register_values[register_to_clean]) {
+            if (!value_in_clean_register(value)) {
+                spill_to_memory(value, register_to_clean);
+            }
+            value_locations[value].erase(register_to_clean);
+        }
+        register_values[register_to_clean].clear();
+    }
+
     bool is_live_variable(UIdent var, const std::set <UIdent> &out_vars) {
         return !var.empty() && // it is in fact a variable, not constant
                out_vars.find(var) != out_vars.end(); // is alive after quadruple
@@ -421,17 +434,10 @@ public:
                 auto &values = pair.second;
                 values.erase(var);
             }
-
-            // ? jakaś zmienna może być zapisana pod miejscem w pamięci dla umierającej zmiennej, zostawmy ją
-//            for (auto &pair: value_locations) {
-//                auto &locations = pair.second;
-//                locations.erase(var);
-//            }
         }
     }
 
     void save_live_variable(UIdent variable_name, UIdent variable_location, std::set <UIdent> &out_vars) {
-//        if (variable_name != stmt->uident_) {
         if (is_live_variable(variable_name, out_vars) &&
             value_locations[variable_name].empty()) {
             if (have_free_register()) { // save B to some free register
@@ -490,34 +496,68 @@ public:
         return;
     }
 
+    int get_power_of_two(Atom *atom) {
+        if (!atom->is_int_constant()) {
+            return -1;
+        }
+        int n = atom->get_int_constant();
+        if (n <= 0) {
+            return -1;
+        }
+        int i = 0;
+        while (std::pow(2, i) <= n) {
+            if (std::pow(2, i) == n) {
+                return i;
+            }
+            ++i;
+        }
+        return -1;
+    }
+
     void visitStmtBinOp(StmtBinOp *stmt) override { // A := B op C
         std::string instruction = stmt->binop_->instruction();
+        auto lhs_location = get_best_location(get_atom_locations(stmt->atom_1));
+        auto lhs_variable_name = stmt->atom_1->var_name();
+
+        auto rhs_location = get_best_location(get_atom_locations(stmt->atom_2));
+        UIdent R_register;
+
         if (instruction == "ADD " && stmt->atom_1->is_string()) {
-            // TODO
+            // TODO kontatenacja
             exit(444);
         }
-
+        if (instruction == "IMUL " && (get_power_of_two(stmt->atom_1) != -1 || get_power_of_two(stmt->atom_2) != -1)) {
+            // optymalizacja shiftleft
+            // mov eax, A         ; Load A into eax
+            // shl eax, B         ; Multiply eax by 2^B by shifting the bits to the left
+            //return;
+        }
+        if (instruction == "IDIV " && !stmt->binop_->isModOp() && get_power_of_two(stmt->atom_2) != -1) {
+            // optymalizacja shiftright
+            // mov eax, A         ; Load A into eax
+            // sar eax, B         ; Divide eax by 2^B by shifting the bits to the right
+            //return;
+        }
+        if (instruction == "IDIV " && stmt->binop_->isModOp() && get_power_of_two(stmt->atom_2) != -1) {
+            // optymalizacja modulo
+            // mov eax, A         ; Load A into eax
+            // and eax, B - 1     ; Mask out the bits that are not relevant to the result
+            //return;
+        }
         if (instruction == "ADD " || instruction == "SUB " || instruction == "IMUL ") {
-            UIdent R_register;
-//            std::cout << "LOCS FOR: " + stmt->atom_1->var_name() << std::endl;
-//            printSet(get_atom_locations(stmt->atom_1));
-
-            auto lhs_location = get_best_location(get_atom_locations(stmt->atom_1));
-            auto b_variable_name = stmt->atom_1->var_name();
-//            std::cout << "LOCATION L " + lhs_location + " for " + b_variable_name << std::endl;
 
             if (is_register(lhs_location)) {
                 R_register = lhs_location;
-                value_locations[b_variable_name].erase(lhs_location);
+                value_locations[lhs_variable_name].erase(lhs_location);
 
-                if (stmt->uident_ != b_variable_name) {
-                    save_live_variable(b_variable_name, lhs_location, stmt->out_vars);
+                if (stmt->uident_ != lhs_variable_name) {
+                    save_live_variable(lhs_variable_name, lhs_location, stmt->out_vars);
                 }
             } else {
                 R_register = get_free_register();
                 if (is_variable(lhs_location)) {
-                    if (stmt->uident_ != b_variable_name) {
-                        save_live_variable(b_variable_name, lhs_location, stmt->out_vars);
+                    if (stmt->uident_ != lhs_variable_name) {
+                        save_live_variable(lhs_variable_name, lhs_location, stmt->out_vars);
                     }
                     lhs_location = get_best_location(get_atom_locations(stmt->atom_1));
 
@@ -532,7 +572,6 @@ public:
             }
 
             // dodajemy RHS do R_register
-            auto rhs_location = get_best_location(get_atom_locations(stmt->atom_2));
 //            std::cout << "LOCATION R " + rhs_location + " for " + stmt->atom_2->var_name() << std::endl;
 //            std::cout << std::endl;
 
@@ -549,11 +588,60 @@ public:
             forget_dead_variable(stmt->uident_, stmt->out_vars);
             return;
         }
+        if (instruction == "IDIV ") { // div or mod
+            auto b_locs = get_atom_locations(stmt->atom_1);
+            if (b_locs.find("_reg_eax") == b_locs.end()) {
+                // przenieść B do EAX
+                force_clean_register("_reg_eax");
+                if (is_variable(lhs_location)) {
+                    emitLine("MOV _reg_eax, " + virtual_memory_to_real[lhs_location]);
+                } else {
+                    emitLine("MOV _reg_eax, " + lhs_location);
+                }
+            }
+            force_clean_register("_reg_edx");
 
-        //TODO "CMP ", divop, modop
-        exit(124);
+            emitLine("CDQ");
+            if (is_variable(rhs_location)) {
+                // TODO w tego typu z pamieci działaniach może trzeba dać DWORD
+                emitLine("IDIV " + virtual_memory_to_real[rhs_location]);
+            } else {
+                emitLine("IDIV " + rhs_location);
+            }
+
+            R_register = stmt->binop_->isModOp() ? "_reg_edx" : "_reg_eax";
+            value_locations[stmt->uident_] = {R_register};
+            register_values[R_register] = {stmt->uident_};
+
+            forget_dead_variable(stmt->atom_1->var_name(), stmt->out_vars);
+            forget_dead_variable(stmt->atom_2->var_name(), stmt->out_vars);
+            forget_dead_variable(stmt->uident_, stmt->out_vars);
+            return;
+        }
+
+        if (instruction == "CMP ") {
+            //TODO
+            exit(124);
+        }
     }
 
     void visitStmtCall(StmtCall *stmt) override {}
+
+    void visitStmtGoto(StmtGoto *stmt) override {
+        emitLine("GOTO " + stmt->uident_);
+    }
+
+    void visitStmtGoNext(StmtGoNext *stmt) override {} // nic nie robi
+
+    void visitStmtCondJmp(StmtCondJmp *stmt) override {
+        auto cond_location = get_best_location(get_atom_locations(stmt->atom_));
+        if (is_variable(cond_location)) {
+            emitLine("TEST " + virtual_memory_to_real[cond_location] + ", " + virtual_memory_to_real[cond_location]);
+        } else {
+            emitLine("TEST " + cond_location + ", " + cond_location);
+        }
+        emitLine("JNZ " + stmt->uident_1);
+        emitLine("GOTO " + stmt->uident_2);
+    }
 
 };

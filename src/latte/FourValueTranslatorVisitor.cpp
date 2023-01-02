@@ -52,6 +52,8 @@ private:
     Ident result; // register or constant
     bool is_result_atomic;
 
+    bool current_function_is_void;
+
     bool is_last_stmt = false;
     bool inside_block = false;
 
@@ -66,7 +68,7 @@ private:
     std::map <Ident, std::vector<int>> ident_to_declarations;
 
     std::map<int, Ident> call_to_args_string;
-    std::map<Ident, Ident> current_function_arg_order;
+    std::map <Ident, Ident> current_function_arg_order;
 
     Expr *e_1;
     Expr *e_2;
@@ -118,6 +120,7 @@ public:
         current_function_arg_order.clear();
         using_lazy_eval = false;
         current_depth = 0;
+        current_function_is_void = (typeVisitor->getType(fnDef->type_)->name == "void");
 
         emitRaw(fnDef->ident_ + ":\n");
         fnDef->listarg_->accept(this);
@@ -276,7 +279,8 @@ public:
             emitLine(t_var + " := " + result);
             emitLine(t_var + " := " + t_var + " - 1");
             result = t_var;
-        }        is_result_atomic = true;
+        }
+        is_result_atomic = true;
     }
 
     void visitRet(Ret *stmt) override {
@@ -366,7 +370,7 @@ public:
         next_t_block_number++;
         auto if_true = "_if_true_" + std::to_string(next_t_block_number);
         auto end_if = "_end_if_" + std::to_string(next_t_block_number);
-        if (!is_last_stmt && !stmt->expr_->isAlwaysTrue()) {
+        if (!stmt->expr_->isAlwaysTrue() && (current_function_is_void || !is_last_stmt)) {
             auto cond_atom = getCondAtom(stmt->expr_);
             emitLine("if " + cond_atom + " then _goto " + if_true + " else _goto " + end_if);
         } else {
@@ -424,12 +428,24 @@ public:
             block_emit_labels_and_gotos = false;
             stmt->stmt_1->accept(this);
             block_emit_labels_and_gotos = true;
+            if (!is_last_stmt) {
+                emitLine("_go_next " + end_if);
+                emitRaw(end_if + ":\n");
+            } else {
+                emitLine("return;");
+            }
         } else if (stmt->expr_->isAlwaysFalse()) {
             emitLine("_goto " + if_false); // typeChecker guarantees correctness
             emitRaw(if_false + ":\n");
             block_emit_labels_and_gotos = false;
             stmt->stmt_2->accept(this);
             block_emit_labels_and_gotos = true;
+            if (!is_last_stmt) {
+                emitLine("_go_next " + end_if);
+                emitRaw(end_if + ":\n");
+            } else {
+                emitLine("return;");
+            }
         }
     }
 

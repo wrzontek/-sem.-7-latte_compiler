@@ -251,6 +251,10 @@ class Atom : public Visitable {
 public:
     virtual bool is_string() { return false; }
 
+    virtual bool is_int_constant() { return false; }
+
+    virtual int get_int_constant() { return -1; }
+
     virtual Atom *clone() const = 0;
 
     virtual UIdent var_name() { return ""; }
@@ -264,6 +268,9 @@ public:
     virtual BinOp *clone() const = 0;
 
     virtual std::string instruction() { return "TODO"; };
+
+    virtual bool isModOp() { return false; };
+
 };
 
 
@@ -549,6 +556,10 @@ public:
 
 class AtomInt : public Atom {
 public:
+    bool is_int_constant() override { return true; }
+
+    int get_int_constant() override { return integer_; }
+
     Integer integer_;
 
     UIdent constant() override {
@@ -650,6 +661,7 @@ public:
 
 class DivOp : public BinOp {
 public:
+    std::string instruction() override { return "IDIV "; };
 
     DivOp(const DivOp &);
 
@@ -668,6 +680,9 @@ public:
 
 class ModOp : public BinOp {
 public:
+    std::string instruction() override { return "IDIV "; };
+
+    bool isModOp() override { return true; };
 
     ModOp(const ModOp &);
 

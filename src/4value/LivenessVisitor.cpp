@@ -43,9 +43,6 @@ public:
     }
 
     void analyze_liveness() {
-//        program->accept(statementLivenessVisitor);
-//        program->accept(statementLivenessPrinter);
-
         for (auto pair: block_code) {
             auto block_name = pair.first;
             block_in_vars[block_name] = std::set<UIdent>();
