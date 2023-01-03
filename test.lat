@@ -1,7 +1,6 @@
 
 int main() {
-    int b = 4;
-    int a = 100 / b;
+    int a = 266 / 3;
     printInt(a);
     return 0;
 }

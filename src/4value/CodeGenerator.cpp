@@ -73,7 +73,7 @@ public:
     // variable to: {
     //      register (_reg_r9)
     //      or memory location ("_d1_x" or "__arg_x"- then map this variable name to a location on the stack)
-    //      or constant (123) TODO FOR NOW ONLY INTEGER
+    //      or constant (123)
     // }
     std::map <UIdent, std::set<UIdent>> value_locations;
     std::set <UIdent> memory_slots;
@@ -193,23 +193,19 @@ public:
 
     void standardProlog() {
         // TODO nie działa jak jest coś puszowane wtrakcie funkcji
-        output_file << "\tpush ebp\n\tmov ebp, esp\n";
         for (auto preserved_register: preserved_registers) {
             emitLine("push " + preserved_register);
-            offset_down += 4;
         }
+        output_file << "\tpush ebp\n\tmov ebp, esp\n";
     }
 
     void standardEpilogue() {
         // restore preserved_registers
-//        if (extra_stack_pushes > 0) {
-//            emitLine("add esp, " + std::to_string(4 * extra_stack_pushes));
-//        }
+        output_file << "\tmov esp, ebp\n\tpop ebp\n";
         for (auto rit = preserved_registers.rbegin(); rit != preserved_registers.rend(); ++rit) {
             emitLine("pop " + (*rit));
-            offset_down -= 4;
         }
-        output_file << "\tmov esp, ebp\n\tpop ebp\n\tret\n";
+        output_file << "\tret\n";
     }
 
     void emitRaw(std::string content) {
@@ -265,7 +261,7 @@ public:
                     arg_nums.insert(std::stoi(arg.substr(arg_prefix.length())));
                 }
 
-                offset_up = 8;
+                offset_up = 20;
                 for (auto arg_num: arg_nums) {
                     UIdent arg = arg_prefix + std::to_string(arg_num);
                     virtual_memory_to_real[arg] = "[ebp + " + std::to_string(offset_up) + "]";
@@ -666,6 +662,7 @@ public:
         bool lhs_rhs_are_same = lhs_location == rhs_location;
 
         if (is_string_constant(lhs_location)) {
+            // TODO
             if (instruction == "ADD ") {}
             if (instruction == "CMP ") {}
             exit(444);
