@@ -11,6 +11,15 @@
 #include <fstream>
 #include <algorithm>
 
+class String_Constant_Visitor : public Skeleton {
+public:
+    std::set <UIdent> string_constants;
+
+    void visitAtomStr(AtomStr *atomStr) override {
+        string_constants.insert(atomStr->string_);
+    }
+};
+
 class Code_Generator : public Skeleton {
 public:
     std::map <UIdent, std::set<UIdent >> &block_out_vars;
@@ -38,6 +47,8 @@ public:
                                                  "_reg_ebx", "_reg_esi", "_reg_edi"};
     std::set <UIdent> const preserved_registers = {"_reg_ebx", "_reg_esi", "_reg_edi"};
     std::set <UIdent> const volatile_registers = {"_reg_eax", "_reg_ecx", "_reg_edx"};
+
+    std::set <UIdent> string_constants;
 
     UIdent register_lowest_byte(UIdent reg) {
         if (reg == "_reg_eax") {
@@ -68,6 +79,7 @@ public:
     std::set <UIdent> memory_slots;
 
     std::map <UIdent, UIdent> virtual_memory_to_real;
+    std::map <UIdent, UIdent> string_constant_loc;
 
     ListNonJmpStmt::iterator block_stmt_iterator;
     ListNonJmpStmt::iterator list_stmt_end;
@@ -94,6 +106,9 @@ public:
             std::cerr << "can't open output file" << std::endl;
             exit(1);
         }
+        auto string_constant_visitor = new String_Constant_Visitor();
+        program->accept(string_constant_visitor);
+        string_constants = string_constant_visitor->string_constants;
     }
 
     void printSet(const std::set <UIdent> &set) {
@@ -108,7 +123,64 @@ public:
     }
 
     void generate() {
-        // todo extern funkcje, global main, string stałe i takie tam
+//        emitRaw("global main\nextern printInt\nextern printString\nextern error\nextern readInt\nextern readString\nextern stringsConcat\nextern stringsEqual\nextern stringsNotEqual\n\nsection .text\n");
+        emitRaw(".intel_syntax noprefix\n");
+
+        if (!string_constants.empty()) {
+            emitRaw(".section  .rodata\n");
+            int string_num = 0;
+            for (auto string_constant: string_constants) {
+                emitRaw(".SC" + std::to_string(string_num) + ":\n");
+                string_constant_loc[string_constant] = ".SC" + std::to_string(string_num);
+
+                std::string new_str;
+                for (auto ch: string_constant) {
+                    switch (ch) {
+                        case '\'':
+                            new_str += "\\'";
+                            break;
+                        case '\"':
+                            new_str += "\\\"";
+                            break;
+                        case '\?':
+                            new_str += "\\?";
+                            break;
+                        case '\\':
+                            new_str += "\\\\";
+                            break;
+                        case '\a':
+                            new_str += "\\a";
+                            break;
+                        case '\b':
+                            new_str += "\\b";
+                            break;
+                        case '\f':
+                            new_str += "\\f";
+                            break;
+                        case '\n':
+                            new_str += "\\n";
+                            break;
+                        case '\r':
+                            new_str += "\\r";
+                            break;
+                        case '\t':
+                            new_str += "\\t";
+                            break;
+                        case '\v':
+                            new_str += "\\v";
+                            break;
+                        default:
+                            new_str += ch;
+                    }
+                }
+                string_constant = "\"" + new_str + "\"";
+
+                emitLine(".string " + string_constant);
+                string_num++;
+            }
+        }
+
+        emitRaw(".text\n.globl main\n");
         program->accept(this);
         if (!current_function_name.empty()) {
             emitRaw("\n");
@@ -120,25 +192,28 @@ public:
     }
 
     void standardProlog() {
+        // TODO nie działa jak jest coś puszowane wtrakcie funkcji
+        output_file << "\tpush ebp\n\tmov ebp, esp\n";
         for (auto preserved_register: preserved_registers) {
             emitLine("push " + preserved_register);
             offset_down += 4;
         }
-        output_file << "\tpush ebp\n\tmov ebp, esp\n";
     }
 
     void standardEpilogue() {
         // restore preserved_registers
-        output_file << "\tmov esp, ebp\n\tpop ebp\n";
+//        if (extra_stack_pushes > 0) {
+//            emitLine("add esp, " + std::to_string(4 * extra_stack_pushes));
+//        }
         for (auto rit = preserved_registers.rbegin(); rit != preserved_registers.rend(); ++rit) {
             emitLine("pop " + (*rit));
             offset_down -= 4;
         }
+        output_file << "\tmov esp, ebp\n\tpop ebp\n\tret\n";
     }
 
     void emitRaw(std::string content) {
         output_file << content;
-        std::cerr << content;
     }
 
     void emitLine(std::string content) {
@@ -152,7 +227,6 @@ public:
         } while (pos != std::string::npos);
 
         output_file << "\t" + content + "\n";
-        std::cerr << "\t" + content + "\n";
     }
 
     bool block_is_function(UIdent ident) {
@@ -179,7 +253,7 @@ public:
                 emitLine("sub esp, " + std::to_string(
                         function_local_vars[current_block_name].size() * 4));
                 for (auto var: function_local_vars[current_block_name]) {
-                    virtual_memory_to_real[var] = "[ebp - " + std::to_string(offset_down) + "]" + " (" + var + ")";
+                    virtual_memory_to_real[var] = "[ebp - " + std::to_string(offset_down) + "]";
                     offset_down += 4;
                 }
             }
@@ -194,7 +268,7 @@ public:
                 offset_up = 8;
                 for (auto arg_num: arg_nums) {
                     UIdent arg = arg_prefix + std::to_string(arg_num);
-                    virtual_memory_to_real[arg] = "[ebp + " + std::to_string(offset_up) + "]" + " (" + arg + ")";
+                    virtual_memory_to_real[arg] = "[ebp + " + std::to_string(offset_up) + "]";
                     offset_up += 4;
                 }
             }
@@ -225,7 +299,10 @@ public:
                 }
 
                 if (is_variable(best_loc)) {
-                    emitLine("MOV " + virtual_memory_to_real[out_var] + ", " + virtual_memory_to_real[best_loc]);
+                    emitLine("MOV " + virtual_memory_to_real[out_var] + ", DWORD PTR " +
+                             virtual_memory_to_real[best_loc]);
+                } else if (is_const(best_loc)) {
+                    emitLine("MOV " + virtual_memory_to_real[out_var] + ", DWORD PTR " + best_loc);
                 } else {
                     emitLine("MOV " + virtual_memory_to_real[out_var] + ", " + best_loc);
                 }
@@ -275,8 +352,10 @@ public:
     std::set <UIdent> get_atom_locations(Atom *atom) {
         if (!atom->var_name().empty()) { // atom is variable
             return value_locations[atom->var_name()];
-        } else { // atom is constant TODO FOR NOW ONLY INTEGER string constant powinny dawać zadeklarowane miejsca w pamięci, slajd 26 https://moodle.mimuw.edu.pl/pluginfile.php/216349/mod_resource/content/6/04x86.pdf
+        } else if (atom->is_int_constant()) {
             return {atom->constant()};
+        } else { // atom is string constant
+            return {string_constant_loc[atom->constant()]};
         }
     }
 
@@ -286,6 +365,10 @@ public:
 
     bool is_variable(UIdent loc) {
         return !is_register(loc) && loc.length() >= 1 && loc.substr(0, 1) == "_";
+    }
+
+    bool is_string_constant(UIdent loc) {
+        return loc.length() > 3 && loc.substr(0, 3) == ".SC";
     }
 
     bool is_const(UIdent loc) {
@@ -302,7 +385,7 @@ public:
             } else if (is_variable(loc)) {
                 memory = loc;
             } else {
-                return loc; // constant
+                return loc; // constant (int or string)
             }
         }
 
@@ -377,17 +460,34 @@ public:
         return ""; // don't have free slot
     }
 
+    UIdent put_constant_to_memory(UIdent constant) {
+        auto free_memory_slot = get_free_memory_slot();
+        if (!free_memory_slot.empty()) { // TODO to jest untested, może głupota
+            emitLine("MOV [" + free_memory_slot + "], " + constant);
+            return free_memory_slot;
+        } else {
+            emitLine("PUSH " + constant);
+
+            auto pushed_loc = "__" + constant + "_p" + std::to_string(extra_stack_pushes);
+            virtual_memory_to_real[pushed_loc] =
+                    "[ebp - " + std::to_string(offset_down) + "]";
+            memory_slots.insert(pushed_loc);
+
+            extra_stack_pushes += 1;
+            offset_down += 4;
+
+            return pushed_loc;
+        }
+    }
+
     void spill_to_memory(UIdent value, UIdent value_current_loc) {
         auto free_memory_slot = get_free_memory_slot();
         if (!free_memory_slot.empty()) { // TODO to jest untested, może głupota
             value_locations[value] = {free_memory_slot};
             emitLine("MOV [" + free_memory_slot + "], " + value_current_loc);
         } else {
-            extra_stack_pushes += 1;
-            offset_down += 4;
-
             if (is_variable(value_current_loc)) {
-                emitLine("PUSH " + virtual_memory_to_real[value_current_loc]);
+                emitLine("PUSH DWORD PTR " + virtual_memory_to_real[value_current_loc]);
             } else {
                 emitLine("PUSH " + value_current_loc);
             }
@@ -395,8 +495,11 @@ public:
             auto pushed_loc = value + "_p" + std::to_string(extra_stack_pushes);
             value_locations[value] = {pushed_loc};
             virtual_memory_to_real[pushed_loc] =
-                    "[ebp + " + std::to_string(offset_down) + "]" + " (" + pushed_loc + ")";
+                    "[ebp - " + std::to_string(offset_down) + "]";
             memory_slots.insert(pushed_loc);
+
+            extra_stack_pushes += 1;
+            offset_down += 4;
         }
     }
 
@@ -495,11 +598,16 @@ public:
 
         auto B_location = get_best_location(get_atom_locations(stmt->atom_));
         auto B_variable_name = stmt->atom_->var_name();
-//        std::cout << "LOCATION B " + B_location + " for " + B_variable_name << std::endl;
-//        std::cout << "LOCS FOR: " + stmt->atom_->var_name() << std::endl;
-//        printSet(get_atom_locations(stmt->atom_));
 
-        if (is_register(B_location)) {
+        if (stmt->atom_->is_constant()) {
+            value_locations[stmt->uident_] = {B_location};
+            for (auto pair: register_values) {
+                pair.second.erase(stmt->uident_);
+            }
+
+            forget_dead_variable(stmt->uident_, stmt->out_vars);
+            return;
+        } else if (is_register(B_location)) {
             R_register = B_location;
             value_locations[B_variable_name].erase(B_location);
 
@@ -526,7 +634,7 @@ public:
         register_values[R_register].insert(stmt->uident_);
 
         forget_dead_variable(stmt->atom_->var_name(), stmt->out_vars);
-        forget_dead_variable(stmt->uident_, stmt->out_vars); // ??
+        forget_dead_variable(stmt->uident_, stmt->out_vars);
         return;
     }
 
@@ -557,8 +665,7 @@ public:
         UIdent R_register;
         bool lhs_rhs_are_same = lhs_location == rhs_location;
 
-        if (stmt->atom_1->is_string()) {
-            // TODO konkatenacja i porównywanie
+        if (is_string_constant(lhs_location)) {
             if (instruction == "ADD ") {}
             if (instruction == "CMP ") {}
             exit(444);
@@ -610,7 +717,7 @@ public:
 
             if (lhs_rhs_are_same) { rhs_location = R_register; }
             if (is_variable(rhs_location)) {
-                emitLine(instruction + R_register + ", " + virtual_memory_to_real[rhs_location]);
+                emitLine(instruction + R_register + ", DWORD PTR " + virtual_memory_to_real[rhs_location]);
             } else {
                 emitLine(instruction + R_register + ", " + rhs_location);
             }
@@ -631,7 +738,7 @@ public:
                 // przenieść B do EAX
                 force_clean_register("_reg_eax");
                 if (is_variable(lhs_location)) {
-                    emitLine("MOV _reg_eax, " + virtual_memory_to_real[lhs_location]);
+                    emitLine("MOV _reg_eax, DWORD PTR " + virtual_memory_to_real[lhs_location]);
                 } else {
                     emitLine("MOV _reg_eax, " + lhs_location);
                 }
@@ -640,10 +747,14 @@ public:
 
             emitLine("CDQ");
             if (is_variable(rhs_location)) {
-                // TODO w tego typu z pamieci działaniach może trzeba dać DWORD
-                emitLine("IDIV " + virtual_memory_to_real[rhs_location]);
+                emitLine("IDIV DWORD PTR" + virtual_memory_to_real[rhs_location]);
             } else {
-                emitLine("IDIV " + rhs_location);
+                if (is_const(rhs_location)) {
+                    rhs_location = put_constant_to_memory(rhs_location);
+                    emitLine("IDIV DWORD PTR" + virtual_memory_to_real[rhs_location]);
+                } else {
+                    emitLine("IDIV " + rhs_location);
+                }
             }
 
             R_register = stmt->binop_->isModOp() ? "_reg_edx" : "_reg_eax";
@@ -695,9 +806,12 @@ public:
             if (visiting_to_push_args) {
                 auto best_loc = get_best_location(get_atom_locations(*i));
                 if (is_variable(best_loc)) {
-                    emitLine("PUSH " + virtual_memory_to_real[best_loc] + " ; argument"); // TODO może DWORD czy coś
+                    emitLine("PUSH DWORD PTR " + virtual_memory_to_real[best_loc]);
+                } else if (is_string_constant(best_loc)) {
+                    emitLine("LEA eax, " + best_loc);
+                    emitLine("PUSH eax");
                 } else {
-                    emitLine("PUSH " + best_loc + " ; argument");
+                    emitLine("PUSH " + best_loc);
                 }
             } else { // visiting_to_clear_dead
                 forget_dead_variable((*i)->var_name(), call_out_vars);
@@ -722,7 +836,9 @@ public:
         emitLine("CALL " + stmt->uident_2);
         value_locations[stmt->uident_1] = {"_reg_eax"};
         register_values["_reg_eax"] = {stmt->uident_1};
-
+        if (stmt->listatom_->size() > 0) {
+            emitLine("ADD esp, " + std::to_string(4 * stmt->listatom_->size()));
+        }
         // clean dead variables
         call_out_vars = stmt->out_vars;
         visiting_to_push_args = false;
@@ -730,7 +846,7 @@ public:
     }
 
     void visitStmtGoto(StmtGoto *stmt) override {
-        emitLine("GOTO " + stmt->uident_);
+        emitLine("JMP " + stmt->uident_);
     }
 
     void visitStmtGoNext(StmtGoNext *stmt) override {} // nic nie robi
@@ -738,12 +854,13 @@ public:
     void visitStmtCondJmp(StmtCondJmp *stmt) override {
         auto cond_location = get_best_location(get_atom_locations(stmt->atom_));
         if (is_variable(cond_location)) {
-            emitLine("TEST " + virtual_memory_to_real[cond_location] + ", " + virtual_memory_to_real[cond_location]);
+            emitLine("TEST DWORD PTR " + virtual_memory_to_real[cond_location] + ", DWORD PTR " +
+                     virtual_memory_to_real[cond_location]);
         } else {
             emitLine("TEST " + cond_location + ", " + cond_location);
         }
         emitLine("JNZ " + stmt->uident_1);
-        emitLine("GOTO " + stmt->uident_2);
+        emitLine("JMP " + stmt->uident_2);
     }
 
 };

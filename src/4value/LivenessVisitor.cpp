@@ -102,7 +102,7 @@ public:
     std::map <UIdent, std::set<UIdent >> &block_out_vars;
 
     bool is_function(UIdent ident) {
-        return ident[0] != '_';
+        return ident.substr(0, 1) != "_";
     }
 
     explicit Function_Local_Vars_Visitor(std::map <UIdent, std::set<UIdent >> &block_out_vars)
@@ -113,7 +113,10 @@ public:
             current_function = block->uident_;
         }
 
-        function_local_vars[current_function].insert(block_out_vars[current_function].begin(),
-                                                     block_out_vars[current_function].end());
+        function_local_vars[current_function].insert(block_out_vars[block->uident_].begin(),
+                                                     block_out_vars[block->uident_].end());
+
+        block->listjmpstmt_->accept(this);
+        block->listnonjmpstmt_->accept(this);
     }
 };

@@ -8,4 +8,3 @@ if ./src/latte/Main -s $1 ; then
     ./src/4value/FVCMain -s ${1%.*}.fvc
 fi
 
-

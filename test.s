@@ -1,26 +1,25 @@
+.intel_syntax noprefix
+.text
+.globl main
 main:
+	push ebp
+	mov ebp, esp
 	push ebx
 	push edi
 	push esi
-	push ebp
-	mov ebp, esp
-	MOV eax, 123
-	mov esp, ebp
-	pop ebp
+	MOV eax, 100
+	CDQ
+	PUSH 4
+	IDIV DWORD PTR[ebp - 16]
+	MOV ebx, eax
+	PUSH eax
+	CALL printInt
+	ADD esp, 4
+	MOV eax, 0
 	pop esi
 	pop edi
 	pop ebx
-
-f:
-	push ebx
-	push edi
-	push esi
-	push ebp
-	mov ebp, esp
-	MOV eax, [ebp + 8] (__arg__0)
 	mov esp, ebp
 	pop ebp
-	pop esi
-	pop edi
-	pop ebx
+	ret
 

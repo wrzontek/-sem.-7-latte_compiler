@@ -1,8 +1,7 @@
 main:
-	_d0_a := 123
-	_d0_a := _d0_a
-	return _d0_a
-
-f:
-	return __arg__0
+	_d0_b := 4
+	_t1 := 100 / _d0_b
+	_d0_a := _t1
+	_t2 := _call printInt _d0_a ;
+	return 0
 

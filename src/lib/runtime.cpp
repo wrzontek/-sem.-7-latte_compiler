@@ -1,14 +1,14 @@
 #include <iostream>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+extern "C" {
 void printInt(int n) {
     std::cout << n << std::endl;
 }
 
-void printString(std::string s) {
-    std::cout << s << std::endl;
+void printString(char *s) {
+    std::cout << std::string(s) << std::endl;
 }
 
 void error() {
@@ -24,18 +24,20 @@ int readInt() {
     return n;
 }
 
-std::string readString() {
+char *readString() {
     std::string s;
     if (!std::getline(std::cin, s)) {
         error();
     }
-    return s;
+    char *result = new char[s.length() + 1];
+    strcpy(result, s.c_str());
+    return result;
 }
 
 char *stringsConcat(const char *s1, const char *s2) {
     size_t len1 = strlen(s1);
     size_t len2 = strlen(s2);
-    char *result = malloc(len1 + len2 + 1);
+    char *result = (char *) malloc(len1 + len2 + 1);
     if (!result) {
         error();
     }
@@ -54,4 +56,5 @@ int stringsEqual(const char *s1, const char *s2) {
 
 int stringsNotEqual(const char *s1, const char *s2) {
     return !stringsEqual(s1, s2);
+}
 }

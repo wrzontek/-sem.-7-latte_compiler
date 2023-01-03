@@ -249,7 +249,7 @@ public:
 
 class Atom : public Visitable {
 public:
-    virtual bool is_string() { return false; }
+    virtual bool is_constant() { return false; }
 
     virtual bool is_int_constant() { return false; }
 
@@ -558,6 +558,9 @@ public:
 
 class AtomInt : public Atom {
 public:
+
+    bool is_constant() override { return true; }
+
     bool is_int_constant() override { return true; }
 
     int get_int_constant() override { return integer_; }
@@ -585,7 +588,9 @@ public:
 
 class AtomStr : public Atom {
 public:
-    bool is_string() override { return true; }
+    bool is_constant() override { return true; }
+
+    virtual UIdent constant() override { return string_; }
 
     String string_;
 
