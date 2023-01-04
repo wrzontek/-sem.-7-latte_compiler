@@ -69,6 +69,7 @@ private:
 
     std::map<int, Ident> call_to_args_string;
     std::map <Ident, Ident> current_function_arg_order;
+    std::set <Ident> current_function_arg_strings;
 
     Expr *e_1;
     Expr *e_2;
@@ -118,6 +119,7 @@ public:
     void visitFnDef(FnDef *fnDef) override {
         ident_to_declarations = std::map < Ident, std::vector < int >> ();
         current_function_arg_order.clear();
+        current_function_arg_strings.clear();
         using_lazy_eval = false;
         current_depth = 0;
         current_function_is_void = (typeVisitor->getType(fnDef->type_)->name == "void");
@@ -137,6 +139,9 @@ public:
         int arg_num = 0;
         for (auto arg = listArg->begin(); arg != listArg->end(); ++arg) {
             current_function_arg_order[(*arg)->ident()] = std::to_string(arg_num);
+            if ((*arg)->is_string()) {
+                current_function_arg_strings.insert((*arg)->ident());
+            }
             arg_num++;
         }
     }
@@ -538,7 +543,12 @@ public:
     void varCommon(Ident var) {
         if (ident_to_declarations.find(var) == ident_to_declarations.end()) {
             // declaration not found - can only happen if var is function argument
-            result = "__arg__" + current_function_arg_order[var];
+            if (current_function_arg_strings.find(var) != current_function_arg_strings.end()) {
+                result = "__str__" + current_function_arg_order[var];
+            } else {
+                result = "__arg__" + current_function_arg_order[var];
+            }
+            // for (auto arg : current_function_arg
         } else {
             auto declarations = ident_to_declarations[var];
             int declaration_depth = declarations[declarations.size() - 1];
@@ -754,6 +764,13 @@ public:
             labels = labels_backup;
             using_lazy_eval = true;
 
+//            if (typeVisitor->getType(e1)->name == "string") {
+//                if (operator_ == " == ")
+//                    operator_ = "  _==_ "; // TODO
+//                else if (operator_ == " != ")
+//                    operator_ = " _!=! "; // TODO
+//            }
+
             Ident t_var = next_t_var();
             emitLine(t_var + " := " + left + operator_ + right);
             result = t_var;
@@ -795,6 +812,9 @@ public:
         }
 
         Ident t_var = next_t_var();
+//        if (operator_ == " + " && typeVisitor->getType(e1)->name == "string") {
+//            operator_ = "  _+_ "; // TODO
+//        }
         emitLine(t_var + " := " + left + operator_ + right);
         result = t_var;
         is_result_atomic = true;

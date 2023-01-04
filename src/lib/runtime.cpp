@@ -7,7 +7,7 @@ void printInt(int n) {
     std::cout << n << std::endl;
 }
 
-void printString(char *s) {
+void printString(const char *s) {
     std::cout << std::string(s) << std::endl;
 }
 
@@ -24,7 +24,8 @@ int readInt() {
     return n;
 }
 
-char *readString() {
+// todo na froncie zabronić takich nazw funkcji
+char *_readString() {
     std::string s;
     if (!std::getline(std::cin, s)) {
         error();
@@ -34,7 +35,7 @@ char *readString() {
     return result;
 }
 
-char *stringsConcat(const char *s1, const char *s2) {
+char *_stringsConcat(const char *s1, const char *s2) {
     size_t len1 = strlen(s1);
     size_t len2 = strlen(s2);
     char *result = (char *) malloc(len1 + len2 + 1);
@@ -46,7 +47,7 @@ char *stringsConcat(const char *s1, const char *s2) {
     return result;
 }
 
-int stringsEqual(const char *s1, const char *s2) {
+int _stringsEqual(const char *s1, const char *s2) {
     if (strcmp(s1, s2) == 0) {
         return 1;
     } else {
@@ -54,7 +55,7 @@ int stringsEqual(const char *s1, const char *s2) {
     }
 }
 
-int stringsNotEqual(const char *s1, const char *s2) {
-    return !stringsEqual(s1, s2);
+int _stringsNotEqual(const char *s1, const char *s2) {
+    return !_stringsEqual(s1, s2);
 }
 }

@@ -9,7 +9,7 @@ _after_t1:
 	_t2 := _call printInt _d0_i ;
 	_goto _while_cond_2
 _while_body_2:
-	_d0_i--
+	_d0_i := _d0_i - 1
 	_t3 := _call printInt _d0_i ;
 	_t4 := _d1_i + 7
 	_d1_i := _t4

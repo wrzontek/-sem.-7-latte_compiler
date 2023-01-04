@@ -425,6 +425,8 @@ class Arg : public Visitable {
 public:
     virtual Ident ident() = 0;
 
+    virtual bool is_string() = 0;
+
     virtual Arg *clone() const = 0;
 
     int line_number;
@@ -487,6 +489,11 @@ public:
 
 class TypeName : public Visitable {
 public:
+
+    virtual bool is_string() {
+        return false;
+    };
+
     virtual bool isVoid() {
         return false;
     };
@@ -499,6 +506,10 @@ public:
 
 class Type : public Visitable {
 public:
+    virtual bool is_string() {
+        return false;
+    };
+
     virtual Type *clone() const = 0;
 
     virtual bool canBeArg() = 0;
@@ -648,6 +659,10 @@ public:
 
     Ident ident() override {
         return ident_;
+    }
+
+    bool is_string() override {
+        return type_->is_string();
     }
 
     Ar(const Ar &);
@@ -1269,6 +1284,9 @@ public:
 
 class Str : public TypeName {
 public:
+    bool is_string() override {
+        return true;
+    };
 
     Str(const Str &);
 
@@ -1374,6 +1392,11 @@ public:
 
 class NotArr : public Type {
 public:
+
+    bool is_string() override {
+        return typename_->is_string();
+    };
+
     bool canBeArg() override {
         return !this->typename_->isVoid();
     };

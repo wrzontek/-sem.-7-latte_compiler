@@ -49,6 +49,7 @@ public:
     std::set <UIdent> const volatile_registers = {"_reg_eax", "_reg_ecx", "_reg_edx"};
 
     std::set <UIdent> string_constants;
+    std::set <UIdent> string_values; // eg will contain "_d0_a" if it is string
 
     UIdent register_lowest_byte(UIdent reg) {
         if (reg == "_reg_eax") {
@@ -192,7 +193,6 @@ public:
     }
 
     void standardProlog() {
-        // TODO nie działa jak jest coś puszowane wtrakcie funkcji
         for (auto preserved_register: preserved_registers) {
             emitLine("push " + preserved_register);
         }
@@ -255,15 +255,29 @@ public:
             }
 
             if (!block_in_vars[current_block_name].empty()) {
+                // todo clear string values tu albo gdzieś idk
+                string_values.clear();
+
                 std::set<int> arg_nums;
-                std::string arg_prefix = "__arg__";
+                std::string arg_prefix = "__arg__"; // string args have "__str__" prefix (same length)
+                std::string str_arg_prefix = "__str__";
+                std::set<int> str_arg_nums;
                 for (auto arg: block_in_vars[current_block_name]) {
+                    if (arg.substr(0, arg_prefix.length()) == str_arg_prefix) {
+                        string_values.insert(arg);
+                        str_arg_nums.insert(std::stoi(arg.substr(arg_prefix.length())));
+                    }
                     arg_nums.insert(std::stoi(arg.substr(arg_prefix.length())));
                 }
 
                 offset_up = 20;
                 for (auto arg_num: arg_nums) {
-                    UIdent arg = arg_prefix + std::to_string(arg_num);
+                    UIdent arg;
+                    if (str_arg_nums.find(arg_num) != str_arg_nums.end()) {
+                        arg = str_arg_prefix + std::to_string(arg_num);
+                    } else {
+                        arg = arg_prefix + std::to_string(arg_num);
+                    }
                     virtual_memory_to_real[arg] = "[ebp + " + std::to_string(offset_up) + "]";
                     offset_up += 4;
                 }
@@ -539,7 +553,7 @@ public:
         return *cleared_registers.begin();
     }
 
-    void force_clean_register(UIdent register_to_clean) {
+    void force_clean_register(UIdent register_to_clean) { // todo to mogłoby też do innego rejestru wywalić chyba
         for (auto value: register_values[register_to_clean]) {
             if (!value_in_clean_register(value)) {
                 spill_to_memory(value, register_to_clean);
@@ -661,11 +675,30 @@ public:
         UIdent R_register;
         bool lhs_rhs_are_same = lhs_location == rhs_location;
 
-        if (is_string_constant(lhs_location)) {
+        if (is_string_constant(lhs_location)) { // todo can also be non constant string
             // TODO
-            if (instruction == "ADD ") {}
+            if (instruction == "ADD ") {
+                R_register = "_reg_eax";
+                force_clean_register(R_register);
+
+                // TODO obsłużyć nie constant
+                emitLine("LEA " + R_register + ", " + rhs_location);
+                emitLine("PUSH " + R_register);
+                emitLine("LEA " + R_register + ", " + lhs_location);
+                emitLine("PUSH " + R_register);
+                emitLine("CALL _stringsConcat");
+
+                value_locations[stmt->uident_] = {R_register};
+                register_values[R_register] = {stmt->uident_};
+                string_values.insert(stmt->uident_);
+                // TODO usuwać ze string values tam gdzie trzeba, ale chyba nie da się przypisać nie-stringa na string value chyba
+
+                forget_dead_variable(stmt->atom_1->var_name(), stmt->out_vars);
+                forget_dead_variable(stmt->atom_2->var_name(), stmt->out_vars);
+                forget_dead_variable(stmt->uident_, stmt->out_vars);
+                return;
+            }
             if (instruction == "CMP ") {}
-            exit(444);
         }
 /*        if (instruction == "IMUL " && (get_power_of_two(stmt->atom_1) != -1 || get_power_of_two(stmt->atom_2) != -1)) {
             // optymalizacja shiftleft
@@ -831,7 +864,7 @@ public:
 
         // call function
         emitLine("CALL " + stmt->uident_2);
-        value_locations[stmt->uident_1] = {"_reg_eax"};
+        value_locations[stmt->uident_1] = {"_reg_eax"}; // todo result can be string
         register_values["_reg_eax"] = {stmt->uident_1};
         if (stmt->listatom_->size() > 0) {
             emitLine("ADD esp, " + std::to_string(4 * stmt->listatom_->size()));
