@@ -214,7 +214,6 @@ public:
         using_lazy_eval = boolLazyEvalChecker->is_lazy_eval;
 
         auto var_name = "_d" + std::to_string(current_depth) + "_" + stmt->ident_;
-        add_to_declaration_map(stmt->ident_);
 
         if (!using_lazy_eval) {
             stmt->expr_->accept(this);
@@ -223,6 +222,8 @@ public:
             lazyEval(var_name, stmt->expr_);
             using_lazy_eval = false;
         }
+
+        add_to_declaration_map(stmt->ident_);
     }
 
     void visitAss(Ass *stmt) override {
@@ -766,9 +767,9 @@ public:
 
 //            if (typeVisitor->getType(e1)->name == "string") {
 //                if (operator_ == " == ")
-//                    operator_ = "  _==_ "; // TODO
+//                    operator_ = "  _==_ "; // jednak nie użyje raczej tego
 //                else if (operator_ == " != ")
-//                    operator_ = " _!=! "; // TODO
+//                    operator_ = " _!=! "; // jednak nie użyje raczej tego
 //            }
 
             Ident t_var = next_t_var();
@@ -813,7 +814,7 @@ public:
 
         Ident t_var = next_t_var();
 //        if (operator_ == " + " && typeVisitor->getType(e1)->name == "string") {
-//            operator_ = "  _+_ "; // TODO
+//            operator_ = "  _+_ "; // jednak nie użyje raczej tego
 //        }
         emitLine(t_var + " := " + left + operator_ + right);
         result = t_var;

@@ -24,7 +24,6 @@ int readInt() {
     return n;
 }
 
-// todo na froncie zabronić takich nazw funkcji
 char *_readString() {
     std::string s;
     if (!std::getline(std::cin, s)) {
