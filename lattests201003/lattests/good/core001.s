@@ -5,6 +5,8 @@
 .SC1:
 	.string "/* world"
 .SC2:
+	.string "="
+.SC3:
 	.string "hello */"
 .text
 .globl main
@@ -46,6 +48,7 @@ main:
 	PUSH eax
 	CALL printInt
 	ADD esp, 4
+	LEA ecx, .SC0
 _t1:
 	MOV [ebp - 4], DWORD PTR 10
 	MOV [ebp - 8], DWORD PTR 1
@@ -70,11 +73,21 @@ _end_while_2:
 	CALL printInt
 	ADD esp, 4
 _after_t1:
+	PUSH 60
 	LEA eax, .SC2
+	PUSH eax
+	CALL repStr
+	ADD esp, 8
+	MOV ebx, eax
 	PUSH eax
 	CALL printString
 	ADD esp, 4
 	MOV ebx, eax
+	LEA eax, .SC3
+	PUSH eax
+	CALL printString
+	ADD esp, 4
+	MOV edi, eax
 	LEA eax, .SC1
 	PUSH eax
 	CALL printString
@@ -311,6 +324,43 @@ _end_if_8:
 	ADD esp, 8
 	IMUL edi, eax
 	MOV eax, edi
+	mov esp, ebp
+	pop ebp
+	pop esi
+	pop edi
+	pop ebx
+	ret
+
+repStr:
+	push ebx
+	push edi
+	push esi
+	push ebp
+	mov ebp, esp
+	sub esp, 16
+	LEA eax, .SC0
+	MOV [ebp - 12], DWORD PTR 0
+	MOV [ebp - 16], eax
+	JMP _while_cond_9
+_while_body_9:
+	PUSH DWORD PTR [ebp + 20]
+	PUSH DWORD PTR [ebp - 16]
+	CALL _stringsConcat
+	ADD esp, 8
+	MOV ebx, [ebp - 12]
+	ADD ebx, 1
+	MOV [ebp - 12], ebx
+	MOV [ebp - 16], eax
+_while_cond_9:
+	MOV eax, [ebp - 12]
+	CMP eax, DWORD PTR [ebp + 24]
+	MOV eax, 0
+	SETL al
+	TEST eax, eax
+	JNZ _while_body_9
+	JMP _end_while_9
+_end_while_9:
+	MOV eax, [ebp - 16]
 	mov esp, ebp
 	pop ebp
 	pop esi

@@ -100,17 +100,25 @@ public:
     UIdent current_function;
     std::map <UIdent, std::set<UIdent >> function_local_vars;
     std::map <UIdent, std::set<UIdent >> &block_out_vars;
+    std::set <UIdent> functions_with_string_result = {"_stringsConcat"};
 
-    bool is_function(UIdent ident) {
-        return ident.substr(0, 1) != "_";
+    bool block_is_string_ret_function(UIdent ident) {
+        return ident.length() >= 5 && ident.substr(0, 5) == "_str_";
+    }
+
+    bool block_is_function(UIdent ident) {
+        return block_is_string_ret_function(ident) || ident[0] != '_';
     }
 
     explicit Function_Local_Vars_Visitor(std::map <UIdent, std::set<UIdent >> &block_out_vars)
             : block_out_vars(block_out_vars) {}
 
     void visitBlock(Block *block) override {
-        if (is_function(block->uident_)) {
+        if (block_is_function(block->uident_)) {
             current_function = block->uident_;
+            if (block_is_string_ret_function(block->uident_)) {
+                functions_with_string_result.insert(block->uident_.substr(5));
+            }
         }
 
         function_local_vars[current_function].insert(block_out_vars[block->uident_].begin(),

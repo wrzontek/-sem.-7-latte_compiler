@@ -13,7 +13,7 @@ int main() {
         }
         printInt(r);
     }
-//////    printString(repStr("=", 60));
+    printString(repStr("=", 60));
     printString("hello */");
     printString("/* world");
     return 0;
@@ -65,12 +65,12 @@ int ifac2f(int l, int h) {
     return ifac2f(l, m) * ifac2f(m + 1, h);
 }
 
-//string repStr(string s, int n) {
-//    string r = "";
-//    int i = 0;
-//    while (i < n) {
-//        r = r + s;
-//        i++;
-//    }
-//    return r;
-//}
+string repStr(string s, int n) {
+    string r = "";
+    int i = 0;
+    while (i < n) {
+        r = r + s;
+        i++;
+    }
+    return r;
+}

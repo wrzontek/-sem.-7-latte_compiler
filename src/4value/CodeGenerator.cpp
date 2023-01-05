@@ -49,6 +49,7 @@ public:
     std::set <UIdent> const volatile_registers = {"_reg_eax", "_reg_ecx", "_reg_edx"};
 
     std::set <UIdent> string_constants;
+    std::set <UIdent> &functions_with_string_result;
     std::set <UIdent> string_values; // eg will contain "_d0_a" if it is string
 
     UIdent register_lowest_byte(UIdent reg) {
@@ -99,9 +100,10 @@ public:
     explicit Code_Generator(Program *program, const std::filesystem::path &file_path,
                             std::map <UIdent, std::set<UIdent >> &block_out_vars,
                             std::map <UIdent, std::set<UIdent >> &block_in_vars,
-                            std::map <UIdent, std::set<UIdent >> &function_local_vars)
+                            std::map <UIdent, std::set<UIdent >> &function_local_vars,
+                            std::set <UIdent> &functions_with_string_result)
             : program(program), block_in_vars(block_in_vars), block_out_vars(block_out_vars),
-              function_local_vars(function_local_vars) {
+              function_local_vars(function_local_vars), functions_with_string_result(functions_with_string_result) {
         output_file.open(file_path);
         if (!output_file.is_open()) {
             std::cerr << "can't open output file" << std::endl;
@@ -225,14 +227,32 @@ public:
         output_file << "\t" + content + "\n";
     }
 
+    bool block_is_string_ret_function(UIdent ident) {
+        return ident.length() >= 5 && ident.substr(0, 5) == "_str_";
+    }
+
     bool block_is_function(UIdent ident) {
-        return ident[0] != '_';
+        return block_is_string_ret_function(ident) || ident[0] != '_';
     }
 
     void visitBlock(Block *block) override {
         extra_stack_pushes = 0;
         current_block_name = block->uident_;
         if (block_is_function(current_block_name)) {
+            if (block_is_string_ret_function(current_block_name)) {
+                auto before_cut = block->uident_;
+                block->uident_ = block->uident_.substr(5);
+                current_block_name = block->uident_;
+
+                block_out_vars[current_block_name] = block_out_vars[before_cut];
+                block_out_vars.erase(before_cut);
+
+                block_in_vars[current_block_name] = block_in_vars[before_cut];
+                block_in_vars.erase(before_cut);
+
+                function_local_vars[current_block_name] = function_local_vars[before_cut];
+                function_local_vars.erase(before_cut);
+            }
             if (!current_function_name.empty()) {
                 emitRaw("\n");
             }
@@ -255,7 +275,6 @@ public:
             }
 
             if (!block_in_vars[current_block_name].empty()) {
-                // todo clear string values tu albo gdzieś idk
                 string_values.clear();
 
                 std::set<int> arg_nums;
@@ -472,7 +491,7 @@ public:
 
     UIdent put_constant_to_memory(UIdent constant) {
         auto free_memory_slot = get_free_memory_slot();
-        if (!free_memory_slot.empty()) { // TODO to jest untested, może głupota
+        if (!free_memory_slot.empty()) {
             emitLine("MOV [" + free_memory_slot + "], " + constant);
             return free_memory_slot;
         } else {
@@ -492,7 +511,7 @@ public:
 
     void spill_to_memory(UIdent value, UIdent value_current_loc) {
         auto free_memory_slot = get_free_memory_slot();
-        if (!free_memory_slot.empty()) { // TODO to jest untested, może głupota
+        if (!free_memory_slot.empty()) {
             value_locations[value] = {free_memory_slot};
             emitLine("MOV [" + free_memory_slot + "], " + value_current_loc);
         } else {
@@ -609,8 +628,25 @@ public:
         auto B_location = get_best_location(get_atom_locations(stmt->atom_));
         auto B_variable_name = stmt->atom_->var_name();
 
-        if (stmt->atom_->is_constant()) {
+        if (string_values.find(B_variable_name) != string_values.end()
+            || stmt->atom_->is_string_constant()) {
+            string_values.insert(stmt->uident_);
+        }
+
+        if (stmt->atom_->is_int_constant()) {
             value_locations[stmt->uident_] = {B_location};
+            for (auto pair: register_values) {
+                pair.second.erase(stmt->uident_);
+            }
+
+            forget_dead_variable(stmt->uident_, stmt->out_vars);
+            return;
+        } else if (stmt->atom_->is_string_constant()) {
+            R_register = get_free_register();
+            auto loc = get_best_location(get_atom_locations(stmt->atom_));
+            emitLine("LEA " + R_register + ", " + loc);
+
+            value_locations[stmt->uident_] = {R_register};
             for (auto pair: register_values) {
                 pair.second.erase(stmt->uident_);
             }
@@ -675,23 +711,31 @@ public:
         UIdent R_register;
         bool lhs_rhs_are_same = lhs_location == rhs_location;
 
-        if (is_string_constant(lhs_location)) { // todo can also be non constant string
-            // TODO
+        if (is_string_constant(lhs_location) || string_values.find(lhs_variable_name) != string_values.end()) {
             if (instruction == "ADD ") {
-                R_register = "_reg_eax";
-                force_clean_register(R_register);
+                saveVolatileRegisters();
+                lhs_location = get_best_location(get_atom_locations(stmt->atom_1));
+                rhs_location = get_best_location(get_atom_locations(stmt->atom_2));
 
-                // TODO obsłużyć nie constant
-                emitLine("LEA " + R_register + ", " + rhs_location);
-                emitLine("PUSH " + R_register);
-                emitLine("LEA " + R_register + ", " + lhs_location);
-                emitLine("PUSH " + R_register);
+                R_register = "_reg_eax";
+
+                std::vector <UIdent> locs = {rhs_location, lhs_location};
+                for (auto loc: locs) {
+                    if (is_variable(loc)) {
+                        emitLine("PUSH DWORD PTR " + virtual_memory_to_real[loc]);
+                    } else if (is_string_constant(loc)) {
+                        emitLine("LEA " + R_register + ", " + loc);
+                        emitLine("PUSH " + R_register);
+                    } else {
+                        emitLine("PUSH " + loc);
+                    }
+                }
                 emitLine("CALL _stringsConcat");
+                emitLine("ADD esp, 8");
 
                 value_locations[stmt->uident_] = {R_register};
                 register_values[R_register] = {stmt->uident_};
                 string_values.insert(stmt->uident_);
-                // TODO usuwać ze string values tam gdzie trzeba, ale chyba nie da się przypisać nie-stringa na string value chyba
 
                 forget_dead_variable(stmt->atom_1->var_name(), stmt->out_vars);
                 forget_dead_variable(stmt->atom_2->var_name(), stmt->out_vars);
@@ -864,8 +908,11 @@ public:
 
         // call function
         emitLine("CALL " + stmt->uident_2);
-        value_locations[stmt->uident_1] = {"_reg_eax"}; // todo result can be string
+        value_locations[stmt->uident_1] = {"_reg_eax"};
         register_values["_reg_eax"] = {stmt->uident_1};
+        if (functions_with_string_result.find(stmt->uident_2) != functions_with_string_result.end()) {
+            string_values.insert(stmt->uident_1);
+        }
         if (stmt->listatom_->size() > 0) {
             emitLine("ADD esp, " + std::to_string(4 * stmt->listatom_->size()));
         }

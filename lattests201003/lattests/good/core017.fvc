@@ -35,7 +35,7 @@ _false_l7:
 	_go_next _end_l9
 _end_l9:
 	_t9 := _call printBool _t6 ;
-	_t11 := - 5
+	_t11 :=  0 - 5
 	_t12 := 4 < _t11
 	if _t12 then _goto _middle_l12 else _goto _false_l11
 _middle_l12:
@@ -76,27 +76,27 @@ _end_l18:
 	return 0
 
 dontCallMe:
-	_t1 := _call printInt _d0_x ;
+	_t28 := _call printInt __arg__0 ;
 	return 1
 
 printBool:
-	if _d0_b then _goto _if_true_1 else _goto _if_false_1
-_if_true_1:
-	_t1 := _call printString "true" ;
-	_goto _end_if_1
-_if_false_1:
-	_t2 := _call printString "false" ;
-	_go_next _end_if_1
-_end_if_1:
+	if __arg__0 then _goto _if_true_2 else _goto _if_false_2
+_if_true_2:
+	_t29 := _call printString "true" ;
+	_goto _end_if_2
+_if_false_2:
+	_t30 := _call printString "false" ;
+	_go_next _end_if_2
+_end_if_2:
 	return;
 	return;
 
 implies:
-	_t1 := - _d0_x
-	if _t1 then _goto _middle_l21 else _goto _true_l19
+	_t31 := - __arg__0
+	if _t31 then _goto _middle_l21 else _goto _true_l19
 _middle_l21:
-	_t3 := _d0_x == _d0_y
-	if _t3 then _goto _true_l19 else _goto _false_l20
+	_t33 := __arg__0 == __arg__1
+	if _t33 then _goto _true_l19 else _goto _false_l20
 _true_l19:
 	_res := 1
 	_goto _end_l22

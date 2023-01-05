@@ -253,6 +253,8 @@ public:
 
     virtual bool is_int_constant() { return false; }
 
+    virtual bool is_string_constant() { return false; }
+
     virtual int get_int_constant() { return -1; }
 
     virtual Atom *clone() const = 0;
@@ -589,6 +591,8 @@ public:
 class AtomStr : public Atom {
 public:
     bool is_constant() override { return true; }
+
+    bool is_string_constant() override { return true; }
 
     virtual UIdent constant() override { return string_; }
 

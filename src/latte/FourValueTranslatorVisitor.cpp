@@ -124,6 +124,9 @@ public:
         current_depth = 0;
         current_function_is_void = (typeVisitor->getType(fnDef->type_)->name == "void");
 
+        if ((typeVisitor->getType(fnDef->type_)->name == "string")) {
+            fnDef->ident_ = "_str_" + fnDef->ident_;
+        }
         emitRaw(fnDef->ident_ + ":\n");
         fnDef->listarg_->accept(this);
         fnDef->block_->accept(this);

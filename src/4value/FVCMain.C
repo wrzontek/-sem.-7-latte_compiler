@@ -87,7 +87,8 @@ int main(int argc, char **argv) {
 
         auto code_generator = new Code_Generator(parse_tree, path.replace_extension("s"),
                                                  liveness_visitor->block_out_vars, liveness_visitor->block_in_vars,
-                                                 function_local_vars_visitor->function_local_vars);
+                                                 function_local_vars_visitor->function_local_vars,
+                                                 function_local_vars_visitor->functions_with_string_result);
         code_generator->generate();
         code_generator->close();
 
