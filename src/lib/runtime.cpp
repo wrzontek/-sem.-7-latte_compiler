@@ -24,7 +24,7 @@ int readInt() {
     return n;
 }
 
-char *_readString() {
+char *readString() {
     std::string s;
     if (!std::getline(std::cin, s)) {
         error();

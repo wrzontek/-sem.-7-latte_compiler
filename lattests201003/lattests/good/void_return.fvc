@@ -3,12 +3,12 @@ main:
 	return 0
 
 run:
-	_t1 := _call printInt 0 ;
+	_t2 := _call printInt 0 ;
 	_goto _if_true_1
 _if_true_1:
 	return;
 	_go_next _end_if_1
 _end_if_1:
-	_t2 := _call printInt 1 ;
+	_t3 := _call printInt 1 ;
 	return;
 

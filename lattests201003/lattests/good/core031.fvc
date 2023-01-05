@@ -1,33 +1,35 @@
 main:
-	_t1 := - 1
+	_t1 :=  0 - 1
 	_t2 := _call f 1 _t1 ;
 	_t3 := _call printInt _t2 ;
 	return 0
 
 f:
-	_t2 := _d0_a > 0
-	if _t2 then _goto _middle_l4 else _goto _middle_l3
+	_t5 := __arg__0 > 0
+	if _t5 then _goto _middle_l4 else _goto _middle_l3
 _middle_l4:
-	_t3 := _d0_b > 0
-	if _t3 then _goto _true_l1 else _goto _middle_l3
+	_t6 := __arg__1 > 0
+	if _t6 then _goto _true_l1 else _goto _middle_l3
 _middle_l3:
-	_t4 := _d0_a < 0
-	if _t4 then _goto _middle_l5 else _goto _false_l2
+	_t7 := __arg__0 < 0
+	if _t7 then _goto _middle_l5 else _goto _false_l2
 _middle_l5:
-	_t5 := _d0_b < 0
-	if _t5 then _goto _true_l1 else _goto _false_l2
+	_t8 := __arg__1 < 0
+	if _t8 then _goto _true_l1 else _goto _false_l2
 _true_l1:
-	_t1 := 1
+	_t4 := 1
 	_goto _end_l6
 _false_l2:
-	_t1 := 0
+	_t4 := 0
 	_go_next _end_l6
 _end_l6:
-	if _t1 then _goto _if_true_1 else _goto _if_false_1
+	if _t4 then _goto _if_true_1 else _goto _if_false_1
 _if_true_1:
 	return 7
 	return;
 _if_false_1:
 	return 42
+	_go_next _end_if_1
+_end_if_1:
 	return;
 

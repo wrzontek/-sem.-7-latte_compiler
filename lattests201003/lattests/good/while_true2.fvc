@@ -11,5 +11,7 @@ _if_true_2:
 	return;
 _if_false_2:
 	_t3 := _call printString "jeszcze raz" ;
+	_go_next _end_if_2
+_end_if_2:
 	return;
 

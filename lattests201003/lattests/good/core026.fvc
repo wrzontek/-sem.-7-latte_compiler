@@ -2,12 +2,11 @@ d:
 	return 0
 
 s:
-	_t1 := _d0_x + 1
+	_t1 := __arg__0 + 1
 	return _t1
 
 main:
-	_t1 := _call d ;
-	_t2 := _call s _t1 ;
+	_t2 := _call d ;
 	_t3 := _call s _t2 ;
 	_t4 := _call s _t3 ;
 	_t5 := _call s _t4 ;
@@ -87,6 +86,7 @@ main:
 	_t79 := _call s _t78 ;
 	_t80 := _call s _t79 ;
 	_t81 := _call s _t80 ;
-	_t82 := _call printInt _t81 ;
+	_t82 := _call s _t81 ;
+	_t83 := _call printInt _t82 ;
 	return 0
 

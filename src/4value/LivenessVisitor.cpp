@@ -100,7 +100,7 @@ public:
     UIdent current_function;
     std::map <UIdent, std::set<UIdent >> function_local_vars;
     std::map <UIdent, std::set<UIdent >> &block_out_vars;
-    std::set <UIdent> functions_with_string_result = {"_stringsConcat"};
+    std::set <UIdent> functions_with_string_result = {"_stringsConcat", "readString"};
 
     bool block_is_string_ret_function(UIdent ident) {
         return ident.length() >= 5 && ident.substr(0, 5) == "_str_";

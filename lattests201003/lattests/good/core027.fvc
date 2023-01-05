@@ -3,7 +3,7 @@ main:
 	return 0
 
 f:
-	_d0_arg := "good"
-	_t1 := _call printString _d0_arg ;
+	__str__0 := "good"
+	_t2 := _call printString __str__0 ;
 	return;
 

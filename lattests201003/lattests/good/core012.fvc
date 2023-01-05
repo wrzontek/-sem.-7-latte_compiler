@@ -1,6 +1,6 @@
 main:
 	_d0_x := 56
-	_t1 := - 23
+	_t1 :=  0 - 23
 	_d0_y := _t1
 	_t2 := _d0_x + _d0_y
 	_t3 := _call printInt _t2 ;
@@ -26,14 +26,16 @@ main:
 	return 0
 
 printBool:
-	if _d0_b then _goto _if_true_1 else _goto _if_false_1
+	if __arg__0 then _goto _if_true_1 else _goto _if_false_1
 _if_true_1:
-	_t1 := _call printString "true" ;
+	_t23 := _call printString "true" ;
 	return;
 	return;
 _if_false_1:
-	_t2 := _call printString "false" ;
+	_t24 := _call printString "false" ;
 	return;
+	_go_next _end_if_1
+_end_if_1:
 	return;
 	return;
 

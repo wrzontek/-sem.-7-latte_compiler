@@ -494,7 +494,7 @@ public:
     UIdent put_constant_to_memory(UIdent constant) {
         auto free_memory_slot = get_free_memory_slot();
         if (!free_memory_slot.empty()) {
-            emitLine("MOV [" + virtual_memory_to_real[free_memory_slot] + "], " + constant);
+            emitLine("MOV " + virtual_memory_to_real[free_memory_slot] + ", DWORD PTR " + constant);
             return free_memory_slot;
         } else {
             emitLine("PUSH " + constant);
@@ -823,11 +823,11 @@ public:
 
             emitLine("CDQ");
             if (is_variable(rhs_location)) {
-                emitLine("IDIV DWORD PTR" + virtual_memory_to_real[rhs_location]);
+                emitLine("IDIV DWORD PTR " + virtual_memory_to_real[rhs_location]);
             } else {
                 if (is_const(rhs_location)) {
                     rhs_location = put_constant_to_memory(rhs_location);
-                    emitLine("IDIV DWORD PTR" + virtual_memory_to_real[rhs_location]);
+                    emitLine("IDIV DWORD PTR " + virtual_memory_to_real[rhs_location]);
                 } else {
                     emitLine("IDIV " + rhs_location);
                 }
@@ -935,10 +935,13 @@ public:
         if (is_variable(cond_location)) {
             auto reg = get_free_register();
             emitLine("MOV " + reg + ", " + virtual_memory_to_real[cond_location]);
-            emitLine("TEST " + reg + ", " + reg);
-        } else {
-            emitLine("TEST " + cond_location + ", " + cond_location);
+            cond_location = reg;
+        } else if (is_const(cond_location)) {
+            auto reg = get_free_register();
+            emitLine("MOV " + reg + ", " + cond_location);
+            cond_location = reg;
         }
+        emitLine("TEST " + cond_location + ", " + cond_location);
         emitLine("JNZ " + stmt->uident_1);
         emitLine("JMP " + stmt->uident_2);
     }

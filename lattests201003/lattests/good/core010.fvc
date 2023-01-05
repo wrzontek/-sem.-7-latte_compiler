@@ -7,7 +7,7 @@ fac:
 	_d0_r := 0
 	_d0_n := 0
 	_d0_r := 1
-	_d0_n := _arg0_a
+	_d0_n := __arg__0
 	_goto _while_cond_1
 _while_body_1:
 	_t3 := _d0_r * _d0_n

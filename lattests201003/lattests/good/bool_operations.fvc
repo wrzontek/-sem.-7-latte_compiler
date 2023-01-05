@@ -88,21 +88,23 @@ _end_l26:
 	return 0
 
 f:
-	_t1 := _call printInt _d0_a ;
+	_t29 := _call printInt __arg__0 ;
 	return 0
 
 t:
-	_t1 := _call f _d0_a ;
-	_t2 := 1 - _t1
-	return _t2
+	_t30 := _call f __arg__0 ;
+	_t31 := 1 - _t30
+	return _t31
 
 b:
-	if _d0_a then _goto _if_true_1 else _goto _if_false_1
+	if __arg__0 then _goto _if_true_1 else _goto _if_false_1
 _if_true_1:
-	_t1 := _call printString "true" ;
+	_t32 := _call printString "true" ;
 	return;
 _if_false_1:
-	_t2 := _call printString "false" ;
+	_t33 := _call printString "false" ;
+	_go_next _end_if_1
+_end_if_1:
 	return;
 	return;
 

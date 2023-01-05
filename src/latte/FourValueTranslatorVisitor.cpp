@@ -391,9 +391,10 @@ public:
         stmt->stmt_->accept(this);
         block_emit_labels_and_gotos = true;
 
-        if (!is_last_stmt) {
-            emitLine("_go_next " + end_if);
-            emitRaw(end_if + ":\n");
+        emitLine("_go_next " + end_if);
+        emitRaw(end_if + ":\n");
+        if (is_last_stmt) {
+            emitLine("return;");
         }
     }
 
@@ -425,10 +426,9 @@ public:
             stmt->stmt_2->accept(this);
             block_emit_labels_and_gotos = true;
 
-            if (!is_last_stmt) {
-                emitLine("_go_next " + end_if);
-                emitRaw(end_if + ":\n");
-            } else {
+            emitLine("_go_next " + end_if);
+            emitRaw(end_if + ":\n");
+            if (is_last_stmt) {
                 emitLine("return;");
             }
         } else if (stmt->expr_->isAlwaysTrue()) {
@@ -437,10 +437,9 @@ public:
             block_emit_labels_and_gotos = false;
             stmt->stmt_1->accept(this);
             block_emit_labels_and_gotos = true;
-            if (!is_last_stmt) {
-                emitLine("_go_next " + end_if);
-                emitRaw(end_if + ":\n");
-            } else {
+            emitLine("_go_next " + end_if);
+            emitRaw(end_if + ":\n");
+            if (is_last_stmt) {
                 emitLine("return;");
             }
         } else if (stmt->expr_->isAlwaysFalse()) {
@@ -448,11 +447,9 @@ public:
             emitRaw(if_false + ":\n");
             block_emit_labels_and_gotos = false;
             stmt->stmt_2->accept(this);
-            block_emit_labels_and_gotos = true;
-            if (!is_last_stmt) {
-                emitLine("_go_next " + end_if);
-                emitRaw(end_if + ":\n");
-            } else {
+            emitLine("_go_next " + end_if);
+            emitRaw(end_if + ":\n");
+            if (is_last_stmt) {
                 emitLine("return;");
             }
         }

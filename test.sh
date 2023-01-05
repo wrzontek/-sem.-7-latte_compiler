@@ -2,7 +2,7 @@
 
 for file in /home/adrian/CLionProjects/compilator/lattests201003/lattests/good/*.lat
 do
-  if ! ./latc ${file}; then
+  if ! ./latc_x86 ${file}; then
     echo ${file} WROOOOOOOOOOOONG
   fi
 done

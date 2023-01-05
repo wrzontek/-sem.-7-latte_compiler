@@ -173,6 +173,13 @@ _if_false_4:
 	pop edi
 	pop ebx
 	ret
+_end_if_4:
+	mov esp, ebp
+	pop ebp
+	pop esi
+	pop edi
+	pop ebx
+	ret
 
 mfac:
 	push ebx
@@ -212,6 +219,13 @@ _if_false_5:
 	pop edi
 	pop ebx
 	ret
+_end_if_5:
+	mov esp, ebp
+	pop ebp
+	pop esi
+	pop edi
+	pop ebx
+	ret
 
 nfac:
 	push ebx
@@ -243,6 +257,13 @@ _if_true_6:
 	ret
 _if_false_6:
 	MOV eax, 1
+	mov esp, ebp
+	pop ebp
+	pop esi
+	pop edi
+	pop ebx
+	ret
+_end_if_6:
 	mov esp, ebp
 	pop ebp
 	pop esi
@@ -310,7 +331,7 @@ _end_if_8:
 	ADD eax, DWORD PTR [ebp + 24]
 	CDQ
 	PUSH 2
-	IDIV DWORD PTR[ebp - 12]
+	IDIV DWORD PTR [ebp - 12]
 	MOV ebx, eax
 	PUSH eax
 	PUSH DWORD PTR [ebp + 20]
