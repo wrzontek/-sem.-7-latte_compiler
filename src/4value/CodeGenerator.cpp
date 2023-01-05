@@ -212,6 +212,7 @@ public:
 
     void emitRaw(std::string content) {
         output_file << content;
+//        std::cerr << content;
     }
 
     void emitLine(std::string content) {
@@ -225,6 +226,7 @@ public:
         } while (pos != std::string::npos);
 
         output_file << "\t" + content + "\n";
+//        std::cerr << "\t" + content + "\n";
     }
 
     bool block_is_string_ret_function(UIdent ident) {
@@ -492,7 +494,7 @@ public:
     UIdent put_constant_to_memory(UIdent constant) {
         auto free_memory_slot = get_free_memory_slot();
         if (!free_memory_slot.empty()) {
-            emitLine("MOV [" + free_memory_slot + "], " + constant);
+            emitLine("MOV [" + virtual_memory_to_real[free_memory_slot] + "], " + constant);
             return free_memory_slot;
         } else {
             emitLine("PUSH " + constant);
@@ -513,7 +515,7 @@ public:
         auto free_memory_slot = get_free_memory_slot();
         if (!free_memory_slot.empty()) {
             value_locations[value] = {free_memory_slot};
-            emitLine("MOV [" + free_memory_slot + "], " + value_current_loc);
+            emitLine("MOV " + virtual_memory_to_real[free_memory_slot] + ", " + value_current_loc);
         } else {
             if (is_variable(value_current_loc)) {
                 emitLine("PUSH DWORD PTR " + virtual_memory_to_real[value_current_loc]);
@@ -931,8 +933,9 @@ public:
     void visitStmtCondJmp(StmtCondJmp *stmt) override {
         auto cond_location = get_best_location(get_atom_locations(stmt->atom_));
         if (is_variable(cond_location)) {
-            emitLine("TEST DWORD PTR " + virtual_memory_to_real[cond_location] + ", DWORD PTR " +
-                     virtual_memory_to_real[cond_location]);
+            auto reg = get_free_register();
+            emitLine("MOV " + reg + ", " + virtual_memory_to_real[cond_location]);
+            emitLine("TEST " + reg + ", " + reg);
         } else {
             emitLine("TEST " + cond_location + ", " + cond_location);
         }

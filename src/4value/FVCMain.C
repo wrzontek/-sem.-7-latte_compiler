@@ -60,7 +60,6 @@ int main(int argc, char **argv) {
         std::cerr << "Parse error on line " << e.getLine() << "\n";
     }
     if (parse_tree) {
-        printf("\nParse Successful!\n");
         if (!quiet) {
             printf("\n[Abstract Syntax]\n");
             ShowAbsyn *s = new ShowAbsyn();

@@ -75,21 +75,21 @@ public:
                 break;
         }
 
-        program->accept(statementLivenessPrinter);
-        std::cout << "\n\n\n";
-
-        for (auto pair: block_code) {
-            auto block_name = pair.first;
-            auto block_in_vars_set = block_in_vars[block_name];
-            auto block_out_vars_set = block_out_vars[block_name];
-
-            std::cout << "\n\nBLOCK: " + block_name << std::endl;
-            std::cout << "IN: ";
-            printSet(block_in_vars_set);
-
-            std::cout << "OUT: ";
-            printSet(block_out_vars_set);
-        }
+//        program->accept(statementLivenessPrinter);
+//        std::cout << "\n\n\n";
+//
+//        for (auto pair: block_code) {
+//            auto block_name = pair.first;
+//            auto block_in_vars_set = block_in_vars[block_name];
+//            auto block_out_vars_set = block_out_vars[block_name];
+//
+//            std::cout << "\n\nBLOCK: " + block_name << std::endl;
+//            std::cout << "IN: ";
+//            printSet(block_in_vars_set);
+//
+//            std::cout << "OUT: ";
+//            printSet(block_out_vars_set);
+//        }
 
     }
 };

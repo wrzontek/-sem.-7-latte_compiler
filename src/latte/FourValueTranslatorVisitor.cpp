@@ -561,11 +561,6 @@ public:
         is_result_atomic = true;
 
         if (using_lazy_eval) {
-            if (negating) {
-                Ident t_var = next_t_var();
-                emitLine(t_var + " := - " + result);
-                result = t_var;
-            }
             emitLine("if " + result + " then _goto " + labels.label_true + " else _goto " + labels.label_false);
         }
     }

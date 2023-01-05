@@ -92,11 +92,10 @@ _end_if_2:
 	return;
 
 implies:
-	_t31 := - __arg__0
-	if _t31 then _goto _middle_l21 else _goto _true_l19
+	if __arg__0 then _goto _middle_l21 else _goto _true_l19
 _middle_l21:
-	_t33 := __arg__0 == __arg__1
-	if _t33 then _goto _true_l19 else _goto _false_l20
+	_t32 := __arg__0 == __arg__1
+	if _t32 then _goto _true_l19 else _goto _false_l20
 _true_l19:
 	_res := 1
 	_goto _end_l22
