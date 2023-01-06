@@ -381,25 +381,30 @@ public:
     }
 
     void visitCond(Cond *stmt) override {
-        next_t_block_number++;
-        auto if_true = "_if_true_" + std::to_string(next_t_block_number);
-        auto end_if = "_end_if_" + std::to_string(next_t_block_number);
-        if (!stmt->expr_->isAlwaysTrue() && (current_function_is_void || !is_last_stmt)) {
-            auto cond_atom = getCondAtom(stmt->expr_);
-            emitLine("if " + cond_atom + " then _goto " + if_true + " else _goto " + end_if);
-        } else {
-            emitLine("_goto " + if_true); // typeChecker guarantees correctness
-        }
+        if (!stmt->expr_->isAlwaysFalse()) {
+            auto is_last_stmt_backup = is_last_stmt;
+            next_t_block_number++;
+            auto if_true = "_if_true_" + std::to_string(next_t_block_number);
+            auto end_if = "_end_if_" + std::to_string(next_t_block_number);
+            if (!stmt->expr_->isAlwaysTrue() && (current_function_is_void || !is_last_stmt)) {
+                auto cond_atom = getCondAtom(stmt->expr_);
+                emitLine("if " + cond_atom + " then _goto " + if_true + " else _goto " + end_if);
+            } else {
+                emitLine("_goto " + if_true); // typeChecker guarantees correctness
+            }
 
-        emitRaw(if_true + ":\n");
-        block_emit_labels_and_gotos = false;
-        stmt->stmt_->accept(this);
-        block_emit_labels_and_gotos = true;
+            emitRaw(if_true + ":\n");
+            block_emit_labels_and_gotos = false;
+            is_last_stmt = false;
+            stmt->stmt_->accept(this);
+            is_last_stmt = is_last_stmt_backup;
+            block_emit_labels_and_gotos = true;
 
-        emitLine("_go_next " + end_if);
-        emitRaw(end_if + ":\n");
-        if (is_last_stmt) {
-            emitLine("return;");
+            emitLine("_go_next " + end_if);
+            emitRaw(end_if + ":\n");
+            if (is_last_stmt) {
+                emitLine("return;");
+            }
         }
     }
 
@@ -461,32 +466,37 @@ public:
     }
 
     void visitWhile(While *stmt) override {
-        next_t_block_number++;
-        auto while_cond = "_while_cond_" + std::to_string(next_t_block_number);
-        auto while_body = "_while_body_" + std::to_string(next_t_block_number);
-        auto end_while = "_end_while_" + std::to_string(next_t_block_number);
+        if (!stmt->expr_->isAlwaysFalse()) {
+            auto is_last_stmt_backup = is_last_stmt;
+            next_t_block_number++;
+            auto while_cond = "_while_cond_" + std::to_string(next_t_block_number);
+            auto while_body = "_while_body_" + std::to_string(next_t_block_number);
+            auto end_while = "_end_while_" + std::to_string(next_t_block_number);
 
-        if (!is_last_stmt) {
-            emitLine("_goto " + while_cond);
-        } else {
-            emitLine("_go_next " + while_body);
-        }
+            if (!is_last_stmt) {
+                emitLine("_goto " + while_cond);
+            } else {
+                emitLine("_go_next " + while_body);
+            }
 
-        emitRaw(while_body + ":\n");
-        block_emit_labels_and_gotos = false;
-        stmt->stmt_->accept(this);
-        block_emit_labels_and_gotos = true;
+            emitRaw(while_body + ":\n");
+            block_emit_labels_and_gotos = false;
+            is_last_stmt = false;
+            stmt->stmt_->accept(this);
+            is_last_stmt = is_last_stmt_backup;
+            block_emit_labels_and_gotos = true;
 
-        if (!is_last_stmt) {
             emitLine("_go_next " + while_cond);
             emitRaw(while_cond + ":\n");
             auto cond_atom = getCondAtom(stmt->expr_);
             emitLine("if " + cond_atom + " then _goto " + while_body + " else _goto " + end_while);
 
             emitRaw(end_while + ":\n");
+            if (is_last_stmt) {
+                emitLine("return;");
+            }
         }
     }
-
 //    void visitForEach(ForEach *stmt) override {
 //        using_lazy_eval = false;
 //

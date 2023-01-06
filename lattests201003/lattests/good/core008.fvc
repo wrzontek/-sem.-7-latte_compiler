@@ -1,9 +1,0 @@
-main:
-	_d0_x := 0
-	_d0_y := 7
-	_t1 :=  0 - 1234234
-	_d0_x := _t1
-	_t2 := _call printInt _d0_x ;
-	_t3 := _call printInt _d0_y ;
-	return 0
-

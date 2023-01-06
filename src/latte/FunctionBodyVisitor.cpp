@@ -363,10 +363,12 @@ public:
 
         can_declare = false;
         bool always_returning_backup = always_returning;
+//        always_returning = false;
         stmt->stmt_1->accept(this);
         bool if_true_always_returning = always_returning;
 
         can_declare = false;
+//        always_returning = false;
         stmt->stmt_2->accept(this);
         bool if_false_always_returning = always_returning;
         can_declare = true;

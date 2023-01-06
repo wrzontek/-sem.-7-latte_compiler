@@ -1,9 +1,0 @@
-main:
-	_t1 := _call foo ;
-	return 0
-
-foo:
-	_t2 := _call printString "foo" ;
-	return;
-	return;
-

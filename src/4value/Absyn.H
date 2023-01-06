@@ -273,6 +273,8 @@ public:
 
     virtual std::string cond_set_instruction() { return "BOZO"; };
 
+    virtual std::string get_string_function() { return "BOZO"; };
+
     virtual bool isModOp() { return false; };
 
 };
@@ -617,6 +619,8 @@ class AddOp : public BinOp {
 public:
     std::string instruction() override { return "ADD "; };
 
+    std::string get_string_function() override { return "_stringsConcat"; };
+
     AddOp(const AddOp &);
 
     AddOp &operator=(const AddOp &);
@@ -836,6 +840,8 @@ public:
 
     std::string cond_set_instruction() override { return "SETE "; };
 
+    std::string get_string_function() override { return "_stringsEqual"; };
+
     EQU(const EQU &);
 
     EQU &operator=(const EQU &);
@@ -856,6 +862,8 @@ public:
     std::string instruction() override { return "CMP "; };
 
     std::string cond_set_instruction() override { return "SETNE "; };
+
+    std::string get_string_function() override { return "_stringsNotEqual"; };
 
     NE(const NE &);
 

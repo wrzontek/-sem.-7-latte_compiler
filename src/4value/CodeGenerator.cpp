@@ -626,6 +626,9 @@ public:
     void visitStmtNoOp(StmtNoOp *stmt) override { // A := B
         if (stmt->uident_ == stmt->atom_->var_name()) { return; }
         UIdent R_register;
+        for (auto pair: register_values) {
+            pair.second.erase(stmt->uident_);
+        }
 
         auto B_location = get_best_location(get_atom_locations(stmt->atom_));
         auto B_variable_name = stmt->atom_->var_name();
@@ -637,10 +640,6 @@ public:
 
         if (stmt->atom_->is_int_constant()) {
             value_locations[stmt->uident_] = {B_location};
-            for (auto pair: register_values) {
-                pair.second.erase(stmt->uident_);
-            }
-
             forget_dead_variable(stmt->uident_, stmt->out_vars);
             return;
         } else if (stmt->atom_->is_string_constant()) {
@@ -649,13 +648,14 @@ public:
             emitLine("LEA " + R_register + ", " + loc);
 
             value_locations[stmt->uident_] = {R_register};
-            for (auto pair: register_values) {
-                pair.second.erase(stmt->uident_);
-            }
+            register_values[R_register].insert(stmt->uident_);
+            string_values.insert(stmt->uident_);
 
             forget_dead_variable(stmt->uident_, stmt->out_vars);
             return;
-        } else if (is_register(B_location)) {
+        }
+
+        if (is_register(B_location)) {
             R_register = B_location;
             value_locations[B_variable_name].erase(B_location);
 
@@ -714,38 +714,38 @@ public:
         bool lhs_rhs_are_same = lhs_location == rhs_location;
 
         if (is_string_constant(lhs_location) || string_values.find(lhs_variable_name) != string_values.end()) {
-            if (instruction == "ADD ") {
-                saveVolatileRegisters();
-                lhs_location = get_best_location(get_atom_locations(stmt->atom_1));
-                rhs_location = get_best_location(get_atom_locations(stmt->atom_2));
+            saveVolatileRegisters();
+            lhs_location = get_best_location(get_atom_locations(stmt->atom_1));
+            rhs_location = get_best_location(get_atom_locations(stmt->atom_2));
 
-                R_register = "_reg_eax";
+            R_register = "_reg_eax";
 
-                std::vector <UIdent> locs = {rhs_location, lhs_location};
-                for (auto loc: locs) {
-                    if (is_variable(loc)) {
-                        emitLine("PUSH DWORD PTR " + virtual_memory_to_real[loc]);
-                    } else if (is_string_constant(loc)) {
-                        emitLine("LEA " + R_register + ", " + loc);
-                        emitLine("PUSH " + R_register);
-                    } else {
-                        emitLine("PUSH " + loc);
-                    }
+            std::vector <UIdent> locs = {rhs_location, lhs_location};
+            for (auto loc: locs) {
+                if (is_variable(loc)) {
+                    emitLine("PUSH DWORD PTR " + virtual_memory_to_real[loc]);
+                } else if (is_string_constant(loc)) {
+                    emitLine("LEA " + R_register + ", " + loc);
+                    emitLine("PUSH " + R_register);
+                } else {
+                    emitLine("PUSH " + loc);
                 }
-                emitLine("CALL _stringsConcat");
-                emitLine("ADD esp, 8");
-
-                value_locations[stmt->uident_] = {R_register};
-                register_values[R_register] = {stmt->uident_};
-                string_values.insert(stmt->uident_);
-
-                forget_dead_variable(stmt->atom_1->var_name(), stmt->out_vars);
-                forget_dead_variable(stmt->atom_2->var_name(), stmt->out_vars);
-                forget_dead_variable(stmt->uident_, stmt->out_vars);
-                return;
             }
-            if (instruction == "CMP ") {}
+            auto string_function = stmt->binop_->get_string_function();
+            emitLine("CALL " + string_function);
+            emitLine("ADD esp, 8");
+
+            value_locations[stmt->uident_] = {R_register};
+            register_values[R_register] = {stmt->uident_};
+            if (instruction == "ADD ") { // CMP result is boolean
+                string_values.insert(stmt->uident_);
+            }
+            forget_dead_variable(stmt->atom_1->var_name(), stmt->out_vars);
+            forget_dead_variable(stmt->atom_2->var_name(), stmt->out_vars);
+            forget_dead_variable(stmt->uident_, stmt->out_vars);
+            return;
         }
+        // TODO te optymalizacja shiftowe
 /*        if (instruction == "IMUL " && (get_power_of_two(stmt->atom_1) != -1 || get_power_of_two(stmt->atom_2) != -1)) {
             // optymalizacja shiftleft
             // mov eax, A         ; Load A into eax

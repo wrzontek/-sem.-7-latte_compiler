@@ -1,5 +1,0 @@
-main:
-	_go_next _while_body_1
-_while_body_1:
-	return 0
-

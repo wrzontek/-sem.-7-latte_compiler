@@ -1,5 +1,4 @@
 /* Test boolean operators */
-// TODO
 int main() {
     int x = 4;
     if (3 <= x && 4 != 2 && true) {
