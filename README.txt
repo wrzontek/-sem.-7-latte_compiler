@@ -1,17 +1,17 @@
 Kompilacja:
-    `make` w project root lub katalogu src
+    `make` w project root
 
 Rozszerzenia:
-    - tablice
-    - obiekty z metodami wirtualnymi
+    - tablice COMING SOON
+    - obiekty z metodami wirtualnymi COMING SOON
 
 Używane biblioteki/narzędzia:
     - bnfc
 
 Podkatalogi:
     - src
-       - latte - pliki źródłowe frontend + tłumaczenia na kod czwórkowy (FVC)
-       - 4value - pliki źródłowe parsera FVC, generacji kodu asemblera z FVC
+       - latte - pliki źródłowe frontendu, tłumaczenia na kod czwórkowy (FVC)
+       - 4value - pliki źródłowe FVC, generacji kodu asemblera z FVC
        - lib - biblioteczka napisana w c++
 
 
