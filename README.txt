@@ -9,7 +9,10 @@ Używane biblioteki/narzędzia:
     - bnfc
 
 Podkatalogi:
-    - src - zawiera pliki źródłowe
+    - src
+       - latte - pliki źródłowe frontend + tłumaczenia na kod czwórkowy (FVC)
+       - 4value - pliki źródłowe parsera FVC, generacji kodu asemblera z FVC
+       - lib - biblioteczka napisana w c++
 
 
 
