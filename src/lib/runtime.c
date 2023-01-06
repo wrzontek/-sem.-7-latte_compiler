@@ -1,43 +1,54 @@
-#include <iostream>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-extern "C" {
 void printInt(int n) {
-    std::cout << n << std::endl;
+    printf("%d\n", n);
 }
 
 void printString(const char *s) {
-    std::cout << std::string(s) << std::endl;
+    printf("%s\n", s);
 }
 
 void error() {
-    std::cerr << "runtime error" << std::endl;
+    fprintf(stderr, "runtime error\n");
     exit(1);
 }
 
 int readInt() {
-    std::string s;
-    if (!std::getline(std::cin, s)) {
+    char *s = NULL;
+    size_t size = 0;
+    if (getline(&s, &size, stdin) == -1) {
         error();
     }
-    return std::stoi(s);
+    int result = atoi(s);
+    free(s);
+    return result;
 }
 
 char *readString() {
-    std::string s;
-    if (!std::getline(std::cin, s)) {
+    char *s = NULL;
+    size_t size = 0;
+    if (getline(&s, &size, stdin) == -1) {
         error();
     }
-    char *result = new char[s.length() + 1];
-    strcpy(result, s.c_str());
+    size_t len = strlen(s);
+    if (s[len - 1] == '\n') {
+        s[len - 1] = '\0';
+    }
+    char *result = malloc(len + 1);
+    if (!result) {
+        error();
+    }
+    strcpy(result, s);
+    free(s);
     return result;
 }
 
 char *_stringsConcat(const char *s1, const char *s2) {
     size_t len1 = strlen(s1);
     size_t len2 = strlen(s2);
-    char *result = (char *) malloc(len1 + len2 + 1);
+    char *result = malloc(len1 + len2 + 1);
     if (!result) {
         error();
     }
@@ -56,5 +67,4 @@ int _stringsEqual(const char *s1, const char *s2) {
 
 int _stringsNotEqual(const char *s1, const char *s2) {
     return !_stringsEqual(s1, s2);
-}
 }
