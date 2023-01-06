@@ -18,14 +18,19 @@ public:
 
     void visitEAnd(EAnd *e) override {
         is_lazy_eval = true;
+        e->expr_1->accept(this);
+        e->expr_2->accept(this);
     }
 
     void visitEOr(EOr *e) override {
         is_lazy_eval = true;
+        e->expr_1->accept(this);
+        e->expr_2->accept(this);
     }
 
     void visitCFunction(CFunction *e) override {
         has_call = true;
+        e->listexpr_->accept(this);
     } // do not consider function arguments for lazy eval, they are handled separately
 
 //    void visitMethod(Method *e) override {

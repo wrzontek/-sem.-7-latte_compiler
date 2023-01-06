@@ -17,11 +17,11 @@ void error() {
 }
 
 int readInt() {
-    int n;
-    if (!(std::cin >> n)) {
+    std::string s;
+    if (!std::getline(std::cin, s)) {
         error();
     }
-    return n;
+    return std::stoi(s);
 }
 
 char *readString() {

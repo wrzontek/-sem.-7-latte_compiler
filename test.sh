@@ -2,8 +2,13 @@
 
 for file in /home/adrian/CLionProjects/compilator/lattests201003/lattests/good/*.lat
 do
+  echo ${file}
   if ! ./latc_x86 ${file}; then
-    echo ${file} WROOOOOOOOOOOONG
+    echo "${file} WROOOOOOOOOOOONG"
+    exit 1
+  fi
+  if ! cmp -s <(${file%.*}) "${file%.*}.output"; then
+    echo "${file%.*} and ${file%.*}.output differ"
   fi
 done
 
