@@ -1,6 +1,0 @@
-main:
-	_d0_a := 1
-	0 := "abc"
-	_t1 := _call printString 0 ;
-	return 0
-

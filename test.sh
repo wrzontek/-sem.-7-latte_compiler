@@ -1,6 +1,6 @@
 #bin/bash
 
-for file in lattests201003/lattests/good/*.lat
+for file in lattests/good/*.lat
 do
   echo ${file}
   if ! ./latc_x86 ${file}; then

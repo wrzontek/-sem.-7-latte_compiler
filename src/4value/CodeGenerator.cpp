@@ -28,21 +28,10 @@ public:
 
     UIdent current_block_name;
     UIdent current_function_name;
-/*
-    UIdent result_register = "_reg_rax";
-    UIdent stack_pointer = "_reg_rsp";
-    UIdent base_pointer = "_reg_rbp";
-    std::set <UIdent> general_registers = {//"_reg_rax", "_reg_rsp","_reg_rbp",
-            "_reg_rcx", "_reg_rdx", "_reg_rbx", "_reg_rsi",
-            "_reg_rdi", "_reg_r8", "_reg_r9", "_reg_r10",
-            "_reg_r11", "_reg_r12", "_reg_r13", "_reg_r14",
-            "_reg_r15"};
-*/
 
     UIdent const result_register = "_reg_eax";
     UIdent const stack_pointer = "_reg_esp";
     UIdent const base_pointer = "_reg_ebp";
-//    std::set <UIdent> const general_registers = {"_reg_eax", "_reg_ebx"};
     std::set <UIdent> const general_registers = {"_reg_eax", "_reg_ecx", "_reg_edx",
                                                  "_reg_ebx", "_reg_esi", "_reg_edi"};
     std::set <UIdent> const preserved_registers = {"_reg_ebx", "_reg_esi", "_reg_edi"};
@@ -75,7 +64,7 @@ public:
     // variable to: {
     //      register (_reg_r9)
     //      or memory location ("_d1_x" or "__arg_x"- then map this variable name to a location on the stack)
-    //      or constant (123)
+    //      or constant (123, string constant location)
     // }
     std::map <UIdent, std::set<UIdent>> value_locations;
     std::set <UIdent> memory_slots;
@@ -126,7 +115,6 @@ public:
     }
 
     void generate() {
-//        emitRaw("global main\nextern printInt\nextern printString\nextern error\nextern readInt\nextern readString\nextern stringsConcat\nextern stringsEqual\nextern stringsNotEqual\n\nsection .text\n");
         emitRaw(".intel_syntax noprefix\n");
 
         if (!string_constants.empty()) {
@@ -704,6 +692,44 @@ public:
         return -1;
     }
 
+    Ident get_R_register(Ident lhs_location, Ident lhs_variable_name, StmtBinOp *stmt) {
+        Ident R_register;
+        if (is_register(lhs_location)) {
+            R_register = lhs_location;
+            value_locations[lhs_variable_name].erase(lhs_location);
+
+            if (stmt->uident_ != lhs_variable_name) {
+                save_live_variable(lhs_variable_name, lhs_location, stmt->out_vars);
+            }
+        } else {
+            R_register = get_free_register();
+            if (is_variable(lhs_location)) {
+                if (stmt->uident_ != lhs_variable_name) {
+                    save_live_variable(lhs_variable_name, lhs_location, stmt->out_vars);
+                }
+                lhs_location = get_best_location(get_atom_locations(stmt->atom_1));
+
+                if (is_variable(lhs_location)) {
+                    emitLine("MOV " + R_register + ", " + virtual_memory_to_real[lhs_location]);
+                } else {
+                    emitLine("MOV " + R_register + ", " + lhs_location);
+                }
+            } else {
+                emitLine("MOV " + R_register + ", " + lhs_location);
+            }
+        }
+        return R_register;
+    }
+
+    void set_values_and_forget_dead(StmtBinOp *stmt, Ident R_register) {
+        value_locations[stmt->uident_] = {R_register};
+        register_values[R_register] = {stmt->uident_};
+
+        forget_dead_variable(stmt->atom_1->var_name(), stmt->out_vars);
+        forget_dead_variable(stmt->atom_2->var_name(), stmt->out_vars);
+        forget_dead_variable(stmt->uident_, stmt->out_vars);
+    }
+
     void visitStmtBinOp(StmtBinOp *stmt) override { // A := B op C
         std::string instruction = stmt->binop_->instruction();
         auto lhs_location = get_best_location(get_atom_locations(stmt->atom_1));
@@ -745,51 +771,38 @@ public:
             forget_dead_variable(stmt->uident_, stmt->out_vars);
             return;
         }
-        // TODO te optymalizacja shiftowe
-/*        if (instruction == "IMUL " && (get_power_of_two(stmt->atom_1) != -1 || get_power_of_two(stmt->atom_2) != -1)) {
-            // optymalizacja shiftleft
-            // mov eax, A         ; Load A into eax
-            // shl eax, B         ; Multiply eax by 2^B by shifting the bits to the left
-            //return;
+        if (instruction == "IMUL " && (get_power_of_two(stmt->atom_1) != -1 || get_power_of_two(stmt->atom_2) != -1)) {
+            int power_of_two_lhs = get_power_of_two(stmt->atom_1);
+            int power_of_two_rhs = get_power_of_two(stmt->atom_2);
+            if (power_of_two_lhs > power_of_two_rhs) {
+                std::swap(lhs_location, rhs_location); // power of two is always `C` (rhs)
+                std::swap(power_of_two_rhs, power_of_two_lhs);
+                std::swap(stmt->atom_1, stmt->atom_2);
+
+                lhs_variable_name = stmt->atom_1->var_name();
+            }
+
+            R_register = get_R_register(lhs_location, lhs_variable_name, stmt);
+
+            emitLine("SAL " + R_register + ", " + std::to_string(power_of_two_rhs));
+
+            set_values_and_forget_dead(stmt, R_register);
+            return;
         }
         if (instruction == "IDIV " && !stmt->binop_->isModOp() && get_power_of_two(stmt->atom_2) != -1) {
-            // optymalizacja shiftright
-            // mov eax, A         ; Load A into eax
-            // sar eax, B         ; Divide eax by 2^B by shifting the bits to the right
-            //return;
+            int power_of_two_rhs = get_power_of_two(stmt->atom_2);
+
+            R_register = get_R_register(lhs_location, lhs_variable_name, stmt);
+
+            emitLine("SAR " + R_register + ", " + std::to_string(power_of_two_rhs));
+
+            set_values_and_forget_dead(stmt, R_register);
+            return;
         }
-        if (instruction == "IDIV " && stmt->binop_->isModOp() && get_power_of_two(stmt->atom_2) != -1) {
-            // optymalizacja modulo
-            // mov eax, A         ; Load A into eax
-            // and eax, B - 1     ; Mask out the bits that are not relevant to the result
-            //return;
-        }*/
         if (instruction == "ADD " || instruction == "SUB "
             || instruction == "IMUL " || instruction == "CMP ") {
-            if (is_register(lhs_location)) {
-                R_register = lhs_location;
-                value_locations[lhs_variable_name].erase(lhs_location);
 
-                if (stmt->uident_ != lhs_variable_name) {
-                    save_live_variable(lhs_variable_name, lhs_location, stmt->out_vars);
-                }
-            } else {
-                R_register = get_free_register();
-                if (is_variable(lhs_location)) {
-                    if (stmt->uident_ != lhs_variable_name) {
-                        save_live_variable(lhs_variable_name, lhs_location, stmt->out_vars);
-                    }
-                    lhs_location = get_best_location(get_atom_locations(stmt->atom_1));
-
-                    if (is_variable(lhs_location)) {
-                        emitLine("MOV " + R_register + ", " + virtual_memory_to_real[lhs_location]);
-                    } else {
-                        emitLine("MOV " + R_register + ", " + lhs_location);
-                    }
-                } else {
-                    emitLine("MOV " + R_register + ", " + lhs_location);
-                }
-            }
+            R_register = get_R_register(lhs_location, lhs_variable_name, stmt);
 
             if (lhs_rhs_are_same) { rhs_location = R_register; }
             if (is_variable(rhs_location)) {
@@ -800,12 +813,8 @@ public:
             if (instruction == "CMP ") {
                 setCompareValue(stmt->binop_, R_register);
             }
-            value_locations[stmt->uident_] = {R_register};
-            register_values[R_register] = {stmt->uident_};
 
-            forget_dead_variable(stmt->atom_1->var_name(), stmt->out_vars);
-            forget_dead_variable(stmt->atom_2->var_name(), stmt->out_vars);
-            forget_dead_variable(stmt->uident_, stmt->out_vars);
+            set_values_and_forget_dead(stmt, R_register);
             return;
         }
         if (instruction == "IDIV ") { // div or mod
@@ -834,12 +843,7 @@ public:
             }
 
             R_register = stmt->binop_->isModOp() ? "_reg_edx" : "_reg_eax";
-            value_locations[stmt->uident_] = {R_register};
-            register_values[R_register] = {stmt->uident_};
-
-            forget_dead_variable(stmt->atom_1->var_name(), stmt->out_vars);
-            forget_dead_variable(stmt->atom_2->var_name(), stmt->out_vars);
-            forget_dead_variable(stmt->uident_, stmt->out_vars);
+            set_values_and_forget_dead(stmt, R_register);
             return;
         }
     }
