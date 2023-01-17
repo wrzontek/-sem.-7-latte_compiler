@@ -7,6 +7,64 @@
 #include "Skeleton.C"
 #include "StatementLivenessVisitor.cpp"
 
+class Liveness_Clear_Visitor : public Skeleton {
+public:
+    Program *program;
+
+    explicit Liveness_Clear_Visitor(Program *program) : program(program) {}
+
+    void clear_liveness(NonJmpStmt *stmt) {
+        stmt->in_vars = {};
+        stmt->out_vars = {};
+        stmt->use_vars = {};
+        stmt->kill_vars = {};
+    }
+
+    void clear_liveness(JmpStmt *stmt) {
+        stmt->in_vars = {};
+        stmt->out_vars = {};
+        stmt->use_vars = {};
+        stmt->kill_vars = {};
+    }
+
+    void visitStmtGoNext(StmtGoNext *stmt) override {
+        clear_liveness(stmt);
+    }
+
+    void visitStmtGoto(StmtGoto *stmt) override {
+        clear_liveness(stmt);
+    }
+
+    void visitStmtCondJmp(StmtCondJmp *stmt) override {
+        clear_liveness(stmt);
+    }
+
+    void visitStmtRet(StmtRet *stmt) override {
+        clear_liveness(stmt);
+    }
+
+    void visitStmtVRet(StmtVRet *stmt) override {
+        clear_liveness(stmt);
+    }
+
+    void visitStmtDoNothing(StmtDoNothing *stmt) override {
+        clear_liveness(stmt);
+    }
+
+    void visitStmtNoOp(StmtNoOp *stmt) override {
+        clear_liveness(stmt);
+    }
+
+    void visitStmtBinOp(StmtBinOp *stmt) override {
+        clear_liveness(stmt);
+    }
+
+    void visitStmtCall(StmtCall *stmt) override {
+        clear_liveness(stmt);
+    }
+
+};
+
 class Liveness_Visitor {
 public:
     Program *program;
@@ -20,6 +78,7 @@ public:
 
     Statement_Liveness_Visitor *statementLivenessVisitor;
     Statement_Liveness_Printer *statementLivenessPrinter;
+    Liveness_Clear_Visitor *livenessClearVisitor;
 
     explicit Liveness_Visitor(Program *program,
                               std::map <UIdent, std::set<UIdent>> &succ,
@@ -29,6 +88,7 @@ public:
 
         statementLivenessVisitor = new Statement_Liveness_Visitor();
         statementLivenessPrinter = new Statement_Liveness_Printer();
+        livenessClearVisitor = new Liveness_Clear_Visitor(program);
     }
 
     void printSet(const std::set <UIdent> &set) {
@@ -42,12 +102,21 @@ public:
         std::cout << "}" << std::endl;
     }
 
+    void analyze_liveness_clear_init() {
+        program->accept(livenessClearVisitor);
+        analyze_liveness();
+    }
+
     void analyze_liveness() {
         for (auto pair: block_code) {
             auto block_name = pair.first;
             block_in_vars[block_name] = std::set<UIdent>();
             block_out_vars[block_name] = std::set<UIdent>();
         }
+        analyze_liveness_no_init();
+    }
+
+    void analyze_liveness_no_init() {
         while (true) {
             int equal_count = 0;
             for (auto pair: block_code) {
@@ -74,8 +143,8 @@ public:
             if (equal_count == block_code.size())
                 break;
         }
-
 //        program->accept(statementLivenessPrinter);
+    }
 //        std::cout << "\n\n\n";
 //
 //        for (auto pair: block_code) {
@@ -91,7 +160,7 @@ public:
 //            printSet(block_out_vars_set);
 //        }
 
-    }
+
 };
 
 class Function_Local_Vars_Visitor : public Skeleton {

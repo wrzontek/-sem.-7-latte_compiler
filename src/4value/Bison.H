@@ -52,33 +52,30 @@ extern int fvc_debug;
     _ERROR_ = 258,
     _BANGEQ = 259,
     _PERCENT = 260,
-    _DAMP = 261,
-    _STAR = 262,
-    _PLUS = 263,
-    _DPLUS = 264,
-    _MINUS = 265,
-    _DMINUS = 266,
-    _SLASH = 267,
-    _COLON = 268,
-    _COLONEQ = 269,
-    _SEMI = 270,
-    _LT = 271,
-    _LDARROW = 272,
-    _DEQ = 273,
-    _GT = 274,
-    _GTEQ = 275,
-    _SYMB_3 = 276,
-    _SYMB_8 = 277,
-    _SYMB_7 = 278,
-    _KW_else = 279,
-    _KW_if = 280,
-    _KW_return = 281,
-    _SYMB_9 = 282,
-    _KW_then = 283,
-    _DBAR = 284,
-    T_UIdent = 285,
-    _STRING_ = 286,
-    _INTEGER_ = 287
+    _STAR = 261,
+    _PLUS = 262,
+    _MINUS = 263,
+    _SLASH = 264,
+    _COLON = 265,
+    _COLONEQ = 266,
+    _SEMI = 267,
+    _LT = 268,
+    _LDARROW = 269,
+    _DEQ = 270,
+    _GT = 271,
+    _GTEQ = 272,
+    _SYMB_2 = 273,
+    _SYMB_6 = 274,
+    _SYMB_5 = 275,
+    _SYMB_4 = 276,
+    _KW_else = 277,
+    _KW_if = 278,
+    _KW_return = 279,
+    _SYMB_7 = 280,
+    _KW_then = 281,
+    T_UIdent = 282,
+    _STRING_ = 283,
+    _INTEGER_ = 284
   };
 #endif
 
@@ -103,7 +100,7 @@ union YYSTYPE
   ListJmpStmt* listjmpstmt_;
   ListAtom* listatom_;
 
-#line 107 "Bison.H"
+#line 104 "Bison.H"
 
 };
 typedef union YYSTYPE YYSTYPE;

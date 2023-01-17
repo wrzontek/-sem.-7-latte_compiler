@@ -6,15 +6,15 @@ fi
 
 if ./src/latte/Main -s $1 ; then
     if ./src/4value/FVCMain -s ${1%.*}.fvc ; then
-        i686-linux-gnu-gcc -no-pie -Wall -Wextra -Werror -m32 -c src/lib/runtime.c -o src/lib/runtime.o
-        i686-linux-gnu-gcc -no-pie -Wall -Wextra -Werror -m32 ${1%.*}.s -o ${1%.*}.o -c -masm=intel
-        i686-linux-gnu-gcc -no-pie -Wall -Wextra -Werror -m32 src/lib/runtime.o ${1%.*}.o -o ${1%.*}
+        #i686-linux-gnu-gcc -no-pie -Wall -Wextra -Werror -m32 -c src/lib/runtime.c -o src/lib/runtime.o
+        #i686-linux-gnu-gcc -no-pie -Wall -Wextra -Werror -m32 ${1%.*}.s -o ${1%.*}.o -c -masm=intel
+        #i686-linux-gnu-gcc -no-pie -Wall -Wextra -Werror -m32 src/lib/runtime.o ${1%.*}.o -o ${1%.*}
 
-        #gcc -Wall -Wextra -Werror -m32 -c src/lib/runtime.c -o src/lib/runtime.o
-        #gcc -Wall -Wextra -Werror -m32 ${1%.*}.s -o ${1%.*}.o -c -masm=intel
-        #gcc -Wall -Wextra -Werror -m32 src/lib/runtime.o ${1%.*}.o -o ${1%.*}
+        gcc -Wall -Wextra -Werror -m32 -c src/lib/runtime.c -o src/lib/runtime.o
+        gcc -Wall -Wextra -Werror -m32 ${1%.*}.s -o ${1%.*}.o -c -masm=intel
+        gcc -Wall -Wextra -Werror -m32 src/lib/runtime.o ${1%.*}.o -o ${1%.*}
 
-        rm ${1%.*}.fvc
+        #rm ${1%.*}.fvc
         rm ${1%.*}.o
     fi
 fi

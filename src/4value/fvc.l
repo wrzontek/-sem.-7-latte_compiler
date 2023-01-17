@@ -70,20 +70,17 @@ IDENT [a-zA-Z0-9'_]
 
 <INITIAL>":"      	 return _COLON;
 <INITIAL>":="      	 return _COLONEQ;
-<INITIAL>"-"      	 return _MINUS;
-<INITIAL>"_call"      	 return _SYMB_3;
+<INITIAL>"_call"      	 return _SYMB_2;
 <INITIAL>";"      	 return _SEMI;
-<INITIAL>"++"      	 return _DPLUS;
-<INITIAL>"--"      	 return _DMINUS;
-<INITIAL>"_goto"      	 return _SYMB_7;
-<INITIAL>"_go_next"      	 return _SYMB_8;
-<INITIAL>"return;"      	 return _SYMB_9;
+<INITIAL>"_no-op_"      	 return _SYMB_4;
+<INITIAL>"_goto"      	 return _SYMB_5;
+<INITIAL>"_go_next"      	 return _SYMB_6;
+<INITIAL>"return;"      	 return _SYMB_7;
 <INITIAL>"+"      	 return _PLUS;
+<INITIAL>"-"      	 return _MINUS;
 <INITIAL>"*"      	 return _STAR;
 <INITIAL>"/"      	 return _SLASH;
 <INITIAL>"%"      	 return _PERCENT;
-<INITIAL>"&&"      	 return _DAMP;
-<INITIAL>"||"      	 return _DBAR;
 <INITIAL>"<"      	 return _LT;
 <INITIAL>"<="      	 return _LDARROW;
 <INITIAL>">"      	 return _GT;

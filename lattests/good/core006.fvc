@@ -1,0 +1,10 @@
+main:
+	_d0_x := 0
+	_d0_y := 0
+	_d0_x := 45
+	_t1 :=  0 - 36
+	_d0_y := _t1
+	_t2 := _call printInt _d0_x ;
+	_t3 := _call printInt _d0_y ;
+	return 0
+

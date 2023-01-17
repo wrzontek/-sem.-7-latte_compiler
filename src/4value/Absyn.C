@@ -132,45 +132,6 @@ StmtBinOp *StmtBinOp::clone() const {
 }
 
 
-/********************   StmtNegOp    ********************/
-StmtNegOp::StmtNegOp(UIdent p1, Atom *p2) {
-    uident_ = p1;
-    atom_ = p2;
-
-}
-
-StmtNegOp::StmtNegOp(const StmtNegOp &other) {
-    uident_ = other.uident_;
-    atom_ = other.atom_->clone();
-
-}
-
-StmtNegOp &StmtNegOp::operator=(const StmtNegOp &other) {
-    StmtNegOp tmp(other);
-    swap(tmp);
-    return *this;
-}
-
-void StmtNegOp::swap(StmtNegOp &other) {
-    std::swap(uident_, other.uident_);
-    std::swap(atom_, other.atom_);
-
-}
-
-StmtNegOp::~StmtNegOp() {
-    delete (atom_);
-
-}
-
-void StmtNegOp::accept(Visitor *v) {
-    v->visitStmtNegOp(this);
-}
-
-StmtNegOp *StmtNegOp::clone() const {
-    return new StmtNegOp(*this);
-}
-
-
 /********************   StmtNoOp    ********************/
 StmtNoOp::StmtNoOp(UIdent p1, Atom *p2) {
     uident_ = p1;
@@ -252,73 +213,35 @@ StmtCall *StmtCall::clone() const {
 }
 
 
-/********************   StmtInc    ********************/
-StmtInc::StmtInc(UIdent p1) {
-    uident_ = p1;
+/********************   StmtDoNothing    ********************/
+StmtDoNothing::StmtDoNothing() {
 
 }
 
-StmtInc::StmtInc(const StmtInc &other) {
-    uident_ = other.uident_;
+StmtDoNothing::StmtDoNothing(const StmtDoNothing &other) {
 
 }
 
-StmtInc &StmtInc::operator=(const StmtInc &other) {
-    StmtInc tmp(other);
+StmtDoNothing &StmtDoNothing::operator=(const StmtDoNothing &other) {
+    StmtDoNothing tmp(other);
     swap(tmp);
     return *this;
 }
 
-void StmtInc::swap(StmtInc &other) {
-    std::swap(uident_, other.uident_);
+void StmtDoNothing::swap(StmtDoNothing &other) {
 
 }
 
-StmtInc::~StmtInc() {
+StmtDoNothing::~StmtDoNothing() {
 
 }
 
-void StmtInc::accept(Visitor *v) {
-    v->visitStmtInc(this);
+void StmtDoNothing::accept(Visitor *v) {
+    v->visitStmtDoNothing(this);
 }
 
-StmtInc *StmtInc::clone() const {
-    return new StmtInc(*this);
-}
-
-
-/********************   StmtDecr    ********************/
-StmtDecr::StmtDecr(UIdent p1) {
-    uident_ = p1;
-
-}
-
-StmtDecr::StmtDecr(const StmtDecr &other) {
-    uident_ = other.uident_;
-
-}
-
-StmtDecr &StmtDecr::operator=(const StmtDecr &other) {
-    StmtDecr tmp(other);
-    swap(tmp);
-    return *this;
-}
-
-void StmtDecr::swap(StmtDecr &other) {
-    std::swap(uident_, other.uident_);
-
-}
-
-StmtDecr::~StmtDecr() {
-
-}
-
-void StmtDecr::accept(Visitor *v) {
-    v->visitStmtDecr(this);
-}
-
-StmtDecr *StmtDecr::clone() const {
-    return new StmtDecr(*this);
+StmtDoNothing *StmtDoNothing::clone() const {
+    return new StmtDoNothing(*this);
 }
 
 
@@ -764,70 +687,6 @@ void ModOp::accept(Visitor *v) {
 
 ModOp *ModOp::clone() const {
     return new ModOp(*this);
-}
-
-
-/********************   AndOp    ********************/
-AndOp::AndOp() {
-
-}
-
-AndOp::AndOp(const AndOp &other) {
-
-}
-
-AndOp &AndOp::operator=(const AndOp &other) {
-    AndOp tmp(other);
-    swap(tmp);
-    return *this;
-}
-
-void AndOp::swap(AndOp &other) {
-
-}
-
-AndOp::~AndOp() {
-
-}
-
-void AndOp::accept(Visitor *v) {
-    v->visitAndOp(this);
-}
-
-AndOp *AndOp::clone() const {
-    return new AndOp(*this);
-}
-
-
-/********************   OrOp    ********************/
-OrOp::OrOp() {
-
-}
-
-OrOp::OrOp(const OrOp &other) {
-
-}
-
-OrOp &OrOp::operator=(const OrOp &other) {
-    OrOp tmp(other);
-    swap(tmp);
-    return *this;
-}
-
-void OrOp::swap(OrOp &other) {
-
-}
-
-OrOp::~OrOp() {
-
-}
-
-void OrOp::accept(Visitor *v) {
-    v->visitOrOp(this);
-}
-
-OrOp *OrOp::clone() const {
-    return new OrOp(*this);
 }
 
 

@@ -1,0 +1,16 @@
+main:
+	_t1 := _call print ;
+	if _t1 then _goto _middle_l3 else _goto _false_l2
+_middle_l3:
+	_goto _false_l2
+_true_l1:
+	_goto _end_l4
+_false_l2:
+	_go_next _end_l4
+_end_l4:
+	return 0
+
+print:
+	_t2 := _call printString "ahoj" ;
+	return 1
+

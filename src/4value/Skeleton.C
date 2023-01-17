@@ -43,14 +43,6 @@ void Skeleton::visitStmtBinOp(StmtBinOp *stmt_bin_op) {
 
 }
 
-void Skeleton::visitStmtNegOp(StmtNegOp *stmt_neg_op) {
-    /* Code For StmtNegOp Goes Here */
-
-    visitUIdent(stmt_neg_op->uident_);
-    if (stmt_neg_op->atom_) stmt_neg_op->atom_->accept(this);
-
-}
-
 void Skeleton::visitStmtNoOp(StmtNoOp *stmt_no_op) {
     /* Code For StmtNoOp Goes Here */
 
@@ -68,17 +60,9 @@ void Skeleton::visitStmtCall(StmtCall *stmt_call) {
 
 }
 
-void Skeleton::visitStmtInc(StmtInc *stmt_inc) {
-    /* Code For StmtInc Goes Here */
+void Skeleton::visitStmtDoNothing(StmtDoNothing *stmt_do_nothing) {
+    /* Code For StmtDoNothing Goes Here */
 
-    visitUIdent(stmt_inc->uident_);
-
-}
-
-void Skeleton::visitStmtDecr(StmtDecr *stmt_decr) {
-    /* Code For StmtDecr Goes Here */
-
-    visitUIdent(stmt_decr->uident_);
 
 }
 
@@ -165,18 +149,6 @@ void Skeleton::visitDivOp(DivOp *div_op) {
 
 void Skeleton::visitModOp(ModOp *mod_op) {
     /* Code For ModOp Goes Here */
-
-
-}
-
-void Skeleton::visitAndOp(AndOp *and_op) {
-    /* Code For AndOp Goes Here */
-
-
-}
-
-void Skeleton::visitOrOp(OrOp *or_op) {
-    /* Code For OrOp Goes Here */
 
 
 }

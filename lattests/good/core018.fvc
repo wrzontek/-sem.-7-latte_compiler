@@ -1,0 +1,13 @@
+main:
+	_t1 := _call readInt ;
+	_d0_x := _t1
+	_t2 := _call readString ;
+	_d0_y := _t2
+	_t3 := _call readString ;
+	_d0_z := _t3
+	_t4 := _d0_x - 5
+	_t5 := _call printInt _t4 ;
+	_t6 := _d0_y + _d0_z
+	_t7 := _call printString _t6 ;
+	return 0
+

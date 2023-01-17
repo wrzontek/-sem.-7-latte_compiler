@@ -1,0 +1,9 @@
+main:
+	_t1 := _call foo ;
+	_d0_x := _t1
+	_t2 := _call printInt _d0_x ;
+	return 0
+
+foo:
+	return 10
+

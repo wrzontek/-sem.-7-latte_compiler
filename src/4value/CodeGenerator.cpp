@@ -866,7 +866,7 @@ public:
         return false;
     }
 
-    void saveVolatileRegisters() {
+    void saveVolatileRegisters() { // todo save tylko żywych
         for (auto volatile_register: volatile_registers) {
             for (auto value: register_values[volatile_register]) {
                 // prefer spilling to preserved registers, otherwise to memory
@@ -945,7 +945,7 @@ public:
             emitLine("MOV " + reg + ", " + cond_location);
             cond_location = reg;
         }
-        emitLine("TEST " + cond_location + ", " + cond_location);
+        emitLine("TEST " + cond_location + ", " + cond_location); // todo jeden jump do if else'a
         emitLine("JNZ " + stmt->uident_1);
         emitLine("JMP " + stmt->uident_2);
     }

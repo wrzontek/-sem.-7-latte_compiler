@@ -144,34 +144,19 @@ public:
         calc_in_vars(stmt);
     }
 
-    void visitStmtInc(StmtInc *stmt) override {
+    void visitStmtVRet(StmtVRet *stmt) override {
         stmt->out_vars = current_stmt_out_vars;
 
-        stmt->use_vars.insert(stmt->uident_);
         calc_in_vars(stmt);
     }
 
-    void visitStmtDecr(StmtDecr *stmt) override {
+    void visitStmtDoNothing(StmtDoNothing *stmt) override {
         stmt->out_vars = current_stmt_out_vars;
 
-        stmt->use_vars.insert(stmt->uident_);
         calc_in_vars(stmt);
     }
 
     void visitStmtNoOp(StmtNoOp *stmt) override {
-        stmt->out_vars = current_stmt_out_vars;
-
-        stmt->kill_vars.insert(stmt->uident_);
-
-        auto atom_var_name = stmt->atom_->var_name();
-        if (!atom_var_name.empty()) {
-            stmt->use_vars.insert(atom_var_name);
-        }
-
-        calc_in_vars(stmt);
-    }
-
-    void visitStmtNegOp(StmtNegOp *stmt) override {
         stmt->out_vars = current_stmt_out_vars;
 
         stmt->kill_vars.insert(stmt->uident_);

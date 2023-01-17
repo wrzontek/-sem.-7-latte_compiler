@@ -50,5 +50,6 @@ Skeleton.o : Skeleton.C Skeleton.H Absyn.H
 	${CXX} ${CXXFLAGS} -Wno-unused-parameter -c Skeleton.C
 
 FVCMain.o : FVCMain.C Parser.H Printer.H Absyn.H \
-			CFGVisitor.cpp LivenessVisitor.cpp StatementLivenessVisitor.cpp CodeGenerator.cpp
+			CFGVisitor.cpp LivenessVisitor.cpp StatementLivenessVisitor.cpp CodeGenerator.cpp  \
+			OptimizationVisitor.cpp
 	${CXX} ${CXXFLAGS} -c FVCMain.C

@@ -41,15 +41,11 @@ class Block;
 
 class StmtBinOp;
 
-class StmtNegOp;
-
 class StmtNoOp;
 
 class StmtCall;
 
-class StmtInc;
-
-class StmtDecr;
+class StmtDoNothing;
 
 class StmtGoto;
 
@@ -76,10 +72,6 @@ class MulOp;
 class DivOp;
 
 class ModOp;
-
-class AndOp;
-
-class OrOp;
 
 class LTH;
 
@@ -125,15 +117,11 @@ public:
 
     virtual void visitStmtBinOp(StmtBinOp *p) = 0;
 
-    virtual void visitStmtNegOp(StmtNegOp *p) = 0;
-
     virtual void visitStmtNoOp(StmtNoOp *p) = 0;
 
     virtual void visitStmtCall(StmtCall *p) = 0;
 
-    virtual void visitStmtInc(StmtInc *p) = 0;
-
-    virtual void visitStmtDecr(StmtDecr *p) = 0;
+    virtual void visitStmtDoNothing(StmtDoNothing *p) = 0;
 
     virtual void visitStmtGoto(StmtGoto *p) = 0;
 
@@ -160,10 +148,6 @@ public:
     virtual void visitDivOp(DivOp *p) = 0;
 
     virtual void visitModOp(ModOp *p) = 0;
-
-    virtual void visitAndOp(AndOp *p) = 0;
-
-    virtual void visitOrOp(OrOp *p) = 0;
 
     virtual void visitLTH(LTH *p) = 0;
 
@@ -227,7 +211,6 @@ class NonJmpStmt : public Visitable {
 public:
     std::set <UIdent> in_vars;
     std::set <UIdent> out_vars;
-    std::set <UIdent> gen_vars;
     std::set <UIdent> use_vars;
     std::set <UIdent> kill_vars;
 
@@ -239,7 +222,6 @@ class JmpStmt : public Visitable {
 public:
     std::set <UIdent> in_vars;
     std::set <UIdent> out_vars;
-    std::set <UIdent> gen_vars;
     std::set <UIdent> use_vars;
     std::set <UIdent> kill_vars;
 
@@ -403,42 +385,22 @@ public:
     void swap(StmtCall &);
 };
 
-class StmtInc : public NonJmpStmt {
+class StmtDoNothing : public NonJmpStmt {
 public:
-    UIdent uident_;
 
-    StmtInc(const StmtInc &);
+    StmtDoNothing(const StmtDoNothing &);
 
-    StmtInc &operator=(const StmtInc &);
+    StmtDoNothing &operator=(const StmtDoNothing &);
 
-    StmtInc(UIdent p1);
+    StmtDoNothing();
 
-    ~StmtInc();
+    ~StmtDoNothing();
 
     virtual void accept(Visitor *v);
 
-    virtual StmtInc *clone() const;
+    virtual StmtDoNothing *clone() const;
 
-    void swap(StmtInc &);
-};
-
-class StmtDecr : public NonJmpStmt {
-public:
-    UIdent uident_;
-
-    StmtDecr(const StmtDecr &);
-
-    StmtDecr &operator=(const StmtDecr &);
-
-    StmtDecr(UIdent p1);
-
-    ~StmtDecr();
-
-    virtual void accept(Visitor *v);
-
-    virtual StmtDecr *clone() const;
-
-    void swap(StmtDecr &);
+    void swap(StmtDoNothing &);
 };
 
 class StmtGoto : public JmpStmt {
@@ -712,42 +674,6 @@ public:
     virtual ModOp *clone() const;
 
     void swap(ModOp &);
-};
-
-class AndOp : public BinOp {
-public:
-
-    AndOp(const AndOp &);
-
-    AndOp &operator=(const AndOp &);
-
-    AndOp();
-
-    ~AndOp();
-
-    virtual void accept(Visitor *v);
-
-    virtual AndOp *clone() const;
-
-    void swap(AndOp &);
-};
-
-class OrOp : public BinOp {
-public:
-
-    OrOp(const OrOp &);
-
-    OrOp &operator=(const OrOp &);
-
-    OrOp();
-
-    ~OrOp();
-
-    virtual void accept(Visitor *v);
-
-    virtual OrOp *clone() const;
-
-    void swap(OrOp &);
 };
 
 class LTH : public BinOp {

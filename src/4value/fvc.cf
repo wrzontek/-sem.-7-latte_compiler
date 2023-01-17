@@ -9,6 +9,7 @@ Block.        CodeBlock ::= UIdent ":" [NonJmpStmt] [JmpStmt] ; -- może być np
 StmtBinOp.      NonJmpStmt ::= UIdent ":=" Atom BinOp Atom ;
 StmtNoOp.       NonJmpStmt ::= UIdent ":=" Atom ;
 StmtCall.       NonJmpStmt ::= UIdent ":=" "_call" UIdent [Atom] ";" ;
+StmtDoNothing.  NonJmpStmt ::= "_no-op_" ;
 
 StmtGoto.           JmpStmt ::= "_goto" UIdent ;
 StmtGoNext.         JmpStmt ::= "_go_next" UIdent ;

@@ -1,0 +1,5 @@
+main:
+	_t1 :=  0 - 1
+	_t2 := _call printInt _t1 ;
+	return 0
+

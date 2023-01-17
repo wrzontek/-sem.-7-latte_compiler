@@ -52,15 +52,11 @@ public:
     void visitNonJmpStmt(NonJmpStmt *p); /* abstract class */
     void visitStmtBinOp(StmtBinOp *p);
 
-    void visitStmtNegOp(StmtNegOp *p);
-
     void visitStmtNoOp(StmtNoOp *p);
 
     void visitStmtCall(StmtCall *p);
 
-    void visitStmtInc(StmtInc *p);
-
-    void visitStmtDecr(StmtDecr *p);
+    void visitStmtDoNothing(StmtDoNothing *p);
 
     void visitJmpStmt(JmpStmt *p); /* abstract class */
     void visitStmtGoto(StmtGoto *p);
@@ -90,10 +86,6 @@ public:
     void visitDivOp(DivOp *p);
 
     void visitModOp(ModOp *p);
-
-    void visitAndOp(AndOp *p);
-
-    void visitOrOp(OrOp *p);
 
     void visitLTH(LTH *p);
 
@@ -208,15 +200,11 @@ public:
     void visitNonJmpStmt(NonJmpStmt *p); /* abstract class */
     void visitStmtBinOp(StmtBinOp *p);
 
-    void visitStmtNegOp(StmtNegOp *p);
-
     void visitStmtNoOp(StmtNoOp *p);
 
     void visitStmtCall(StmtCall *p);
 
-    void visitStmtInc(StmtInc *p);
-
-    void visitStmtDecr(StmtDecr *p);
+    void visitStmtDoNothing(StmtDoNothing *p);
 
     void visitJmpStmt(JmpStmt *p); /* abstract class */
     void visitStmtGoto(StmtGoto *p);
@@ -246,10 +234,6 @@ public:
     void visitDivOp(DivOp *p);
 
     void visitModOp(ModOp *p);
-
-    void visitAndOp(AndOp *p);
-
-    void visitOrOp(OrOp *p);
 
     void visitLTH(LTH *p);
 
