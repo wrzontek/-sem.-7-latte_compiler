@@ -69,21 +69,18 @@ int main(int argc, char **argv) {
             PrintAbsyn *p = new PrintAbsyn();
             printf("%s\n\n", p->print(parse_tree));
         }
-        // TODO jak będą optymalizajce to walnąć flagę (z latc) żeby wyłączyć
 
         auto path = std::filesystem::path(filename);
         auto cfg_visitor = new CFG_Visitor(parse_tree);
         parse_tree->accept(cfg_visitor);
         cfg_visitor->setPred();
-//        cfg_visitor->printSucc();
-//        cfg_visitor->printPred();
 
         auto liveness_visitor = new Liveness_Visitor(parse_tree, cfg_visitor->succ, cfg_visitor->pred,
                                                      cfg_visitor->block_code);
         liveness_visitor->analyze_liveness();
 
         auto optimization_visitor = new Optimization_Visitor(parse_tree, liveness_visitor);
-        optimization_visitor->eliminate_dead_code();
+        optimization_visitor->optimize();
 
         auto function_local_vars_visitor = new Function_Local_Vars_Visitor(liveness_visitor->block_out_vars);
         parse_tree->accept(function_local_vars_visitor);

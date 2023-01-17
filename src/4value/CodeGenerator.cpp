@@ -318,8 +318,10 @@ public:
                 }
 
                 if (is_variable(best_loc)) {
-                    emitLine("MOV " + virtual_memory_to_real[out_var] + ", DWORD PTR " +
+                    auto reg = get_free_register();
+                    emitLine("MOV " + reg + ", DWORD PTR " +
                              virtual_memory_to_real[best_loc]);
+                    emitLine("MOV " + virtual_memory_to_real[out_var] + ", " + reg);
                 } else if (is_const(best_loc)) {
                     emitLine("MOV " + virtual_memory_to_real[out_var] + ", DWORD PTR " + best_loc);
                 } else {

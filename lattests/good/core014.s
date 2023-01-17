@@ -8,13 +8,13 @@ main:
 	push ebp
 	mov ebp, esp
 	sub esp, 12
-	MOV eax, 1
-	MOV ebx, eax
 	PUSH 1
 	CALL printInt
 	ADD esp, 4
-	MOV [ebp - 4], ebx
-	MOV [ebp - 8], DWORD PTR 1
+	PUSH 1
+	MOV [ebp - 4], DWORD PTR 1
+	MOV ebx, DWORD PTR [ebp - 16]
+	MOV [ebp - 8], ebx
 	MOV [ebp - 12], DWORD PTR 5000000
 	JMP _while_cond_1
 _while_body_1:
@@ -24,9 +24,9 @@ _while_body_1:
 	MOV ebx, [ebp - 8]
 	ADD ebx, DWORD PTR [ebp - 4]
 	MOV ecx, ebx
-	SUB ebx, DWORD PTR [ebp - 8]
-	MOV [ebp - 4], ecx
-	MOV [ebp - 8], ebx
+	SUB ecx, DWORD PTR [ebp - 8]
+	MOV [ebp - 4], ebx
+	MOV [ebp - 8], ecx
 _while_cond_1:
 	MOV eax, [ebp - 4]
 	CMP eax, DWORD PTR [ebp - 12]

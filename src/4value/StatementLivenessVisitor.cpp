@@ -150,12 +150,6 @@ public:
         calc_in_vars(stmt);
     }
 
-    void visitStmtDoNothing(StmtDoNothing *stmt) override {
-        stmt->out_vars = current_stmt_out_vars;
-
-        calc_in_vars(stmt);
-    }
-
     void visitStmtNoOp(StmtNoOp *stmt) override {
         stmt->out_vars = current_stmt_out_vars;
 

@@ -31,7 +31,6 @@ f:
 	push ebp
 	mov ebp, esp
 	LEA eax, .SC1
-	MOV ebx, eax
 	PUSH eax
 	CALL printString
 	ADD esp, 4
