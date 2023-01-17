@@ -237,6 +237,8 @@ public:
 
     virtual bool is_string_constant() { return false; }
 
+    virtual bool is_variable() { return false; }
+
     virtual int get_int_constant() { return -1; }
 
     virtual Atom *clone() const = 0;
@@ -258,6 +260,8 @@ public:
     virtual std::string get_string_function() { return "BOZO"; };
 
     virtual bool isModOp() { return false; };
+
+    virtual std::string identifier() = 0;
 
 };
 
@@ -579,6 +583,8 @@ public:
 
 class AddOp : public BinOp {
 public:
+    std::string identifier() override { return "+"; }
+
     std::string instruction() override { return "ADD "; };
 
     std::string get_string_function() override { return "_stringsConcat"; };
@@ -600,6 +606,8 @@ public:
 
 class SubOp : public BinOp {
 public:
+    std::string identifier() override { return "-"; }
+
     std::string instruction() override { return "SUB "; };
 
     SubOp(const SubOp &);
@@ -619,6 +627,8 @@ public:
 
 class MulOp : public BinOp {
 public:
+    std::string identifier() override { return "*"; }
+
     std::string instruction() override { return "IMUL "; };
 
     MulOp(const MulOp &);
@@ -638,6 +648,8 @@ public:
 
 class DivOp : public BinOp {
 public:
+    std::string identifier() override { return "/"; }
+
     std::string instruction() override { return "IDIV "; };
 
     DivOp(const DivOp &);
@@ -657,6 +669,8 @@ public:
 
 class ModOp : public BinOp {
 public:
+    std::string identifier() override { return "%"; }
+
     std::string instruction() override { return "IDIV "; };
 
     bool isModOp() override { return true; };
@@ -678,6 +692,8 @@ public:
 
 class LTH : public BinOp {
 public:
+    std::string identifier() override { return "<"; }
+
     std::string instruction() override { return "CMP "; };
 
     std::string cond_set_instruction() override { return "SETL "; };
@@ -699,6 +715,8 @@ public:
 
 class LE : public BinOp {
 public:
+    std::string identifier() override { return "<="; }
+
     std::string instruction() override { return "CMP "; };
 
     std::string cond_set_instruction() override { return "SETLE "; };
@@ -720,6 +738,8 @@ public:
 
 class GTH : public BinOp {
 public:
+    std::string identifier() override { return ">"; }
+
     std::string instruction() override { return "CMP "; };
 
     std::string cond_set_instruction() override { return "SETG "; };
@@ -741,6 +761,8 @@ public:
 
 class GE : public BinOp {
 public:
+    std::string identifier() override { return ">="; }
+
     std::string instruction() override { return "CMP "; };
 
     std::string cond_set_instruction() override { return "SETGE "; };
@@ -762,6 +784,8 @@ public:
 
 class EQU : public BinOp {
 public:
+    std::string identifier() override { return "=="; }
+
     std::string instruction() override { return "CMP "; };
 
     std::string cond_set_instruction() override { return "SETE "; };
@@ -785,6 +809,8 @@ public:
 
 class NE : public BinOp {
 public:
+    std::string identifier() override { return "!="; }
+
     std::string instruction() override { return "CMP "; };
 
     std::string cond_set_instruction() override { return "SETNE "; };

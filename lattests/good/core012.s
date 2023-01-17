@@ -26,71 +26,70 @@ main:
 	PUSH ebx
 	CALL printInt
 	ADD esp, 4
-	MOV ebx, 56
-	SUB ebx, edi
+	MOV ecx, 56
+	SUB ecx, edi
 	MOV esi, eax
-	PUSH ebx
+	PUSH ecx
+	PUSH ecx
 	CALL printInt
 	ADD esp, 4
-	MOV ebx, 56
-	IMUL ebx, edi
+	MOV ecx, 56
+	IMUL ecx, edi
 	PUSH eax
-	PUSH ebx
+	PUSH ecx
+	PUSH ecx
 	CALL printInt
 	ADD esp, 4
-	MOV ebx, 45
-	SAR ebx, 1
+	MOV ecx, 45
+	SAR ecx, 1
 	PUSH eax
-	PUSH ebx
+	PUSH ecx
+	PUSH ecx
 	CALL printInt
 	ADD esp, 4
-	PUSH eax
+	MOV [ebp - 20], eax
 	MOV eax, 78
 	CDQ
 	PUSH 3
-	IDIV DWORD PTR [ebp - 16]
-	MOV ebx, edx
+	IDIV DWORD PTR [ebp - 24]
+	MOV [ebp - 24], edx
 	PUSH edx
 	CALL printInt
 	ADD esp, 4
-	MOV ebx, 56
-	SUB ebx, edi
-	MOV ecx, 56
-	ADD ecx, edi
-	CMP ebx, ecx
-	MOV ebx, 0
-	SETG bl
-	MOV [ebp - 16], eax
-	PUSH ebx
+	MOV ecx, [ebp - 4]
+	CMP ecx, ebx
+	MOV ecx, 0
+	SETG cl
+	MOV ebx, eax
+	MOV [ebp - 24], ecx
+	PUSH ecx
 	CALL printBool
 	ADD esp, 4
-	PUSH eax
+	MOV [ebp - 24], eax
 	MOV eax, 56
 	CDQ
 	IDIV edi
-	MOV ebx, 56
-	IMUL ebx, edi
-	CMP eax, ebx
+	CMP eax, DWORD PTR [ebp - 12]
 	MOV eax, 0
 	SETLE al
-	MOV ebx, eax
+	MOV edi, eax
 	PUSH eax
 	CALL printBool
 	ADD esp, 4
-	MOV ebx, eax
+	MOV edi, eax
 	LEA eax, .SC0
 	PUSH eax
 	LEA eax, .SC3
 	PUSH eax
 	CALL _stringsConcat
 	ADD esp, 8
-	MOV edi, eax
+	MOV [ebp - 4], eax
 	LEA eax, .SC1
 	PUSH eax
-	PUSH edi
+	PUSH DWORD PTR [ebp - 4]
 	CALL _stringsConcat
 	ADD esp, 8
-	MOV edi, eax
+	MOV [ebp - 4], eax
 	PUSH eax
 	CALL printString
 	ADD esp, 4

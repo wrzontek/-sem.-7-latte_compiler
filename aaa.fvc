@@ -1,7 +1,15 @@
 main:
-	_d0_b := 123
-	_d0_a := _d0_b
-	_t1 := _d0_a + _d0_b
-	_d0_c := _t1
-	return _d0_c
+	_t1 := 123 * 123
+	_d0_a := _t1
+	_d0_b := _d0_a
+	_t2 := _d0_a + _d0_b
+	return _t2
+
+f:
+	_t3 := __arg__0 + __arg__1
+	_d0_x := _t3
+	_t4 := __arg__0 + __arg__1
+	_d0_y := _t4
+	_t5 := _d0_x + _d0_y
+	return _t5
 

@@ -1,6 +1,11 @@
 int main() {
-    int b = 123;
-    int a = b;
-    int c = a + b;
-    return c;
+    int a = 123 * 123;
+    int b = a;
+    return a + b;
+}
+
+int f(int a, int b) {
+    int x = a + b;
+    int y = a + b;
+    return x + y;
 }

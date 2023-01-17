@@ -23,7 +23,7 @@ public:
             (*i)->accept(this);
             if (remove_current_stmt) {
                 removed_lines++;
-                std::cout << "REMOVING ASSIGNMENT TO " + removing_ass_to << std::endl;
+                //std::cout << "REMOVING ASSIGNMENT TO " + removing_ass_to << std::endl;
                 i = listnonjmpstmt->erase(i);
             } else {
                 ++i;
@@ -85,7 +85,7 @@ public:
 
         if (stmt->atom_->var_name() == var_to_propagate) { // propvar := 123, ...,  y := propvar  ->  y := 123
             changed = true;
-            std::cout << "REPLACING noop " + var_to_propagate << std::endl;
+            //std::cout << "REPLACING noop " + var_to_propagate << std::endl;
             stmt->atom_ = rhs->clone();
         }
     }
@@ -98,12 +98,12 @@ public:
 
         if (stmt->atom_1->var_name() == var_to_propagate) { // propvar := 123, ...,  y := propvar + x  ->  y := 123 + x
             changed = true;
-            std::cout << "REPLACING binop left " + var_to_propagate << std::endl;
+            //std::cout << "REPLACING binop left " + var_to_propagate << std::endl;
             stmt->atom_1 = rhs->clone();
         }
         if (stmt->atom_2->var_name() == var_to_propagate) { // propvar := 123, ...,  y := x + propvar  ->  y := x + 123
             changed = true;
-            std::cout << "REPLACING binop right " + var_to_propagate << std::endl;
+            //std::cout << "REPLACING binop right " + var_to_propagate << std::endl;
             stmt->atom_2 = rhs->clone();
         }
     }
@@ -121,7 +121,7 @@ public:
         for (int i = 0; i < list->size(); ++i) {
             if (list->at(i)->var_name() == var_to_propagate) {
                 changed = true;
-                std::cout << "REPLACING call arg " + var_to_propagate << std::endl;
+                //std::cout << "REPLACING call arg " + var_to_propagate << std::endl;
                 list->at(i) = rhs->clone();
             }
         }
@@ -130,7 +130,7 @@ public:
     void visitStmtCondJmp(StmtCondJmp *stmt) override {
         if (stmt->atom_->var_name() == var_to_propagate) { // propvar := 1, ...,  if propvar  ->  if 1
             changed = true;
-            std::cout << "REPLACING condjmp " + var_to_propagate << std::endl;
+            //std::cout << "REPLACING condjmp " + var_to_propagate << std::endl;
             stmt->atom_ = rhs->clone();
         }
     }
@@ -138,12 +138,101 @@ public:
     void visitStmtRet(StmtRet *stmt) override {
         if (stmt->atom_->var_name() == var_to_propagate) { // propvar := 1, ...,  if propvar  ->  if 1
             changed = true;
-            std::cout << "REPLACING ret " + var_to_propagate << std::endl;
+            //std::cout << "REPLACING ret " + var_to_propagate << std::endl;
             stmt->atom_ = rhs->clone();
         }
     }
 
 };
+
+class Expression_Propagation_Visitor : public Skeleton {
+public:
+    std::vector<NonJmpStmt *>::iterator nonjmp_stmt_iterator;
+
+    BinOp *propagated_expression_binop;
+    Atom *rhs_atom_1;
+    Atom *rhs_atom_2;
+
+    UIdent result_var;
+    bool expression_to_progate_reaches_further;
+    UIdent this_stmt_lhs;
+
+    bool changed;
+
+    explicit Expression_Propagation_Visitor() {}
+
+    void visitListNonJmpStmt(ListNonJmpStmt *listnonjmpstmt) override {
+        nonjmp_stmt_iterator++; // start from the next stmt
+        expression_to_progate_reaches_further = true;
+        this_stmt_lhs = "";
+
+        for (auto i = nonjmp_stmt_iterator; i != listnonjmpstmt->end(); ++i) {
+            (*i)->accept(this);
+            if (!this_stmt_lhs.empty()) {
+                //std::cout << "REPLACING BINOP BOTH " + this_stmt_lhs + " with " + result_var << std::endl;
+                int index = std::distance(listnonjmpstmt->begin(), i);
+                listnonjmpstmt->at(index) = new StmtNoOp(this_stmt_lhs, new AtomVar(result_var));
+                this_stmt_lhs = "";
+            }
+            if (!expression_to_progate_reaches_further) {
+                break;
+            }
+        }
+    }
+
+    bool atomsEqual(Atom *atom1, Atom *atom2) {
+        if (atom1->is_int_constant() && atom2->is_int_constant()) {
+            return atom1->get_int_constant() == atom2->get_int_constant();
+        }
+        if (atom1->is_string_constant() && atom2->is_string_constant()) {
+            return atom1->constant() == atom2->constant();
+        }
+        if (!atom1->var_name().empty() && !atom2->var_name().empty()) {
+            return atom1->var_name() == atom2->var_name();
+        }
+
+        return false;
+    }
+
+    bool expressionIsPropagatedExpression(BinOp *binop, Atom *atom1, Atom *atom2) {
+        return binop->identifier() == propagated_expression_binop->identifier() &&
+               atomsEqual(atom1, rhs_atom_1) &&
+               atomsEqual(atom2, rhs_atom_2);
+    }
+
+    void visitStmtNoOp(StmtNoOp *stmt) override {
+        if (stmt->atom_->var_name() == stmt->uident_) { // a := a, does nothing
+            return;
+        }
+        if (stmt->uident_ == rhs_atom_1->var_name() ||
+            stmt->uident_ == rhs_atom_2->var_name()) { // part of propagated expression overwritten
+            expression_to_progate_reaches_further = false;
+            return;
+        }
+    }
+
+    void visitStmtBinOp(StmtBinOp *stmt) override {
+        if (stmt->uident_ == rhs_atom_1->var_name() ||
+            stmt->uident_ == rhs_atom_2->var_name()) { // part of propagated expression overwritten
+            expression_to_progate_reaches_further = false;
+            return;
+        }
+
+        if (expressionIsPropagatedExpression(stmt->binop_, stmt->atom_1, stmt->atom_2)) {
+            changed = true;
+            this_stmt_lhs = stmt->uident_;
+        }
+    }
+
+    void visitStmtCall(StmtCall *stmt) override {
+        if (stmt->uident_1 == rhs_atom_1->var_name() ||
+            stmt->uident_1 == rhs_atom_2->var_name()) { // part of propagated expression overwritten
+            expression_to_progate_reaches_further = false;
+            return;
+        }
+    }
+};
+
 
 class LCSE_Visitor : public Skeleton {
 public:
@@ -154,14 +243,17 @@ public:
     bool changed;
 
     Copy_Propagation_Visitor *copyPropagationVisitor;
+    Expression_Propagation_Visitor *expressionPropagationVisitor;
 
     explicit LCSE_Visitor() {
         copyPropagationVisitor = new Copy_Propagation_Visitor();
+        expressionPropagationVisitor = new Expression_Propagation_Visitor();
     }
 
     void reset() {
         changed = false;
         copyPropagationVisitor->changed = false;
+        expressionPropagationVisitor->changed = false;
     }
 
     void visitBlock(Block *block) override {
@@ -171,7 +263,7 @@ public:
         block_list_nonjmp_stmt->accept(this);
         jmp_stmt->accept(this);
 
-        if (copyPropagationVisitor->changed) {
+        if (copyPropagationVisitor->changed || expressionPropagationVisitor->changed) {
             changed = true;
         }
     }
@@ -192,15 +284,24 @@ public:
         jmp_stmt->accept(copyPropagationVisitor);
     }
 
-    void visitStmtNoOp(StmtNoOp *stmt) override {
-        auto rhs = stmt->atom_;
-        copy_propagate_variable(stmt->uident_, rhs);
+    void propagate_expression(UIdent result_var, BinOp *binOp, Atom *rhs_atom_1, Atom *rhs_atom_2) {
+        expressionPropagationVisitor->nonjmp_stmt_iterator = nonjmp_stmt_iterator;
+        expressionPropagationVisitor->result_var = result_var;
+        expressionPropagationVisitor->rhs_atom_1 = rhs_atom_1;
+        expressionPropagationVisitor->rhs_atom_2 = rhs_atom_2;
+        expressionPropagationVisitor->propagated_expression_binop = binOp;
+
+        block_list_nonjmp_stmt->accept(expressionPropagationVisitor);
+        jmp_stmt->accept(expressionPropagationVisitor);
     }
 
-    // TODO
-//      void visitStmtBinOp(StmtBinOp *stmt) override {
-//
-//        }
+    void visitStmtNoOp(StmtNoOp *stmt) override {
+        copy_propagate_variable(stmt->uident_, stmt->atom_);
+    }
+
+    void visitStmtBinOp(StmtBinOp *stmt) override {
+        propagate_expression(stmt->uident_, stmt->binop_, stmt->atom_1, stmt->atom_2);
+    }
 };
 
 class Optimization_Visitor : public Skeleton {
