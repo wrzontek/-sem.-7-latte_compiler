@@ -40,7 +40,7 @@ public:
         for (auto i = listnonjmpstmt->begin(); i != listnonjmpstmt->end(); ++i) {
             (*i)->accept(this);
             if (!this_stmt_lhs.empty()) {
-                std::cout << "REPLACING BINOP BOTH " + this_stmt_lhs + " with " + this_stmt_rhs << std::endl;
+//                std::cout << "REPLACING BINOP BOTH " + this_stmt_lhs + " with " + this_stmt_rhs << std::endl;
                 int index = std::distance(listnonjmpstmt->begin(), i);
                 listnonjmpstmt->at(index) = new StmtNoOp(this_stmt_lhs, new AtomVar(this_stmt_rhs));
                 this_stmt_lhs = "";

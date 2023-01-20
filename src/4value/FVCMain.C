@@ -68,14 +68,6 @@ int main(int argc, char **argv) {
         std::cerr << "Parse error on line " << e.getLine() << "\n";
     }
     if (parse_tree) {
-        if (!quiet) {
-            printf("\n[Abstract Syntax]\n");
-            ShowAbsyn *s = new ShowAbsyn();
-            printf("%s\n\n", s->show(parse_tree));
-            printf("[Linearized Tree]\n");
-            PrintAbsyn *p = new PrintAbsyn();
-            printf("%s\n\n", p->print(parse_tree));
-        }
 
         auto path = std::filesystem::path(filename);
         auto cfg_visitor = new CFG_Visitor(parse_tree);
@@ -93,8 +85,10 @@ int main(int argc, char **argv) {
         optimization_visitor->lcse_only = lcse_only;
         optimization_visitor->optimize();
 
-//        PrintAbsyn *p = new PrintAbsyn();
-//        printf("%s\n\n", p->print(parse_tree));
+        if (!quiet) {
+            PrintAbsyn *p = new PrintAbsyn();
+            printf("%s\n\n", p->print(parse_tree));
+        }
 
         auto function_local_vars_visitor = new Function_Local_Vars_Visitor(liveness_visitor->block_out_vars);
         parse_tree->accept(function_local_vars_visitor);

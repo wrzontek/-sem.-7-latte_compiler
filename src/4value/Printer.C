@@ -130,12 +130,13 @@ void PrintAbsyn::visitProg(Prog *p) {
 void PrintAbsyn::visitCodeBlock(CodeBlock *p) {} //abstract class
 
 void PrintAbsyn::visitBlock(Block *p) {
+    render("\n");
     int oldi = _i_;
     if (oldi > 0) render(_L_PAREN);
 
     visitUIdent(p->uident_);
     render(':');
-    render('\n');
+    render("\n");
     _i_ = 0;
     visitListNonJmpStmt(p->listnonjmpstmt_);
     _i_ = 0;
@@ -193,7 +194,6 @@ void PrintAbsyn::visitStmtCall(StmtCall *p) {
 
     if (oldi > 0) render(_R_PAREN);
     _i_ = oldi;
-    render("\n");
 }
 
 void PrintAbsyn::visitStmtDoNothing(StmtDoNothing *p) {
@@ -204,6 +204,7 @@ void PrintAbsyn::visitStmtDoNothing(StmtDoNothing *p) {
 
     if (oldi > 0) render(_R_PAREN);
     _i_ = oldi;
+    render("\n");
 }
 
 void PrintAbsyn::visitJmpStmt(JmpStmt *p) {} //abstract class
@@ -217,6 +218,7 @@ void PrintAbsyn::visitStmtGoto(StmtGoto *p) {
 
     if (oldi > 0) render(_R_PAREN);
     _i_ = oldi;
+    render("\n");
 }
 
 void PrintAbsyn::visitStmtGoNext(StmtGoNext *p) {
@@ -228,6 +230,7 @@ void PrintAbsyn::visitStmtGoNext(StmtGoNext *p) {
 
     if (oldi > 0) render(_R_PAREN);
     _i_ = oldi;
+    render("\n");
 }
 
 void PrintAbsyn::visitStmtCondJmp(StmtCondJmp *p) {
@@ -246,6 +249,7 @@ void PrintAbsyn::visitStmtCondJmp(StmtCondJmp *p) {
 
     if (oldi > 0) render(_R_PAREN);
     _i_ = oldi;
+    render("\n");
 }
 
 void PrintAbsyn::visitStmtRet(StmtRet *p) {
@@ -258,6 +262,7 @@ void PrintAbsyn::visitStmtRet(StmtRet *p) {
 
     if (oldi > 0) render(_R_PAREN);
     _i_ = oldi;
+    render("\n");
 }
 
 void PrintAbsyn::visitStmtVRet(StmtVRet *p) {
@@ -268,6 +273,7 @@ void PrintAbsyn::visitStmtVRet(StmtVRet *p) {
 
     if (oldi > 0) render(_R_PAREN);
     _i_ = oldi;
+    render("\n");
 }
 
 void PrintAbsyn::visitAtom(Atom *p) {} //abstract class

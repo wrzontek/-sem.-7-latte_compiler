@@ -3,7 +3,9 @@ Kompilacja:
 
 Optymalizacje:
     - LCSE
-    - GSCE  TODO by wyłączyć należy odpalać skrypt latc/latc_x86 z flagą -local
+    - GSCE
+    W skrypcie latc_x86 (latc) znajdują się instrukcje przełączania między LCSE a GCSE,
+     plus opcja wypisiwania wynikowego kodu czwórkowego
 
 Używane biblioteki/narzędzia:
     - bnfc
