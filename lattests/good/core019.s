@@ -17,7 +17,7 @@ _t1:
 	CALL printInt
 	ADD esp, 4
 _after_t1:
-	PUSH DWORD PTR [ebp - 4]
+	PUSH 78
 	CALL printInt
 	ADD esp, 4
 	JMP _while_cond_2

@@ -2,7 +2,8 @@ Kompilacja:
     `make` w project root
 
 Optymalizacje:
-    - GSCE
+    - LCSE
+    - GSCE  TODO by wyłączyć należy odpalać skrypt latc/latc_x86 z flagą -local
 
 Używane biblioteki/narzędzia:
     - bnfc

@@ -66,11 +66,11 @@ main:
 	sub esp, 4
 	CALL readInt
 	MOV ebx, eax
-	CMP ebx, 0
-	MOV ebx, 0
-	SETGE bl
-	MOV [ebp - 4], eax
-	TEST ebx, ebx
+	CMP eax, 0
+	MOV eax, 0
+	SETGE al
+	MOV [ebp - 4], ebx
+	TEST eax, eax
 	JNZ _if_true_3
 	JMP _if_false_3
 _if_true_3:

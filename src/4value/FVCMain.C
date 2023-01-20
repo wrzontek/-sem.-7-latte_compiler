@@ -32,17 +32,24 @@ int main(int argc, char **argv) {
     FILE *input;
     int quiet = 0;
     char *filename = NULL;
+    bool lcse_only = false;
 
-    if (argc > 1) {
-        if (strcmp(argv[1], "-s") == 0) {
+    if (strcmp(argv[1], "-g") == 0) {
+        lcse_only = false;
+    } else if (strcmp(argv[1], "-l") == 0) {
+        lcse_only = true;
+    }
+
+    if (argc > 2) {
+        if (strcmp(argv[2], "-s") == 0) {
             quiet = 1;
-            if (argc > 2) {
-                filename = argv[2];
+            if (argc > 3) {
+                filename = argv[3];
             } else {
                 input = stdin;
             }
         } else {
-            filename = argv[1];
+            filename = argv[2];
         }
     }
 
@@ -74,13 +81,20 @@ int main(int argc, char **argv) {
         auto cfg_visitor = new CFG_Visitor(parse_tree);
         parse_tree->accept(cfg_visitor);
         cfg_visitor->setPred();
+//        cfg_visitor->printSucc();
+//        cfg_visitor->printPred();
 
         auto liveness_visitor = new Liveness_Visitor(parse_tree, cfg_visitor->succ, cfg_visitor->pred,
                                                      cfg_visitor->block_code);
         liveness_visitor->analyze_liveness();
 
-        auto optimization_visitor = new Optimization_Visitor(parse_tree, liveness_visitor);
+        auto optimization_visitor = new Optimization_Visitor(parse_tree, liveness_visitor, liveness_visitor->succ,
+                                                             liveness_visitor->pred, liveness_visitor->block_code);
+        optimization_visitor->lcse_only = lcse_only;
         optimization_visitor->optimize();
+
+//        PrintAbsyn *p = new PrintAbsyn();
+//        printf("%s\n\n", p->print(parse_tree));
 
         auto function_local_vars_visitor = new Function_Local_Vars_Visitor(liveness_visitor->block_out_vars);
         parse_tree->accept(function_local_vars_visitor);

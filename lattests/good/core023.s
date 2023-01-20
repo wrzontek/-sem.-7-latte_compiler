@@ -58,11 +58,13 @@ foo:
 	CDQ
 	MOV [ebp + 20], DWORD PTR 10
 	IDIV DWORD PTR [ebp + 20]
-	MOV ebx, edx
-	PUSH edx
+	MOV eax, edx
+	MOV ebx, eax
+	MOV edi, edx
+	PUSH eax
 	CALL printInt
 	ADD esp, 4
-	MOV eax, ebx
+	MOV eax, edi
 	mov esp, ebp
 	pop ebp
 	pop esi

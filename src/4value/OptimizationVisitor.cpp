@@ -7,6 +7,7 @@
 #include <algorithm>
 #include "Skeleton.C"
 #include "LivenessVisitor.cpp"
+#include "GCSEVisitor.cpp"
 
 class Dead_Code_Removal_Visitor : public Skeleton {
 public:
@@ -304,44 +305,49 @@ public:
     }
 };
 
-
-// jestem w x := a + b
-// puszczam crawler'a do szukania CSE, który idzie po wszystkich dzieciach (do końca/zapętlenia),
-//        jak napotka y := a + b ZANIM a lub b się zmienią - markuje CSE
-//        jak napotka y := a + b PO TYM JAK a lub b się zmienią - markuje dirty_CSE (ble overriduje git)
-// puszczam crawler'a do faktycznej podmiany CSE (te które są CSE i nie dirty_CSE)
-
 class Optimization_Visitor : public Skeleton {
 public:
+    bool lcse_only = false;
     Program *program;
     Liveness_Visitor *livenessVisitor;
     Dead_Code_Removal_Visitor *deadCodeRemovalVisitor;
     LCSE_Visitor *lcseVisitor;
+    GCSE_Visitor *gcseVisitor;
 
-    std::map<UIdent, Block *> block_code;
-    std::map <UIdent, std::set<UIdent >> succ;
-    std::map <UIdent, std::set<UIdent >> pred;
+    std::map<UIdent, Block *> &block_code;
+    std::map <UIdent, std::set<UIdent >> &succ;
+    std::map <UIdent, std::set<UIdent >> &pred;
 
     UIdent current_block;
 
-    explicit Optimization_Visitor(Program *program, Liveness_Visitor *livenessVisitor) : program(program),
-                                                                                         livenessVisitor(
-                                                                                                 livenessVisitor) {
+    explicit Optimization_Visitor(Program *program, Liveness_Visitor *livenessVisitor,
+                                  std::map <UIdent, std::set<UIdent >> &succ,
+                                  std::map <UIdent, std::set<UIdent >> &pred,
+                                  std::map<UIdent, Block *> &block_code) : program(program),
+                                                                           livenessVisitor(livenessVisitor), succ(succ),
+                                                                           pred(pred), block_code(block_code) {
         deadCodeRemovalVisitor = new Dead_Code_Removal_Visitor(program);
         lcseVisitor = new LCSE_Visitor();
+        gcseVisitor = new GCSE_Visitor(program, succ, pred, block_code);
     }
 
     void optimize() {
         while (true) {
             deadCodeRemovalVisitor->removed_lines = 0;
             lcseVisitor->reset();
+            gcseVisitor->reset();
+
             // 1. remove dead code
             program->accept(deadCodeRemovalVisitor);
 
             // 2. LCSE + copy propagation
-            program->accept(lcseVisitor);
+            if (lcse_only) {
+                program->accept(lcseVisitor);
+            } else {
+                gcseVisitor->run_gcse();
+            }
 
-            if (deadCodeRemovalVisitor->removed_lines == 0 && !lcseVisitor->changed) {
+            if (deadCodeRemovalVisitor->removed_lines == 0 && !gcseVisitor->changed && !lcseVisitor->changed) {
                 break;
             }
             // 3. update liveness

@@ -135,6 +135,7 @@ void PrintAbsyn::visitBlock(Block *p) {
 
     visitUIdent(p->uident_);
     render(':');
+    render('\n');
     _i_ = 0;
     visitListNonJmpStmt(p->listnonjmpstmt_);
     _i_ = 0;
@@ -161,6 +162,7 @@ void PrintAbsyn::visitStmtBinOp(StmtBinOp *p) {
 
     if (oldi > 0) render(_R_PAREN);
     _i_ = oldi;
+    render("\n");
 }
 
 void PrintAbsyn::visitStmtNoOp(StmtNoOp *p) {
@@ -174,6 +176,7 @@ void PrintAbsyn::visitStmtNoOp(StmtNoOp *p) {
 
     if (oldi > 0) render(_R_PAREN);
     _i_ = oldi;
+    render("\n");
 }
 
 void PrintAbsyn::visitStmtCall(StmtCall *p) {
@@ -190,6 +193,7 @@ void PrintAbsyn::visitStmtCall(StmtCall *p) {
 
     if (oldi > 0) render(_R_PAREN);
     _i_ = oldi;
+    render("\n");
 }
 
 void PrintAbsyn::visitStmtDoNothing(StmtDoNothing *p) {
