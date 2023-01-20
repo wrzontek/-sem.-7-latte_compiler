@@ -196,8 +196,8 @@ public:
 
     bool expressionIsPropagatedExpression(BinOp *binop, Atom *atom1, Atom *atom2) {
         return binop->identifier() == propagated_expression_binop->identifier() &&
-               atomsEqual(atom1, rhs_atom_1) &&
-               atomsEqual(atom2, rhs_atom_2);
+               ((atomsEqual(atom1, rhs_atom_1) && atomsEqual(atom2, rhs_atom_2)) ||
+                (binop->order_agnostic() && atomsEqual(atom2, rhs_atom_1) && atomsEqual(atom1, rhs_atom_2)));
     }
 
     void visitStmtNoOp(StmtNoOp *stmt) override {
@@ -303,6 +303,13 @@ public:
         propagate_expression(stmt->uident_, stmt->binop_, stmt->atom_1, stmt->atom_2);
     }
 };
+
+
+// jestem w x := a + b
+// puszczam crawler'a do szukania CSE, który idzie po wszystkich dzieciach (do końca/zapętlenia),
+//        jak napotka y := a + b ZANIM a lub b się zmienią - markuje CSE
+//        jak napotka y := a + b PO TYM JAK a lub b się zmienią - markuje dirty_CSE (ble overriduje git)
+// puszczam crawler'a do faktycznej podmiany CSE (te które są CSE i nie dirty_CSE)
 
 class Optimization_Visitor : public Skeleton {
 public:
