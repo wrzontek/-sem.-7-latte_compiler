@@ -1,9 +1,8 @@
 Kompilacja:
     `make` w project root
 
-Rozszerzenia:
-    - tablice COMING SOON
-    - obiekty z metodami wirtualnymi COMING SOON
+Optymalizacje:
+    - GSCE
 
 Używane biblioteki/narzędzia:
     - bnfc
