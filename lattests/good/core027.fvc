@@ -1,9 +1,0 @@
-main:
-	_t1 := _call f "bad" ;
-	return 0
-
-f:
-	__str__0 := "good"
-	_t2 := _call printString __str__0 ;
-	return;
-

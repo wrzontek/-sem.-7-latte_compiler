@@ -1,9 +1,0 @@
-main:
-	_t1 := _call printInt 1 ;
-	_d0_i := 1
-	_t2 :=  0 - _d0_i
-	_t3 := _call printInt _t2 ;
-	_t4 := 2 + _d0_i
-	_t5 := _call printInt _t4 ;
-	return 0
-

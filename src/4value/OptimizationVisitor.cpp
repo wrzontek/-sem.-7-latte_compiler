@@ -8,6 +8,7 @@
 #include "Skeleton.C"
 #include "LivenessVisitor.cpp"
 #include "GCSEVisitor.cpp"
+#include "ConstantCalculatorVisitor.cpp"
 
 class Dead_Code_Removal_Visitor : public Skeleton {
 public:
@@ -311,6 +312,7 @@ public:
     Program *program;
     Liveness_Visitor *livenessVisitor;
     Dead_Code_Removal_Visitor *deadCodeRemovalVisitor;
+    Constant_Calculator_Visitor *constantCalculatorVisitor;
     LCSE_Visitor *lcseVisitor;
     GCSE_Visitor *gcseVisitor;
 
@@ -328,6 +330,7 @@ public:
                                                                            pred(pred), block_code(block_code) {
         deadCodeRemovalVisitor = new Dead_Code_Removal_Visitor(program);
         lcseVisitor = new LCSE_Visitor();
+        constantCalculatorVisitor = new Constant_Calculator_Visitor();
         gcseVisitor = new GCSE_Visitor(program, succ, pred, block_code);
     }
 
@@ -336,6 +339,10 @@ public:
             deadCodeRemovalVisitor->removed_lines = 0;
             lcseVisitor->reset();
             gcseVisitor->reset();
+            constantCalculatorVisitor->changed = false;
+
+            // 0. calculate constant expressions
+            program->accept(constantCalculatorVisitor);
 
             // 1. remove dead code
             program->accept(deadCodeRemovalVisitor);
@@ -347,7 +354,8 @@ public:
                 gcseVisitor->run_gcse();
             }
 
-            if (deadCodeRemovalVisitor->removed_lines == 0 && !gcseVisitor->changed && !lcseVisitor->changed) {
+            if (deadCodeRemovalVisitor->removed_lines == 0 && !gcseVisitor->changed && !lcseVisitor->changed &&
+                !constantCalculatorVisitor->changed) {
                 break;
             }
             // 3. update liveness

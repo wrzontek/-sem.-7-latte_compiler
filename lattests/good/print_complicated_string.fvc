@@ -1,4 +1,0 @@
-main:
-	_t1 := _call printString "\\a\\n\n\tb\"" ;
-	return 0
-
