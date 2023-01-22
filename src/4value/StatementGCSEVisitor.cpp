@@ -40,10 +40,26 @@ public:
         for (auto i = listnonjmpstmt->begin(); i != listnonjmpstmt->end(); ++i) {
             (*i)->accept(this);
             if (!this_stmt_lhs.empty()) {
-//                //std::cout << "REPLACING BINOP BOTH " + this_stmt_lhs + " with " + this_stmt_rhs << std::endl;
+                //std::cout << "REPLACING BINOP BOTH " + this_stmt_lhs + " with " + this_stmt_rhs << std::endl;
                 int index = std::distance(listnonjmpstmt->begin(), i);
-                listnonjmpstmt->at(index) = new StmtNoOp(this_stmt_lhs, new AtomVar(this_stmt_rhs));
+                auto replacement = new StmtNoOp(this_stmt_lhs, new AtomVar(this_stmt_rhs));
+                listnonjmpstmt->at(index) = replacement;
+
+                auto expr = new Expression(
+                        replacement->uident_,
+                        replacement->atom_,
+                        nullptr,
+                        nullptr
+                );
+
+                if (replacement->atom_->is_variable()) {
+                    expr->used_vars.insert(replacement->atom_->var_name());
+                }
+
+                update_current_const_exprs(replacement->uident_, expr);
+
                 this_stmt_lhs = "";
+                this_stmt_rhs = "";
                 changed = true;
             }
         }
@@ -52,8 +68,7 @@ public:
     void update_current_const_exprs(UIdent killed_var, Expression *new_expr) {
         for (auto i = current_const_exprs.begin(); i != current_const_exprs.end();) {
             auto expr = *i;
-            if (expr->used_vars.find(killed_var) != expr->used_vars.end() ||
-                (new_expr != nullptr && expr->assignment_to == new_expr->assignment_to)) {
+            if (expr->used_vars.find(killed_var) != expr->used_vars.end() || expr->assignment_to == killed_var) {
                 i = current_const_exprs.erase(i);
             } else {
                 ++i;
@@ -73,7 +88,7 @@ public:
             for (auto &expr: current_const_exprs) {
                 // copy propagation
                 if (stmt->atom_->is_variable() && stmt->atom_->var_name() == expr->assignment_to && !expr->isBinOp()) {
-                    //std::cout << "CHANGING NO-OP " + expr->assignment_to + "\n";
+                    //std::cout << "CHANGING NO-OP " + expr->assignment_to + " to " + expr->atom1->to_string() +  "\n";
                     changed = true;
                     stmt->atom_ = expr->atom1->clone();
                 }
@@ -93,34 +108,6 @@ public:
         update_current_const_exprs(stmt->uident_, expr);
     }
 
-    bool atomsEqual(Atom const *atom1, Atom const *atom2) {
-        if (atom1->is_int_constant() && atom2->is_int_constant()) {
-            return atom1->get_int_constant() == atom2->get_int_constant();
-        }
-        if (atom1->is_string_constant() && atom2->is_string_constant()) {
-            return atom1->constant() == atom2->constant();
-        }
-        if (!atom1->var_name().empty() && !atom2->var_name().empty()) {
-            return atom1->var_name() == atom2->var_name();
-        }
-
-        return false;
-    }
-
-    bool expressionsEqual(Expression const *one, Expression const *other) { // doesn't care about `assignment_to`
-        if (one->binOp == nullptr && other->binOp == nullptr) {
-            return atomsEqual(one->atom1, other->atom1);
-        }
-        if (one->binOp != nullptr && other->binOp != nullptr) {
-            return one->binOp->identifier() == other->binOp->identifier() &&
-                   ((atomsEqual(one->atom1, other->atom1) && atomsEqual(one->atom2, other->atom2)) ||
-                    (one->binOp->order_agnostic()
-                     && atomsEqual(one->atom2, other->atom1) &&
-                     atomsEqual(one->atom1, other->atom2)));
-        }
-        return false;
-    }
-
     void visitStmtBinOp(StmtBinOp *stmt) override {
         if (replace_code) {
             for (auto &expr: current_const_exprs) {
@@ -128,13 +115,13 @@ public:
                 if (!expr->isBinOp()) {
                     if (stmt->atom_1->is_variable() && stmt->atom_1->var_name() == expr->assignment_to) {
                         changed = true;
-                        //std::cout << "CHANGING BINOP LEFT " + expr->assignment_to + "\n";
+                        //std::cout << "CHANGING BINOP LEFT " + expr->assignment_to + " to " + expr->atom1->to_string() +  "\n";
                         stmt->atom_1 = expr->atom1->clone();
                     }
 
                     if (stmt->atom_2->is_variable() && stmt->atom_2->var_name() == expr->assignment_to) {
                         changed = true;
-                        //std::cout << "CHANGING BINOP RIGHT " + expr->assignment_to + "\n";
+                        //std::cout << "CHANGING BINOP RIGHT " + expr->assignment_to + " to " + expr->atom1->to_string() + "\n";
                         stmt->atom_2 = expr->atom1->clone();
                     }
                 }
@@ -148,7 +135,7 @@ public:
                             stmt->binop_
                     );
 
-                    if (expressionsEqual(this_expr, expr)) {
+                    if (this_expr->sameExpression(expr)) {
                         this_stmt_rhs = expr->assignment_to;
                         this_stmt_lhs = stmt->uident_;
                         //std::cout << "CHANGING LCSE RHS: " + this_stmt_rhs + " LHS: " + this_stmt_lhs + "\n";
@@ -156,21 +143,21 @@ public:
                 }
             }
         }
-
-
-        auto expr = new Expression(
-                stmt->uident_,
-                stmt->atom_1,
-                stmt->atom_2,
-                stmt->binop_
-        );
-        if (stmt->atom_1->is_variable()) {
-            expr->used_vars.insert(stmt->atom_1->var_name());
+        if (!this_stmt_lhs.empty()) { // robimy to w visitListNonJmpStmt
+            auto expr = new Expression(
+                    stmt->uident_,
+                    stmt->atom_1,
+                    stmt->atom_2,
+                    stmt->binop_
+            );
+            if (stmt->atom_1->is_variable()) {
+                expr->used_vars.insert(stmt->atom_1->var_name());
+            }
+            if (stmt->atom_2->is_variable()) {
+                expr->used_vars.insert(stmt->atom_2->var_name());
+            }
+            update_current_const_exprs(stmt->uident_, expr);
         }
-        if (stmt->atom_2->is_variable()) {
-            expr->used_vars.insert(stmt->atom_2->var_name());
-        }
-        update_current_const_exprs(stmt->uident_, expr);
     }
 
     void visitStmtCondJmp(StmtCondJmp *stmt) override {
@@ -178,7 +165,7 @@ public:
             for (auto &expr: current_const_exprs) {
                 if (!expr->isBinOp() && stmt->atom_->is_variable() && stmt->atom_->var_name() == expr->assignment_to) {
                     changed = true;
-                    //std::cout << "CHANGING CONDJUMP " + expr->assignment_to + "\n";
+                    //std::cout << "CHANGING CONDJUMP " + expr->assignment_to + " to " + expr->atom1->to_string() +  "\n";
                     stmt->atom_ = expr->atom1->clone();
                 }
             }
@@ -190,7 +177,7 @@ public:
             for (auto &expr: current_const_exprs) {
                 if (!expr->isBinOp() && stmt->atom_->is_variable() && stmt->atom_->var_name() == expr->assignment_to) {
                     changed = true;
-                    //std::cout << "CHANGING RET " + expr->assignment_to + "\n";
+                    //std::cout << "CHANGING RET " + expr->assignment_to + " to " + expr->atom1->to_string() +  "\n";
                     stmt->atom_ = expr->atom1->clone();
                 }
             }
@@ -203,7 +190,7 @@ public:
                 for (auto &expr: current_const_exprs) {
                     if (list->at(i)->is_variable() && list->at(i)->var_name() == expr->assignment_to &&
                         !expr->isBinOp()) {
-                        //std::cout << "CHANGING CALL ARG" + expr->assignment_to + "\n";
+                        //std::cout << "CHANGING CALL ARG " + expr->assignment_to + " to " + expr->atom1->to_string() +  "\n";
                         changed = true;
                         list->at(i) = expr->atom1->clone();
                     }

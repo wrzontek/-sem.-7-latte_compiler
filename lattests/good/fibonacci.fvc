@@ -1,0 +1,43 @@
+fibonacci:
+	_t1 := __arg__0 <= 1
+	if _t1 then _goto _if_true_1 else _goto _end_if_1
+_if_true_1:
+	return __arg__0
+	_go_next _end_if_1
+_end_if_1:
+	_d0_fib_a := 0
+	_d0_fib_b := 1
+	_d0_tmp := 0
+	_d0_i := 2
+	_goto _while_cond_2
+_while_body_2:
+	_t2 := _d0_fib_b + _d0_fib_a
+	_d0_tmp := _t2
+	_d0_fib_a := _d0_fib_b
+	_d0_fib_b := _d0_tmp
+	_d0_i := _d0_i + 1
+	_go_next _while_cond_2
+_while_cond_2:
+	_t3 := _d0_i <= __arg__0
+	if _t3 then _goto _while_body_2 else _goto _end_while_2
+_end_while_2:
+	return _d0_fib_b
+
+main:
+	_t4 := _call readInt ;
+	_d0_i := _t4
+	_t5 := _d0_i >= 0
+	if _t5 then _goto _if_true_3 else _goto _if_false_3
+_if_true_3:
+	_t6 := _call fibonacci _d0_i ;
+	_t7 := _call printInt _t6 ;
+	return 0
+	return;
+_if_false_3:
+	_t8 := _call printString "Expected a non-negative integer, but got:" ;
+	_t9 := _call printInt _d0_i ;
+	return 1
+	_go_next _end_if_3
+_end_if_3:
+	return;
+

@@ -1,0 +1,23 @@
+f:
+	_goto _if_true_1
+_if_true_1:
+	return 0
+	_go_next _end_if_1
+_end_if_1:
+	return;
+
+g:
+	_goto _if_false_2
+_if_false_2:
+	return 0
+	_go_next _end_if_2
+_end_if_2:
+	return;
+
+p:
+	return;
+
+main:
+	_t1 := _call p ;
+	return 0
+

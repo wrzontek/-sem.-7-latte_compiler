@@ -225,6 +225,8 @@ public:
 
     virtual UIdent constant() const { return ""; }
 
+    virtual UIdent to_string() const = 0;
+
 };
 
 class BinOp : public Visitable {
@@ -290,6 +292,20 @@ struct Expression {
                     (this->binOp->order_agnostic()
                      && atomsEqual(this->atom2, other.atom1) &&
                      atomsEqual(this->atom1, other.atom2)));
+        }
+        return false;
+    }
+
+    bool sameExpression(const Expression *other) const { // == but doesn't assignment_to doesn't matter
+        if (this->binOp == nullptr && other->binOp == nullptr) {
+            return atomsEqual(this->atom1, other->atom1);
+        }
+        if (this->binOp != nullptr && other->binOp != nullptr) {
+            return this->binOp->identifier() == other->binOp->identifier() &&
+                   ((atomsEqual(this->atom1, other->atom1) && atomsEqual(this->atom2, other->atom2)) ||
+                    (this->binOp->order_agnostic()
+                     && atomsEqual(this->atom2, other->atom1) &&
+                     atomsEqual(this->atom1, other->atom2)));
         }
         return false;
     }
@@ -567,6 +583,10 @@ public:
         return uident_;
     }
 
+    UIdent to_string() const override {
+        return uident_;
+    }
+
     AtomVar(const AtomVar &);
 
     AtomVar &operator=(const AtomVar &);
@@ -586,6 +606,10 @@ public:
 
 class AtomInt : public Atom {
 public:
+
+    UIdent to_string() const override {
+        return std::to_string(integer_);
+    }
 
     bool is_constant() override { return true; }
 
@@ -623,6 +647,10 @@ public:
     UIdent constant() const override { return string_; }
 
     String string_;
+
+    UIdent to_string() const override {
+        return string_;
+    }
 
     AtomStr(const AtomStr &);
 
@@ -867,6 +895,9 @@ public:
     virtual EQU *clone() const;
 
     void swap(EQU &);
+
+    bool order_agnostic() const override { return true; }
+
 };
 
 class NE : public BinOp {
@@ -892,6 +923,9 @@ public:
     virtual NE *clone() const;
 
     void swap(NE &);
+
+    bool order_agnostic() const override { return true; }
+
 };
 
 

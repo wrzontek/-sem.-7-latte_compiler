@@ -94,8 +94,9 @@ public:
             if (statementGCSEVisitor->replace_code) {
                 break;
             }
-            if (equal_count == block_code.size())
+            if (equal_count == block_code.size()) {
                 statementGCSEVisitor->replace_code = true;
+            }
         }
         changed = statementGCSEVisitor->changed;
     }

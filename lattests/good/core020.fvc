@@ -1,0 +1,8 @@
+main:
+	_t1 := _call p ;
+	_t2 := _call printInt 1 ;
+	return 0
+
+p:
+	return;
+

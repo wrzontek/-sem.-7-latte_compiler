@@ -487,7 +487,7 @@ public:
             emitLine("MOV " + virtual_memory_to_real[free_memory_slot] + ", DWORD PTR " + constant);
             return free_memory_slot;
         } else {
-            emitLine("PUSH " + constant);
+            emitLine("PUSH DWORD PTR " + constant);
 
             auto pushed_loc = "__" + constant + "_p" + std::to_string(extra_stack_pushes);
             virtual_memory_to_real[pushed_loc] =
@@ -505,10 +505,16 @@ public:
         auto free_memory_slot = get_free_memory_slot();
         if (!free_memory_slot.empty()) {
             value_locations[value] = {free_memory_slot};
-            emitLine("MOV " + virtual_memory_to_real[free_memory_slot] + ", " + value_current_loc);
+            if (is_const(value_current_loc)) {
+                emitLine("MOV " + virtual_memory_to_real[free_memory_slot] + ", DWORD PTR " + value_current_loc);
+            } else {
+                emitLine("MOV " + virtual_memory_to_real[free_memory_slot] + ", " + value_current_loc);
+            }
         } else {
             if (is_variable(value_current_loc)) {
                 emitLine("PUSH DWORD PTR " + virtual_memory_to_real[value_current_loc]);
+            } else if (is_const(value_current_loc)) {
+                emitLine("PUSH DWORD PTR " + value_current_loc);
             } else {
                 emitLine("PUSH " + value_current_loc);
             }
@@ -755,6 +761,8 @@ public:
                 } else if (is_string_constant(loc)) {
                     emitLine("LEA " + R_register + ", " + loc);
                     emitLine("PUSH " + R_register);
+                } else if (is_const(loc)) {
+                    emitLine("PUSH DWORD PTR " + loc);
                 } else {
                     emitLine("PUSH " + loc);
                 }
@@ -773,34 +781,34 @@ public:
             forget_dead_variable(stmt->uident_, stmt->out_vars);
             return;
         }
-        if (instruction == "IMUL " && (get_power_of_two(stmt->atom_1) != -1 || get_power_of_two(stmt->atom_2) != -1)) {
-            int power_of_two_lhs = get_power_of_two(stmt->atom_1);
-            int power_of_two_rhs = get_power_of_two(stmt->atom_2);
-            if (power_of_two_lhs > power_of_two_rhs) {
-                std::swap(lhs_location, rhs_location); // power of two is always `C` (rhs)
-                std::swap(power_of_two_rhs, power_of_two_lhs);
-                std::swap(stmt->atom_1, stmt->atom_2);
-
-                lhs_variable_name = stmt->atom_1->var_name();
-            }
-
-            R_register = get_R_register(lhs_location, lhs_variable_name, stmt);
-
-            emitLine("SAL " + R_register + ", " + std::to_string(power_of_two_rhs));
-
-            set_values_and_forget_dead(stmt, R_register);
-            return;
-        }
-        if (instruction == "IDIV " && !stmt->binop_->isModOp() && get_power_of_two(stmt->atom_2) != -1) {
-            int power_of_two_rhs = get_power_of_two(stmt->atom_2);
-
-            R_register = get_R_register(lhs_location, lhs_variable_name, stmt);
-
-            emitLine("SAR " + R_register + ", " + std::to_string(power_of_two_rhs));
-
-            set_values_and_forget_dead(stmt, R_register);
-            return;
-        }
+//        if (instruction == "IMUL " && (get_power_of_two(stmt->atom_1) != -1 || get_power_of_two(stmt->atom_2) != -1)) {
+//            int power_of_two_lhs = get_power_of_two(stmt->atom_1);
+//            int power_of_two_rhs = get_power_of_two(stmt->atom_2);
+//            if (power_of_two_lhs > power_of_two_rhs) {
+//                std::swap(lhs_location, rhs_location); // power of two is always `C` (rhs)
+//                std::swap(power_of_two_rhs, power_of_two_lhs);
+//                std::swap(stmt->atom_1, stmt->atom_2);
+//
+//                lhs_variable_name = stmt->atom_1->var_name();
+//            }
+//
+//            R_register = get_R_register(lhs_location, lhs_variable_name, stmt);
+//
+//            emitLine("SAL " + R_register + ", " + std::to_string(power_of_two_rhs));
+//
+//            set_values_and_forget_dead(stmt, R_register);
+//            return;
+//        }
+//        if (instruction == "IDIV " && !stmt->binop_->isModOp() && get_power_of_two(stmt->atom_2) != -1) {
+//            int power_of_two_rhs = get_power_of_two(stmt->atom_2);
+//
+//            R_register = get_R_register(lhs_location, lhs_variable_name, stmt);
+//
+//            emitLine("SAR " + R_register + ", " + std::to_string(power_of_two_rhs));
+//
+//            set_values_and_forget_dead(stmt, R_register);
+//            return;
+//        }
         if (instruction == "ADD " || instruction == "SUB "
             || instruction == "IMUL " || instruction == "CMP ") {
 
@@ -821,9 +829,9 @@ public:
         }
         if (instruction == "IDIV ") { // div or mod
             auto b_locs = get_atom_locations(stmt->atom_1);
+            force_clean_register("_reg_eax");
             if (b_locs.find("_reg_eax") == b_locs.end()) {
                 // przenieść B do EAX
-                force_clean_register("_reg_eax");
                 if (is_variable(lhs_location)) {
                     emitLine("MOV _reg_eax, DWORD PTR " + virtual_memory_to_real[lhs_location]);
                 } else {
@@ -833,6 +841,8 @@ public:
             force_clean_register("_reg_edx");
 
             emitLine("CDQ");
+            rhs_location = get_best_location(get_atom_locations(stmt->atom_2));
+
             if (is_variable(rhs_location)) {
                 emitLine("IDIV DWORD PTR " + virtual_memory_to_real[rhs_location]);
             } else {
@@ -892,6 +902,8 @@ public:
                 } else if (is_string_constant(best_loc)) {
                     emitLine("LEA eax, " + best_loc);
                     emitLine("PUSH eax");
+                } else if (is_const(best_loc)) {
+                    emitLine("PUSH DWORD PTR " + best_loc);
                 } else {
                     emitLine("PUSH " + best_loc);
                 }

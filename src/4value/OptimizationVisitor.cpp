@@ -335,6 +335,7 @@ public:
     }
 
     void optimize() {
+        int unchanged_runs = 0;
         while (true) {
             deadCodeRemovalVisitor->removed_lines = 0;
             lcseVisitor->reset();
@@ -356,7 +357,10 @@ public:
 
             if (deadCodeRemovalVisitor->removed_lines == 0 && !gcseVisitor->changed && !lcseVisitor->changed &&
                 !constantCalculatorVisitor->changed) {
-                break;
+                unchanged_runs++;
+                if (unchanged_runs > 0) { // todo dać większe dla pewności
+                    break;
+                }
             }
             // 3. update liveness
             livenessVisitor->analyze_liveness_clear_init();
