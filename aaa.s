@@ -1,7 +1,4 @@
 .intel_syntax noprefix
-.section  .rodata
-.SC0:
-	.string "before rand % p-1"
 .text
 .globl main
 mulmod:
@@ -31,12 +28,14 @@ _while_body_1:
 _if_true_2:
 	MOV eax, [ebp - 12]
 	ADD eax, DWORD PTR [ebp - 16]
+	MOV [ebp - 12], eax
 	CDQ
 	IDIV DWORD PTR [ebp + 28]
 	MOV [ebp - 12], edx
 _end_if_2:
 	MOV eax, [ebp - 16]
 	SAL eax, 1
+	MOV [ebp - 16], eax
 	CDQ
 	IDIV DWORD PTR [ebp + 28]
 	MOV eax, [ebp + 24]
@@ -88,12 +87,14 @@ _while_body_3:
 _if_true_4:
 	MOV eax, [ebp - 12]
 	IMUL eax, DWORD PTR [ebp - 16]
+	MOV [ebp - 12], eax
 	CDQ
 	IDIV DWORD PTR [ebp + 28]
 	MOV [ebp - 12], edx
 _end_if_4:
 	MOV eax, [ebp - 16]
 	IMUL eax, eax
+	MOV [ebp - 16], eax
 	CDQ
 	IDIV DWORD PTR [ebp + 28]
 	MOV eax, [ebp + 24]
@@ -126,7 +127,7 @@ Miller:
 	push esi
 	push ebp
 	mov ebp, esp
-	sub esp, 44
+	sub esp, 40
 	MOV eax, [ebp + 20]
 	CMP eax, 2
 	MOV eax, 0
@@ -155,7 +156,7 @@ _middle_l3:
 	MOV eax, DWORD PTR [ebp + 20]
 	CDQ
 	PUSH 2
-	IDIV DWORD PTR [ebp - 48]
+	IDIV DWORD PTR [ebp - 44]
 	CMP edx, 0
 	MOV edx, 0
 	SETE dl
@@ -193,7 +194,7 @@ _while_cond_7:
 	MOV eax, DWORD PTR [ebp - 20]
 	CDQ
 	PUSH 2
-	IDIV DWORD PTR [ebp - 52]
+	IDIV DWORD PTR [ebp - 48]
 	CMP edx, 0
 	MOV edx, 0
 	SETE dl
@@ -204,28 +205,23 @@ _end_while_7:
 	MOV [ebp - 12], DWORD PTR 0
 	JMP _while_cond_8
 _while_body_8:
-	LEA eax, .SC0
-	PUSH eax
-	CALL printString
-	ADD esp, 4
-	MOV ebx, [ebp + 20]
-	SUB ebx, 1
+	MOV eax, [ebp + 20]
+	SUB eax, 1
 	PUSH eax
 	MOV eax, DWORD PTR [ebp - 16]
 	CDQ
-	IDIV ebx
+	IDIV DWORD PTR [ebp - 52]
 	ADD edx, 1
 	MOV eax, [ebp - 20]
-	MOV edi, eax
-	MOV esi, edx
+	MOV ebx, eax
+	MOV edi, edx
 	PUSH DWORD PTR [ebp + 20]
 	PUSH DWORD PTR [ebp - 20]
 	PUSH edx
 	CALL modulo
 	ADD esp, 12
 	MOV [ebp - 24], eax
-	MOV [ebp - 28], edi
-	MOV [ebp - 36], ebx
+	MOV [ebp - 28], ebx
 	JMP _while_cond_9
 _while_body_9:
 	PUSH DWORD PTR [ebp + 20]
@@ -238,11 +234,13 @@ _while_body_9:
 	MOV [ebp - 24], eax
 	MOV [ebp - 28], ebx
 _while_cond_9:
-	MOV eax, [ebp - 28]
-	CMP eax, DWORD PTR [ebp - 36]
-	MOV eax, 0
-	SETNE al
-	TEST eax, eax
+	MOV eax, [ebp + 20]
+	SUB eax, 1
+	MOV ebx, [ebp - 28]
+	CMP ebx, eax
+	MOV ebx, 0
+	SETNE bl
+	TEST ebx, ebx
 	JNZ _middle_l7
 	JMP _false_l6
 _middle_l7:
@@ -254,36 +252,40 @@ _middle_l7:
 	JNZ _middle_l8
 	JMP _false_l6
 _middle_l8:
-	MOV eax, [ebp - 24]
-	CMP eax, DWORD PTR [ebp - 36]
-	MOV eax, 0
-	SETNE al
-	TEST eax, eax
+	MOV eax, [ebp + 20]
+	SUB eax, 1
+	MOV ebx, [ebp - 24]
+	CMP ebx, eax
+	MOV ebx, 0
+	SETNE bl
+	TEST ebx, ebx
 	JNZ _true_l5
 	JMP _false_l6
 _true_l5:
-	MOV [ebp - 40], DWORD PTR 1
+	MOV [ebp - 36], DWORD PTR 1
 	JMP _end_l9
 _false_l6:
-	MOV [ebp - 40], DWORD PTR 0
+	MOV [ebp - 36], DWORD PTR 0
 _end_l9:
-	MOV eax, [ebp - 40]
+	MOV eax, [ebp - 36]
 	TEST eax, eax
 	JNZ _while_body_9
 	JMP _end_while_9
 _end_while_9:
-	MOV eax, [ebp - 24]
-	CMP eax, DWORD PTR [ebp - 36]
-	MOV eax, 0
-	SETNE al
-	TEST eax, eax
+	MOV eax, [ebp + 20]
+	SUB eax, 1
+	MOV ebx, [ebp - 24]
+	CMP ebx, eax
+	MOV ebx, 0
+	SETNE bl
+	TEST ebx, ebx
 	JNZ _middle_l12
 	JMP _false_l11
 _middle_l12:
 	MOV eax, DWORD PTR [ebp - 28]
 	CDQ
 	PUSH 2
-	IDIV DWORD PTR [ebp - 60]
+	IDIV DWORD PTR [ebp - 56]
 	CMP edx, 0
 	MOV edx, 0
 	SETE dl
@@ -291,12 +293,12 @@ _middle_l12:
 	JNZ _true_l10
 	JMP _false_l11
 _true_l10:
-	MOV [ebp - 44], DWORD PTR 1
+	MOV [ebp - 40], DWORD PTR 1
 	JMP _end_l13
 _false_l11:
-	MOV [ebp - 44], DWORD PTR 0
+	MOV [ebp - 40], DWORD PTR 0
 _end_l13:
-	MOV eax, [ebp - 44]
+	MOV eax, [ebp - 40]
 	TEST eax, eax
 	JNZ _if_true_10
 	JMP _end_if_10
@@ -313,10 +315,12 @@ _end_if_10:
 	ADD eax, 1
 	MOV ebx, [ebp - 16]
 	IMUL ebx, 29
+	MOV ecx, [ebp + 20]
+	SUB ecx, 1
 	MOV [ebp - 12], eax
 	MOV eax, ebx
 	CDQ
-	IDIV DWORD PTR [ebp - 36]
+	IDIV ecx
 	MOV [ebp - 16], edx
 _while_cond_8:
 	MOV eax, [ebp - 12]
@@ -399,13 +403,14 @@ _while_body_13:
 	CALL Miller
 	ADD esp, 8
 	MOV ebx, eax
+	MOV edi, eax
 	PUSH DWORD PTR [ebp - 8]
 	CALL dummyPrimeTest
 	ADD esp, 4
 	CMP eax, ebx
 	MOV eax, 0
 	SETNE al
-	MOV [ebp - 12], ebx
+	MOV [ebp - 12], edi
 	TEST eax, eax
 	JNZ _if_true_14
 	JMP _end_if_14
@@ -430,6 +435,8 @@ _if_true_14:
 	PUSH DWORD PTR [ebp - 8]
 	CALL printInt
 	ADD esp, 4
+	MOV esi, eax
+	CALL error
 _end_if_14:
 	MOV eax, [ebp - 12]
 	CMP eax, 1
@@ -448,7 +455,7 @@ _end_if_15:
 	MOV [ebp - 8], eax
 _while_cond_13:
 	MOV eax, [ebp - 8]
-	CMP eax, 100
+	CMP eax, 10000
 	MOV eax, 0
 	SETL al
 	TEST eax, eax
