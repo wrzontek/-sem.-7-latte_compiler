@@ -1,9 +1,0 @@
-int main() {
-    printInt(f(2137, 2047));
-    return 0;
-}
-
-int f(int rand, int p) {
-    int a = rand % (p - 1) + 1;
-    return a;
-}
