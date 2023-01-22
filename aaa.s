@@ -1,9 +1,4 @@
 .intel_syntax noprefix
-.section  .rodata
-.SC0:
-	.string "before while"
-.SC1:
-	.string "while"
 .text
 .globl main
 mulmod:
@@ -23,7 +18,8 @@ _while_body_1:
 	MOV eax, DWORD PTR [ebp + 24]
 	CDQ
 	PUSH DWORD PTR 2
-	IDIV DWORD PTR [ebp - 20]
+	IDIV DWORD PTR [esp]
+	ADD esp, 4
 	CMP edx, 1
 	MOV edx, 0
 	SETE dl
@@ -39,16 +35,14 @@ _if_true_2:
 	MOV [ebp - 12], edx
 _end_if_2:
 	MOV eax, [ebp - 16]
-	IMUL eax, 2
+	SAL eax, 1
 	MOV [ebp - 16], eax
 	CDQ
 	IDIV DWORD PTR [ebp + 28]
-	MOV eax, DWORD PTR [ebp + 24]
-	MOV [ebp - 16], edx
-	CDQ
-	PUSH DWORD PTR 2
-	IDIV DWORD PTR [ebp - 24]
+	MOV eax, [ebp + 24]
+	SAR eax, 1
 	MOV [ebp + 24], eax
+	MOV [ebp - 16], edx
 _while_cond_1:
 	MOV eax, [ebp + 24]
 	CMP eax, 0
@@ -84,7 +78,8 @@ _while_body_3:
 	MOV eax, DWORD PTR [ebp + 24]
 	CDQ
 	PUSH DWORD PTR 2
-	IDIV DWORD PTR [ebp - 20]
+	IDIV DWORD PTR [esp]
+	ADD esp, 4
 	CMP edx, 1
 	MOV edx, 0
 	SETE dl
@@ -104,12 +99,10 @@ _end_if_4:
 	MOV [ebp - 16], eax
 	CDQ
 	IDIV DWORD PTR [ebp + 28]
-	MOV eax, DWORD PTR [ebp + 24]
-	MOV [ebp - 16], edx
-	CDQ
-	PUSH DWORD PTR 2
-	IDIV DWORD PTR [ebp - 24]
+	MOV eax, [ebp + 24]
+	SAR eax, 1
 	MOV [ebp + 24], eax
+	MOV [ebp - 16], edx
 _while_cond_3:
 	MOV eax, [ebp + 24]
 	CMP eax, 0
@@ -165,7 +158,8 @@ _middle_l3:
 	MOV eax, DWORD PTR [ebp + 20]
 	CDQ
 	PUSH DWORD PTR 2
-	IDIV DWORD PTR [ebp - 44]
+	IDIV DWORD PTR [esp]
+	ADD esp, 4
 	CMP edx, 0
 	MOV edx, 0
 	SETE dl
@@ -196,16 +190,15 @@ _end_if_6:
 	MOV [ebp - 20], eax
 	JMP _while_cond_7
 _while_body_7:
-	MOV eax, DWORD PTR [ebp - 20]
-	CDQ
-	PUSH DWORD PTR 2
-	IDIV DWORD PTR [ebp - 48]
+	MOV eax, [ebp - 20]
+	SAR eax, 1
 	MOV [ebp - 20], eax
 _while_cond_7:
 	MOV eax, DWORD PTR [ebp - 20]
 	CDQ
 	PUSH DWORD PTR 2
-	IDIV DWORD PTR [ebp - 52]
+	IDIV DWORD PTR [esp]
+	ADD esp, 4
 	CMP edx, 0
 	MOV edx, 0
 	SETE dl
@@ -213,54 +206,26 @@ _while_cond_7:
 	JNZ _while_body_7
 	JMP _end_while_7
 _end_while_7:
-	LEA eax, .SC0
-	PUSH eax
-	CALL printString
-	ADD esp, 4
-	MOV ebx, eax
-	PUSH DWORD PTR [ebp + 20]
-	CALL printInt
-	ADD esp, 4
-	MOV edi, eax
-	PUSH DWORD PTR [ebp - 16]
-	CALL printInt
-	ADD esp, 4
 	MOV [ebp - 12], DWORD PTR 0
 	JMP _while_cond_8
 _while_body_8:
-	LEA eax, .SC1
-	PUSH eax
-	CALL printString
-	ADD esp, 4
-	MOV ebx, eax
-	PUSH DWORD PTR [ebp + 20]
-	CALL printInt
-	ADD esp, 4
-	MOV edi, eax
-	PUSH DWORD PTR [ebp - 16]
-	CALL printInt
-	ADD esp, 4
-	MOV ecx, [ebp + 20]
-	SUB ecx, 1
+	MOV eax, [ebp + 20]
+	SUB eax, 1
 	PUSH eax
 	MOV eax, DWORD PTR [ebp - 16]
 	CDQ
-	IDIV ecx
+	IDIV DWORD PTR [ebp - 44]
 	ADD edx, 1
 	MOV eax, [ebp - 20]
-	MOV esi, eax
-	PUSH edx
-	PUSH edx
-	CALL printInt
-	ADD esp, 4
-	PUSH eax
+	MOV ebx, eax
+	MOV edi, edx
 	PUSH DWORD PTR [ebp + 20]
 	PUSH DWORD PTR [ebp - 20]
-	PUSH DWORD PTR [ebp - 60]
+	PUSH edx
 	CALL modulo
 	ADD esp, 12
 	MOV [ebp - 24], eax
-	MOV [ebp - 28], esi
+	MOV [ebp - 28], ebx
 	JMP _while_cond_9
 _while_body_9:
 	PUSH DWORD PTR [ebp + 20]
@@ -269,7 +234,7 @@ _while_body_9:
 	CALL mulmod
 	ADD esp, 12
 	MOV ebx, [ebp - 28]
-	IMUL ebx, 2
+	SAL ebx, 1
 	MOV [ebp - 24], eax
 	MOV [ebp - 28], ebx
 _while_cond_9:
@@ -324,7 +289,8 @@ _middle_l12:
 	MOV eax, DWORD PTR [ebp - 28]
 	CDQ
 	PUSH DWORD PTR 2
-	IDIV DWORD PTR [ebp - 68]
+	IDIV DWORD PTR [esp]
+	ADD esp, 4
 	CMP edx, 0
 	MOV edx, 0
 	SETE dl
@@ -432,27 +398,30 @@ main:
 	push esi
 	push ebp
 	mov ebp, esp
-	sub esp, 8
-	PUSH DWORD PTR 5
-	PUSH DWORD PTR 2047
+	sub esp, 12
+	MOV [ebp - 4], DWORD PTR 0
+	MOV [ebp - 8], DWORD PTR 2
+	JMP _while_cond_13
+_while_body_13:
+	PUSH DWORD PTR 5000
+	PUSH DWORD PTR [ebp - 8]
 	CALL Miller
 	ADD esp, 8
 	MOV ebx, eax
 	MOV edi, eax
-	PUSH DWORD PTR 2047
+	PUSH DWORD PTR [ebp - 8]
 	CALL dummyPrimeTest
 	ADD esp, 4
 	CMP eax, ebx
 	MOV eax, 0
 	SETNE al
-	MOV [ebp - 4], DWORD PTR 0
-	MOV [ebp - 8], edi
+	MOV [ebp - 12], edi
 	TEST eax, eax
-	JNZ _if_true_13
-	JMP _end_if_13
-_if_true_13:
-	PUSH DWORD PTR 5
-	PUSH DWORD PTR 2047
+	JNZ _if_true_14
+	JMP _end_if_14
+_if_true_14:
+	PUSH DWORD PTR 5000
+	PUSH DWORD PTR [ebp - 8]
 	CALL Miller
 	ADD esp, 8
 	MOV ebx, eax
@@ -460,7 +429,7 @@ _if_true_13:
 	CALL printInt
 	ADD esp, 4
 	MOV ebx, eax
-	PUSH DWORD PTR 2047
+	PUSH DWORD PTR [ebp - 8]
 	CALL dummyPrimeTest
 	ADD esp, 4
 	MOV edi, eax
@@ -468,22 +437,36 @@ _if_true_13:
 	CALL printInt
 	ADD esp, 4
 	MOV edi, eax
-	PUSH DWORD PTR 2047
+	PUSH DWORD PTR [ebp - 8]
 	CALL printInt
 	ADD esp, 4
-_end_if_13:
-	MOV eax, [ebp - 8]
+	MOV esi, eax
+	CALL error
+_end_if_14:
+	MOV eax, [ebp - 12]
 	CMP eax, 1
 	MOV eax, 0
 	SETE al
 	TEST eax, eax
-	JNZ _if_true_14
-	JMP _end_if_14
-_if_true_14:
+	JNZ _if_true_15
+	JMP _end_if_15
+_if_true_15:
 	MOV eax, [ebp - 4]
 	ADD eax, 1
 	MOV [ebp - 4], eax
-_end_if_14:
+_end_if_15:
+	MOV eax, [ebp - 8]
+	ADD eax, 1
+	MOV [ebp - 8], eax
+_while_cond_13:
+	MOV eax, [ebp - 8]
+	CMP eax, 10000
+	MOV eax, 0
+	SETL al
+	TEST eax, eax
+	JNZ _while_body_13
+	JMP _end_while_13
+_end_while_13:
 	PUSH DWORD PTR [ebp - 4]
 	CALL printInt
 	ADD esp, 4

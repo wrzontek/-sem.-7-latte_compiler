@@ -36,35 +36,30 @@ foo:
 	push esi
 	push ebp
 	mov ebp, esp
-	MOV eax, 2
-	IMUL eax, DWORD PTR [ebp + 20]
+	MOV eax, [ebp + 20]
+	SAL eax, 1
+	MOV ebx, [ebp + 24]
+	SAR ebx, 1
+	ADD eax, ebx
+	ADD eax, DWORD PTR [ebp + 28]
+	ADD eax, DWORD PTR [ebp + 32]
+	ADD eax, DWORD PTR [ebp + 36]
+	ADD eax, DWORD PTR [ebp + 40]
+	ADD eax, DWORD PTR [ebp + 44]
+	ADD eax, DWORD PTR [ebp + 48]
+	ADD eax, DWORD PTR [ebp + 52]
+	MOV ebx, [ebp + 56]
+	SAR ebx, 1
+	ADD eax, ebx
+	ADD eax, DWORD PTR [ebp + 60]
+	ADD eax, DWORD PTR [ebp + 64]
+	ADD eax, DWORD PTR [ebp + 68]
+	ADD eax, DWORD PTR [ebp + 72]
 	MOV [ebp + 20], eax
-	MOV eax, DWORD PTR [ebp + 24]
 	CDQ
-	PUSH DWORD PTR 2
-	IDIV DWORD PTR [ebp - 4]
-	MOV ebx, [ebp + 20]
-	ADD ebx, eax
-	ADD ebx, DWORD PTR [ebp + 28]
-	ADD ebx, DWORD PTR [ebp + 32]
-	ADD ebx, DWORD PTR [ebp + 36]
-	ADD ebx, DWORD PTR [ebp + 40]
-	ADD ebx, DWORD PTR [ebp + 44]
-	ADD ebx, DWORD PTR [ebp + 48]
-	ADD ebx, DWORD PTR [ebp + 52]
-	MOV eax, DWORD PTR [ebp + 56]
-	CDQ
-	MOV [ebp - 4], DWORD PTR 2
-	IDIV DWORD PTR [ebp - 4]
-	ADD ebx, eax
-	ADD ebx, DWORD PTR [ebp + 60]
-	ADD ebx, DWORD PTR [ebp + 64]
-	ADD ebx, DWORD PTR [ebp + 68]
-	ADD ebx, DWORD PTR [ebp + 72]
-	MOV eax, ebx
-	CDQ
-	MOV [ebp - 4], DWORD PTR 10
-	IDIV DWORD PTR [ebp - 4]
+	PUSH DWORD PTR 10
+	IDIV DWORD PTR [esp]
+	ADD esp, 4
 	MOV ebx, edx
 	PUSH edx
 	CALL printInt

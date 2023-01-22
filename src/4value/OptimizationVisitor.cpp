@@ -358,7 +358,7 @@ public:
             if (deadCodeRemovalVisitor->removed_lines == 0 && !gcseVisitor->changed && !lcseVisitor->changed &&
                 !constantCalculatorVisitor->changed) {
                 unchanged_runs++;
-                if (unchanged_runs > 0) { // todo dać większe dla pewności
+                if (unchanged_runs > 5) { // todo dać większe dla pewności
                     break;
                 }
             }

@@ -29,7 +29,7 @@ fac:
 	push ebp
 	mov ebp, esp
 	sub esp, 8
-	MOV eax, [ebp + 16]
+	MOV eax, [ebp + 20]
 	MOV [ebp - 4], eax
 	MOV [ebp - 8], DWORD PTR 1
 	JMP _while_cond_1

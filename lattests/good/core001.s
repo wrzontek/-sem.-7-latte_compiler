@@ -328,10 +328,7 @@ _if_true_8:
 _end_if_8:
 	MOV eax, [ebp + 20]
 	ADD eax, DWORD PTR [ebp + 24]
-	PUSH eax
-	CDQ
-	PUSH DWORD PTR 2
-	IDIV DWORD PTR [ebp - 16]
+	SAR eax, 1
 	MOV ebx, eax
 	PUSH eax
 	PUSH DWORD PTR [ebp + 20]

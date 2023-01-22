@@ -481,26 +481,6 @@ public:
         return ""; // don't have free slot
     }
 
-    UIdent put_constant_to_memory(UIdent constant) {
-        auto free_memory_slot = get_free_memory_slot();
-        if (!free_memory_slot.empty()) {
-            emitLine("MOV " + virtual_memory_to_real[free_memory_slot] + ", DWORD PTR " + constant);
-            return free_memory_slot;
-        } else {
-            emitLine("PUSH DWORD PTR " + constant);
-
-            auto pushed_loc = "__" + constant + "_p" + std::to_string(extra_stack_pushes);
-            virtual_memory_to_real[pushed_loc] =
-                    "[ebp - " + std::to_string(offset_down) + "]";
-            memory_slots.insert(pushed_loc);
-
-            extra_stack_pushes += 1;
-            offset_down += 4;
-
-            return pushed_loc;
-        }
-    }
-
     void spill_to_memory(UIdent value, UIdent value_current_loc) {
         auto free_memory_slot = get_free_memory_slot();
         if (!free_memory_slot.empty()) {
@@ -781,34 +761,34 @@ public:
             forget_dead_variable(stmt->uident_, stmt->out_vars);
             return;
         }
-//        if (instruction == "IMUL " && (get_power_of_two(stmt->atom_1) != -1 || get_power_of_two(stmt->atom_2) != -1)) {
-//            int power_of_two_lhs = get_power_of_two(stmt->atom_1);
-//            int power_of_two_rhs = get_power_of_two(stmt->atom_2);
-//            if (power_of_two_lhs > power_of_two_rhs) {
-//                std::swap(lhs_location, rhs_location); // power of two is always `C` (rhs)
-//                std::swap(power_of_two_rhs, power_of_two_lhs);
-//                std::swap(stmt->atom_1, stmt->atom_2);
-//
-//                lhs_variable_name = stmt->atom_1->var_name();
-//            }
-//
-//            R_register = get_R_register(lhs_location, lhs_variable_name, stmt);
-//
-//            emitLine("SAL " + R_register + ", " + std::to_string(power_of_two_rhs));
-//
-//            set_values_and_forget_dead(stmt, R_register);
-//            return;
-//        }
-//        if (instruction == "IDIV " && !stmt->binop_->isModOp() && get_power_of_two(stmt->atom_2) != -1) {
-//            int power_of_two_rhs = get_power_of_two(stmt->atom_2);
-//
-//            R_register = get_R_register(lhs_location, lhs_variable_name, stmt);
-//
-//            emitLine("SAR " + R_register + ", " + std::to_string(power_of_two_rhs));
-//
-//            set_values_and_forget_dead(stmt, R_register);
-//            return;
-//        }
+        if (instruction == "IMUL " && (get_power_of_two(stmt->atom_1) != -1 || get_power_of_two(stmt->atom_2) != -1)) {
+            int power_of_two_lhs = get_power_of_two(stmt->atom_1);
+            int power_of_two_rhs = get_power_of_two(stmt->atom_2);
+            if (power_of_two_lhs > power_of_two_rhs) {
+                std::swap(lhs_location, rhs_location); // power of two is always `C` (rhs)
+                std::swap(power_of_two_rhs, power_of_two_lhs);
+                std::swap(stmt->atom_1, stmt->atom_2);
+
+                lhs_variable_name = stmt->atom_1->var_name();
+            }
+
+            R_register = get_R_register(lhs_location, lhs_variable_name, stmt);
+
+            emitLine("SAL " + R_register + ", " + std::to_string(power_of_two_rhs));
+
+            set_values_and_forget_dead(stmt, R_register);
+            return;
+        }
+        if (instruction == "IDIV " && !stmt->binop_->isModOp() && get_power_of_two(stmt->atom_2) != -1) {
+            int power_of_two_rhs = get_power_of_two(stmt->atom_2);
+
+            R_register = get_R_register(lhs_location, lhs_variable_name, stmt);
+
+            emitLine("SAR " + R_register + ", " + std::to_string(power_of_two_rhs));
+
+            set_values_and_forget_dead(stmt, R_register);
+            return;
+        }
         if (instruction == "ADD " || instruction == "SUB "
             || instruction == "IMUL " || instruction == "CMP ") {
 
@@ -847,8 +827,11 @@ public:
                 emitLine("IDIV DWORD PTR " + virtual_memory_to_real[rhs_location]);
             } else {
                 if (is_const(rhs_location)) {
-                    rhs_location = put_constant_to_memory(rhs_location);
-                    emitLine("IDIV DWORD PTR " + virtual_memory_to_real[rhs_location]);
+                    emitLine("PUSH DWORD PTR " + rhs_location);
+                    rhs_location = "[esp]";
+
+                    emitLine("IDIV DWORD PTR " + rhs_location);
+                    emitLine("ADD esp, 4");
                 } else {
                     emitLine("IDIV " + rhs_location);
                 }

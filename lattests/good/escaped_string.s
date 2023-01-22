@@ -10,8 +10,8 @@ f:
 	push esi
 	push ebp
 	mov ebp, esp
-	MOV eax, 2
-	IMUL eax, DWORD PTR [ebp + 20]
+	MOV eax, [ebp + 20]
+	SAL eax, 1
 	MOV ebx, [ebp + 20]
 	ADD ebx, eax
 	LEA eax, .SC0
