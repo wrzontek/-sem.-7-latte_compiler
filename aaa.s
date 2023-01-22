@@ -2,6 +2,8 @@
 .section  .rodata
 .SC0:
 	.string "before while"
+.SC1:
+	.string "while"
 .text
 .globl main
 mulmod:
@@ -226,27 +228,39 @@ _end_while_7:
 	MOV [ebp - 12], DWORD PTR 0
 	JMP _while_cond_8
 _while_body_8:
-	MOV eax, [ebp + 20]
-	SUB eax, 1
+	LEA eax, .SC1
+	PUSH eax
+	CALL printString
+	ADD esp, 4
+	MOV ebx, eax
+	PUSH DWORD PTR [ebp + 20]
+	CALL printInt
+	ADD esp, 4
+	MOV edi, eax
+	PUSH DWORD PTR [ebp - 16]
+	CALL printInt
+	ADD esp, 4
+	MOV ecx, [ebp + 20]
+	SUB ecx, 1
 	PUSH eax
 	MOV eax, DWORD PTR [ebp - 16]
 	CDQ
-	IDIV DWORD PTR [ebp - 56]
+	IDIV ecx
 	ADD edx, 1
 	MOV eax, [ebp - 20]
-	MOV ebx, eax
-	MOV edi, edx
+	MOV esi, eax
+	PUSH edx
 	PUSH edx
 	CALL printInt
 	ADD esp, 4
-	MOV esi, eax
+	PUSH eax
 	PUSH DWORD PTR [ebp + 20]
 	PUSH DWORD PTR [ebp - 20]
-	PUSH edi
+	PUSH DWORD PTR [ebp - 60]
 	CALL modulo
 	ADD esp, 12
 	MOV [ebp - 24], eax
-	MOV [ebp - 28], ebx
+	MOV [ebp - 28], esi
 	JMP _while_cond_9
 _while_body_9:
 	PUSH DWORD PTR [ebp + 20]
@@ -310,7 +324,7 @@ _middle_l12:
 	MOV eax, DWORD PTR [ebp - 28]
 	CDQ
 	PUSH DWORD PTR 2
-	IDIV DWORD PTR [ebp - 60]
+	IDIV DWORD PTR [ebp - 68]
 	CMP edx, 0
 	MOV edx, 0
 	SETE dl
